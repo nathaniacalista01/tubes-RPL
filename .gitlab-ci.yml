@@ -1,0 +1,43 @@
+# .gitlab-ci.yml
+stages:
+  - lint
+  - test
+
+pylint:
+  stage: lint
+  before_script:
+    - pip install pylint pylint-exit
+  script:
+    - git fetch origin ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
+    - tmp_files=$(git diff --name-only ${CI_COMMIT_SHA} origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+    - if [ -z "$(echo "$tmp_files" | grep "\.py")" ]; then exit 0; fi
+    - tmp_files=$(echo "$tmp_files" | grep "\.py")
+    - pylint --fail-under=9.0 $tmp-files || pylint-exit $?
+  artifacts:
+    when: always
+    paths:
+      - pylint.log
+
+black:
+  stage: lint
+  image: python:3.9
+  script:
+    - pip install --upgrade pip
+    - pip install black
+    - black --check .
+  artifacts:
+    when: always
+    paths:
+      - black.log
+
+test:
+  stage: test
+  image: python:3.9
+  script:
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - python -m unittest discover
+  artifacts:
+    when: always
+    paths:
+      - test-results.xml
