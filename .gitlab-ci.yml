@@ -5,6 +5,8 @@ stages:
 
 pylint:
   stage: lint
+  tags:
+    - linux
   before_script:
     - pip install pylint pylint-exit
   script:
@@ -20,7 +22,8 @@ pylint:
 
 black:
   stage: lint
-  image: python:3.9
+  tags:
+    - linux
   script:
     - pip install --upgrade pip
     - pip install black
@@ -32,7 +35,8 @@ black:
 
 test:
   stage: test
-  image: python:3.9
+  tags:
+    - linux
   script:
     - pip install --upgrade pip
     - pip install -r requirements.txt
