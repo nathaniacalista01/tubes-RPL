@@ -8,13 +8,9 @@ pylint:
   tags:
     - linux
   before_script:
-    - pip install pylint pylint-exit
+    - pip install pylint
   script:
-    - git fetch origin ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
-    - tmp_files=$(git diff --name-only ${CI_COMMIT_SHA} origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
-    - if [ -z "$(echo "$tmp_files" | grep "\.py")" ]; then exit 0; fi
-    - tmp_files=$(echo "$tmp_files" | grep "\.py")
-    - pylint --fail-under=9.0 $tmp-files || pylint-exit $?
+    - pylint ./src
   artifacts:
     when: always
     paths:
