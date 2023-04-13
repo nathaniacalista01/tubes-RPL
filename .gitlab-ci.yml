@@ -18,11 +18,11 @@ pylint:
 
 black:
   stage: lint
+  before_script:
+    - pip install black
   tags:
     - linux
   script:
-    - pip install --upgrade pip
-    - pip install black
     - black --check .
   artifacts:
     when: always
@@ -31,11 +31,11 @@ black:
 
 test:
   stage: test
+  before_script:
+    - pip install -r requirements.txt
   tags:
     - linux
   script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
     - python -m unittest discover
   artifacts:
     when: always
