@@ -10,7 +10,7 @@ pylint:
   before_script:
     - pip install pylint
   script:
-    - pylint ./src
+    - pylint --fail-under 9.0 ./src
   artifacts:
     when: always
     paths:
