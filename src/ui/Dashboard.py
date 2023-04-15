@@ -1,21 +1,35 @@
 from flet_core import (
     UserControl,
-    DataTable,DataColumn,DataRow,DataCell,Text,
-    Container, Column, Row,Margin, FontWeight, Padding,
-    TextAlign, BoxShadow, Image, MainAxisAlignment
+    Text,
+    Container, 
+    Column, 
+    Row,
+    Margin,
+    FontWeight, 
+    Padding,
+    TextAlign, 
+    BoxShadow, 
+    Image, 
+    MainAxisAlignment, 
+    LineChartData, 
+    LineChartDataPoint, 
+    colors, 
+    LineChart,
+    ChartAxis,
+    ChartAxisLabel
 )
 
 class WelcomeMessage(UserControl):
-    def __init__(self, welcomeStr : str = "Hello, Jane Doe",**kwargs):
+    def __init__(self, welcome_str : str = "Hello, Jane Doe",**kwargs):
         super().__init__(**kwargs)
-        self.welcomeMessage = welcomeStr 
+        self.welcome_message = welcome_str 
     def build(self):
         return(
             Row(
                 controls=[
                     Column(
                         controls=[
-                            Text(value=self.welcomeMessage, size=32,weight=FontWeight.W_700),
+                            Text(value=self.welcome_message, size=32,weight=FontWeight.W_700),
                             Text(value="4.45 pm 15 April 2023", weight=FontWeight.W_700,size=13)
                         ]
                     )
@@ -41,11 +55,25 @@ class SaldoCard(UserControl):
     def build(self):
         return(
             Container(
+                bgcolor = "#FFFFFF",
+                margin = Margin(0,20,0,0),
+                padding = Padding(20,30,20,0),
+                border_radius = 20,
+                expand=True,
                 content=
                     Column(
                         controls=[
-                            Text(value=self.title),
-                            Text(value=self.total_income)
+                            Text(value=self.title,size=32,weight=FontWeight.W_700),
+                            Text(value=self.total_income, color="#793DFD"),
+                            # Masukin Jumlah Pemasukan 
+                            Text(value = "6.025.440,00", size=16,weight=FontWeight.W_600),
+
+                            Text(value=self.total_expenes, color="#793DFD", size=16),
+                            #Jumlah pengeluaran
+                            Text(value = "4.502.440,00", size=16,weight=FontWeight.W_600),
+                            
+                            Text(value = self.total_balance,color="#793DFD"),
+                            Text(value="2.000.000,00",size=16, weight=FontWeight.W_600)
                         ]
                     )            
             )
@@ -184,19 +212,96 @@ class SaldoOverviewSecondRow(UserControl):
     def build(self):
         return (
             Row(
+                alignment= MainAxisAlignment.START,
                 controls=[
                     Container(
                         expand=2,
-                        content = 
-                            Row(
+                        margin = 0,
+                        content=Row(
                                 controls=[
                                     Image( src = "images/stonks.svg"),
-                                    Text(value="6.5%")
+                                    Text(value="6.5%", size=12)
                                 ]
-                            )                        
+                            )),
+                    Container(
+                        expand=1,
+                        content= Row(
+                            controls=[
+                                Container(
+                                    expand = 1,
+                                    content=(
+                                        Image(
+                                            src="images/green-button.svg"
+                                        )
+                                    )    
+                                ),
+                                Container(
+                                    expand = 2,
+                                    content=(
+                                        Text(value="Income")
+                                    )
+                                ),
+                                Container(
+                                    expand = 1,
+                                    content=(
+                                        Image(src="images/purple-button.svg")
+                                    )
+                                ),
+                                Container(
+                                    expand = 2,
+                                    content=Text(value="Expense")
+                                )
+                            ]
+                        )
                     )
                 ]
             )
+        )
+
+class SaldoChart(UserControl):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    def build(self):
+        data_1 = [
+        LineChartData(
+            data_points=[
+                LineChartDataPoint(1, 1),
+                LineChartDataPoint(3, 1.5),
+                LineChartDataPoint(5, 1.4),
+                LineChartDataPoint(7, 3.4),
+                LineChartDataPoint(10, 2),
+                LineChartDataPoint(12, 2.2),
+                LineChartDataPoint(13, 1.8),
+            ],
+            stroke_width=4,
+            color="#00DEA3",
+            stroke_cap_round=True,
+        ),
+        LineChartData(
+            data_points=[
+                LineChartDataPoint(1, 1),
+                LineChartDataPoint(3, 2.8),
+                LineChartDataPoint(7, 1.2),
+                LineChartDataPoint(10, 2.8),
+                LineChartDataPoint(12, 2.6),
+                LineChartDataPoint(13, 3.9),
+            ],
+            color=colors.PINK,
+            below_line_bgcolor=colors.with_opacity(0, colors.PINK),
+            stroke_width=4,
+            stroke_cap_round=True,
+        ),
+        
+    ]
+        return(
+            Container(
+                content=
+                    LineChart(
+                        data_series=data_1,
+                        height=200
+                    )
+            )
+            
         )
 
 class SaldoOverview(UserControl):
@@ -218,6 +323,8 @@ class SaldoOverview(UserControl):
                     Column(
                         controls=[
                             SaldoOverviewFirstRow(),
+                            SaldoOverviewSecondRow(),
+                            SaldoChart()
                         ]
                     )  
 
@@ -230,11 +337,12 @@ class BalanceRow(UserControl):
     def build(self):
         return(
             Container(
+                expand=True,
                 content=
                     Row(
                         controls=[
-                            SaldoOverview(expand = 5),
-                            SaldoCard(expand = 2)
+                            SaldoOverview(expand = 3),
+                            SaldoCard(expand = 1)
                         ]
                     )
             )
@@ -274,7 +382,7 @@ class Targets(UserControl):
     def __init__(
         self, 
         **kwargs
-        
+
     ):
         super().__init__(**kwargs)
     def build(self):
@@ -324,6 +432,3 @@ class Dashboard(UserControl):
             )
            
         )
-        
-        
-    

@@ -96,7 +96,7 @@ def main(page: Page):
                 ),
                 Container(
                     border_radius=border_radius.only(30, 0, 30, 0),
-                    bgcolor="#E8E8E8",
+                    bgcolor="#E9EFFD",
                     expand=True,
                     content=Column(
                         ref=page_container,
