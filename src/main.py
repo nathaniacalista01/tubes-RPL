@@ -17,6 +17,7 @@ from flet_core.types import (
     MainAxisAlignment,
 )
 
+from src.ui.Dashboard import Dashboard
 from src.ui.navbar import Navbar, NavbarItem
 from src.ui.profile_card import ProfileCard
 
@@ -51,7 +52,7 @@ def main(page: Page):
 
     # Put the pages inside this list
     views = [
-        Text("Dashboard", size=50),
+        Dashboard(),
         Text("Manage Transaction", size=50),
         Text("Plan Target", size=50),
         Text("Article", size=50),
@@ -106,7 +107,7 @@ def main(page: Page):
                     height=page.window_height,
                     border_radius=border_radius.only(30, 0, 30, 0),
                     expand=True,
-                    bgcolor="#E8E8E8",
+                    bgcolor="#E9EFFD",
                     content=views[navbar.current.selected_index],
                 ),
             ]
