@@ -35,20 +35,12 @@ def main(page: Page):
     page.theme = Theme(font_family="Nunito")
     page.bgcolor = "#2A3575"
 
-    container1 = Ref[Container]()
-    container2 = Ref[Container]()
+    page_container = Ref[Column]()
     navbar = Ref[Navbar]()
 
     def change_page(index: int):
-        container2.current.content = views[index]
+        page_container.current.controls[0] = views[index]
         page.update()
-
-    def resize_containers(_e):
-        container1.current.height = page.window_height
-        container2.current.height = page.window_height
-        page.update()
-
-    page.on_resize = resize_containers
 
     # Put the pages inside this list
     views = [
@@ -61,10 +53,10 @@ def main(page: Page):
 
     page.add(
         Row(
+            expand=True,
+            spacing=0,
             controls=[
                 Container(
-                    ref=container1,
-                    height=page.window_height,
                     bgcolor="#2A3575",
                     padding=Padding(35, 35, 35, 35),
                     content=Column(
@@ -103,14 +95,15 @@ def main(page: Page):
                     ),
                 ),
                 Container(
-                    ref=container2,
-                    height=page.window_height,
                     border_radius=border_radius.only(30, 0, 30, 0),
+                    bgcolor="#E8E8E8",
                     expand=True,
-                    bgcolor="#E9EFFD",
-                    content=views[navbar.current.selected_index],
+                    content=Column(
+                        ref=page_container,
+                        controls=[views[navbar.current.selected_index]],
+                    ),
                 ),
-            ]
+            ],
         )
     )
 
