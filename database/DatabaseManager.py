@@ -8,12 +8,26 @@ class DatabaseManager:
         self.target = Database.Target()
         self.connection = sqlite3.connect("BudgetWise.db")
         self.connection.row_factory = sqlite3.Row
+        self.initialize_tables()
 
     def create_table(self, table):
         columns = ', '.join([f'{column} {description}' for column, description in zip(table.attributes, table.attributeDescription)])
         self.connection.execute(f"CREATE TABLE IF NOT EXISTS {table.name} ({columns})")
-        print(f"CREATE TABLE IF NOT EXISTS {table.name} ({columns})", end='\n')
         self.commit_changes()
+
+        if table.name == "Pemasukan":
+            self.insert_data(table.name, ["id_pemasukan", "nominal", "tanggal", "kategori", "catatan"], [9999, 9999, "2023-04-17", "dummy_kategori", "dummy_catatan"])
+            self.delete_data(table.name, "id_pemasukan = 9999")
+        elif table.name == "Pengeluaran":
+            self.insert_data(table.name, ["id_pengeluaran", "nominal", "tanggal", "kategori", "catatan"], [19999, 19999, "2023-04-17", "dummy_kategori", "dummy_catatan"])
+            self.delete_data(table.name, "id_pengeluaran = 19999")
+        elif table.name == "Transaksi":
+            self.insert_data(table.name, ["id_transaksi", "tipe_transaksi", "id_sumber"], [29999, "pemasukan", 29999])
+            self.delete_data(table.name, "id_transaksi = 29999")
+        elif table.name == "Target":
+            self.insert_data(table.name, ["id_target", "judul", "nominal_target", "catatan", "tanggal_dibuat", "tanggal_tercapai"], [89999,"dummy_judul", 0, "dummy_catatan", "2023-04-17", "2023-04-17"])
+            self.delete_data(table.name, "id_target = 89999")
+            
         print(f"Table {table.name} created")
 
     def initialize_tables(self):
@@ -55,6 +69,15 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
+    
+    def resetDatabase(self):
+        self.connection.execute("DROP TABLE IF EXISTS Pemasukan")
+        self.connection.execute("DROP TABLE IF EXISTS Pengeluaran")
+        self.connection.execute("DROP TABLE IF EXISTS Transaksi")
+        self.connection.execute("DROP TABLE IF EXISTS Target")
+        self.commit_changes()
+        self.initialize_tables()
+        print("Database reset")
     
     def commit_changes(self):
         self.connection.commit()
