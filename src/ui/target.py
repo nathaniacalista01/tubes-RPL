@@ -125,3 +125,46 @@ class Target(UserControl):
                 )
             ]
         )
+    
+
+class TargetForm(UserControl):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+
+    def build(self):
+        return Column(
+            width=1070,
+            controls=[
+                Container(
+                    bgcolor="white",                     
+                    height=270,
+                    padding=Padding(10,10,10,10),
+                    margin=Margin(20,20,20,10),
+                    border_radius=20,
+                    content=Column(
+                        controls=[
+                            Container(
+                                height=25,
+                                content=TextField(label="Title",text_size=12)
+                            ),
+                            Container(
+                                height=25,
+                                content=TextField(label="Nominal",text_size=12)
+                            ),
+                            Container(
+                                height=25,
+                                content=TextField(label="Target Date",text_size=12)
+                            ),
+                            Container(
+                                height=100,
+                                content=TextField(label="Descriptions",border="underline",text_size=12,multiline=True)
+                            ),
+                            Container(
+                                alignment=alignment.center_right,
+                                content=ElevatedButton(text="Add Target", bgcolor="#00FF47")
+                            )
+                        ]
+                    )
+                ),
+            ]
+        )
