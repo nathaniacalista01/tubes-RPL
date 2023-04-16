@@ -13,7 +13,6 @@ from flet_core import (
     MouseCursor,
     FontWeight,
     ControlEvent,
-    Container,
     Column,
 )
 
@@ -77,34 +76,29 @@ class Navbar(UserControl):
         self.on_item_selected = on_item_selected
 
     def item_selected(self, e: ControlEvent):
-        for i, ref in enumerate(self.item_refs):
-            if e.control.data == i:
-                ref.current.image_ref.current.color = "white"
-                ref.current.text_ref.current.color = "white"
-                ref.current.selected = True
-                self.selected_index = i
-            else:
-                ref.current.image_ref.current.color = colors.with_opacity(0.4, "white")
-                ref.current.text_ref.current.color = colors.with_opacity(0.4, "white")
-                ref.current.selected = False
-            ref.current.update()
+        item = self.item_refs[self.selected_index].current
+        item.image_ref.current.color = colors.with_opacity(0.4, "white")
+        item.text_ref.current.color = colors.with_opacity(0.4, "white")
+        item.update()
+        self.selected_index = e.control.data
+        item = self.item_refs[self.selected_index].current
+        item.image_ref.current.color = "white"
+        item.text_ref.current.color = "white"
+        item.update()
         self.on_item_selected(self.selected_index)
-        self.update()
 
     def build(self):
-        return Container(
-            content=Column(
-                alignment=MainAxisAlignment.START,
-                spacing=15,
-                controls=[
-                    NavbarItem(
-                        ref=self.item_refs[i],
-                        data=i,
-                        img_src=x.img_src,
-                        text=x.text,
-                        on_item_selected=self.item_selected,
-                    )
-                    for i, x in enumerate(self.items)
-                ],
-            ),
+        return Column(
+            alignment=MainAxisAlignment.START,
+            spacing=15,
+            controls=[
+                NavbarItem(
+                    ref=self.item_refs[i],
+                    data=i,
+                    img_src=x.img_src,
+                    text=x.text,
+                    on_item_selected=self.item_selected,
+                )
+                for i, x in enumerate(self.items)
+            ],
         )

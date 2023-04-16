@@ -1,20 +1,22 @@
 """Component for BudgetWise's dashboard"""
-from datetime import datetime
 from typing import Optional, List
 
+import matplotlib
+import matplotlib.pyplot as plt
 from flet_core import (
     alignment,
     UserControl,
+    Ref,
+    ControlEvent,
     Text,
     Container,
     Column,
     Row,
-    Icon,
+    ButtonStyle,
+    MaterialState,
     Margin,
     FontWeight,
     Padding,
-    TextAlign,
-    BoxShadow,
     Image,
     MainAxisAlignment,
     LineChartData,
@@ -23,11 +25,11 @@ from flet_core import (
     LineChart,
     ScrollMode,
     Stack,
+    OutlinedButton,
 )
 from flet_core.matplotlib_chart import MatplotlibChart
+
 from src.ui.target import Target
-import matplotlib
-import matplotlib.pyplot as plt
 
 matplotlib.use("svg")
 
@@ -40,28 +42,26 @@ class WelcomeMessage(UserControl):
         self.welcome_message = welcome_str
 
     def build(self):
-        return Row(
+        return Column(
+            spacing=0,
             controls=[
-                Column(
-                    controls=[
-                        Text(
-                            value=self.welcome_message,
-                            size=32,
-                            weight=FontWeight.W_700,
-                        ),
-                        Text(
-                            value="4.45 pm 15 April 2023",
-                            weight=FontWeight.W_700,
-                            size=13,
-                        ),
-                    ]
-                )
-            ]
+                Text(
+                    value=self.welcome_message,
+                    size=32,
+                    weight=FontWeight.W_600,
+                ),
+                Text(
+                    value="4.45 pm 15 April 2023",
+                    weight=FontWeight.W_600,
+                    size=13,
+                ),
+            ],
         )
 
 
 class SaldoCard(UserControl):
     """Saldo Card Components in dashboard"""
+
     def __init__(
         self,
         title: str = "Balances",
@@ -89,7 +89,7 @@ class SaldoCard(UserControl):
                             Text(
                                 value=self.title,
                                 size=32,
-                                weight=FontWeight.W_700,
+                                weight=FontWeight.W_600,
                             ),
                             Text(
                                 value=self.total_income,
@@ -142,44 +142,50 @@ class FirstRow(UserControl):
         super().__init__(**kwargs)
         self.title = title
         self.labels = labels
+        self.selected_index = 0
+        self.refs = [Ref[OutlinedButton]() for _ in labels]
+
+    def select_item(self, e: ControlEvent):
+        e.control.disabled = True
+        self.refs[self.selected_index].current.disabled = False
+        self.selected_index = e.control.data
+        self.update()
 
     def build(self):
         buttons = [
             Container(
-                margin=Margin(0, 10, 0, 5),
-                padding=Padding(8, 2, 8, 2),
-                border_radius=10,
-                bgcolor="#FFFFFF",
-                content=Text(
-                    value=label,
-                    color="black",
-                    size=16,
-                    text_align=TextAlign.CENTER,
-                ),
-                shadow=BoxShadow(
-                    spread_radius=0.01,
-                    blur_radius=0.2,
+                scale=0.75,
+                margin=Margin(-5, 0, -5, 0),
+                content=OutlinedButton(
+                    ref=self.refs[i],
+                    style=ButtonStyle(
+                        bgcolor={
+                            MaterialState.DEFAULT: "white",
+                            MaterialState.HOVERED: "blue",
+                            MaterialState.DISABLED: "blue",
+                        },
+                        color="black",
+                    ),
+                    disabled=(i == self.selected_index),
+                    data=i,
+                    on_click=self.select_item,
+                    text=label,
                 ),
             )
-            for label in self.labels
+            for i, label in enumerate(self.labels)
         ]
         return Row(
+            alignment=MainAxisAlignment.END,
+            spacing=0,
             controls=[
-                Container(
-                    content=Text(
-                        value=self.title,
-                        size=32,
-                        weight=FontWeight.W_600,
-                    ),
+                Text(
                     expand=True,
+                    value=self.title,
+                    size=32,
+                    weight=FontWeight.W_600,
                 ),
-                Container(
-                    content=Row(
-                        controls=[*buttons],
-                        expand=1,
-                    ),
-                ),
-            ]
+                *buttons,
+            ],
         )
 
 
@@ -191,35 +197,29 @@ class SaldoOverviewSecondRow(UserControl):
 
     def build(self):
         return Row(
-            alignment=MainAxisAlignment.SPACE_BETWEEN,
+            alignment=MainAxisAlignment.END,
             controls=[
-                Container(
+                Row(
                     expand=True,
-                    margin=0,
-                    content=Row(
-                        controls=[
-                            Image(src="images/stonks.svg"),
-                            Text(value="6.5%", size=12),
-                        ]
-                    ),
+                    spacing=2,
+                    controls=[
+                        Image(src="images/stonks.svg"),
+                        Text(value="6.5%", size=12),
+                    ],
                 ),
-                Container(
-                    content=Row(
-                        controls=[
-                            Row(
-                                controls=[
-                                    Image(src="images/green-button.svg"),
-                                    Text(value="Income"),
-                                ],
-                            ),
-                            Row(
-                                controls=[
-                                    Image(src="images/purple-button.svg"),
-                                    Text(value="Expense"),
-                                ],
-                            ),
-                        ]
-                    ),
+                Row(
+                    spacing=2,
+                    controls=[
+                        Image(src="images/green-button.svg"),
+                        Text(value="Income"),
+                    ],
+                ),
+                Row(
+                    spacing=2,
+                    controls=[
+                        Image(src="images/purple-button.svg"),
+                        Text(value="Expense"),
+                    ],
                 ),
             ],
         )
@@ -296,14 +296,12 @@ class BalanceRow(UserControl):
         super().__init__(**kwargs)
 
     def build(self):
-        return Container(
-            content=Row(
-                spacing=24,
-                controls=[
-                    SaldoOverview(expand=True),
-                    SaldoCard(width=260),
-                ],
-            ),
+        return Row(
+            spacing=24,
+            controls=[
+                SaldoOverview(expand=True),
+                SaldoCard(width=260),
+            ],
         )
 
 
@@ -421,15 +419,13 @@ class RecentTransactionTarget(UserControl):
         super().__init__(**kwargs)
 
     def build(self):
-        return Container(
-            content=Row(
-                alignment=MainAxisAlignment.END,
-                spacing=24,
-                controls=[
-                    TransactionsDiagram(expand=True),
-                    Targets(width=260),
-                ],
-            )
+        return Row(
+            alignment=MainAxisAlignment.END,
+            spacing=24,
+            controls=[
+                TransactionsDiagram(expand=True),
+                Targets(width=260),
+            ],
         )
 
 
@@ -440,46 +436,10 @@ class Dashboard(UserControl):
         super().__init__(**kwargs)
 
     def build(self):
-        return Container(
-            content=Column(
-                controls=[
-                    WelcomeMessage(),
-                    BalanceRow(expand=1),
-                    RecentTransactionTarget(expand=1),
-                ]
-            )
-        )
-
-
-class History(UserControl):
-    def __init__(
-        self,
-        icon: str = "attach_money",
-        title: str = "payment",
-        date: datetime = datetime.today(),
-        nominal: float = 0.0,
-        **kwargs,
-    ):
-        super().__init__(**kwargs)
-        self.icon = icon
-        self.title = title
-        self.date = date
-        self.nominal = nominal
-
-    def build(self):
-        return Row(
+        return Column(
             controls=[
-                Icon(name=self.icon, size=30),
-                Column(
-                    spacing=2,
-                    controls=[
-                        Text(value=self.title, size=15),
-                        Text(value=self.date.strftime("%B %d, %Y"), size=10),
-                    ],
-                ),
-                Container(
-                    alignment=alignment.center_right,
-                    content=Text(value="$" + str(self.nominal), size=15),
-                ),
-            ],
+                WelcomeMessage(),
+                BalanceRow(expand=1),
+                RecentTransactionTarget(expand=1),
+            ]
         )

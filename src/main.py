@@ -1,10 +1,10 @@
 """This is UI module for BudgetWise App"""
-
 from flet.flet import app
 from flet_core import (
     Theme,
     border_radius,
 )
+from flet_core.stack import Stack
 from flet_core.column import Column
 from flet_core.container import Container
 from flet_core.margin import Margin
@@ -18,10 +18,10 @@ from flet_core.types import (
 )
 
 from src.ui.dashboard import Dashboard
+from src.ui.manage_transaction import ManageTransaction
 from src.ui.navbar import Navbar, NavbarItem
 from src.ui.profile_card import ProfileCard
 from src.ui.target_page import TargetPage
-from src.ui.manage_transaction import ManageTransaction
 
 
 def main(page: Page):
@@ -37,18 +37,20 @@ def main(page: Page):
     page.theme = Theme(font_family="Nunito")
     page.bgcolor = "#2A3575"
 
-    page_container = Ref[Column]()
+    page_container = Ref[Stack]()
     navbar = Ref[Navbar]()
 
     def change_page(index: int):
-        page_container.current.controls[0] = views[index]
-        page_container.current.update()
+        for view in page_container.current.controls:
+            view.visible = False
+        page_container.current.controls[index].visible = True
+        page.update()
 
     # Put the pages inside this list
     views = [
         Dashboard(expand=True),
         ManageTransaction(expand=True),
-        TargetPage(),
+        TargetPage(expand=True),
         Text("Article", size=50),
         Text("Settings", size=50),
     ]
@@ -101,9 +103,12 @@ def main(page: Page):
                     bgcolor="#E9EFFD",
                     expand=True,
                     padding=35,
-                    content=Column(
+                    content=Stack(
                         ref=page_container,
-                        controls=[views[navbar.current.selected_index]],
+                        controls=[
+                            Column(controls=[view], visible=(i == 0))
+                            for i, view in enumerate(views)
+                        ],
                     ),
                 ),
             ],

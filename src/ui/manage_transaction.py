@@ -19,6 +19,7 @@ from flet_core import (
     Image,
 )
 
+
 class RecentTransactions(UserControl):
     """Recent Transactions's Card"""
 
@@ -198,6 +199,7 @@ class RecentTransactions(UserControl):
             ),
         )
 
+
 class ManageTransaction(UserControl):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -205,8 +207,5 @@ class ManageTransaction(UserControl):
     def build(self):
         return Column(
             spacing=0,
-            controls=[
-                RecentTransactions(expand=2),
-                TransactionsForms(expand=2)
-            ],
+            controls=[RecentTransactions(expand=2), TransactionsForms(expand=2)],
         )
