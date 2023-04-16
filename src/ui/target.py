@@ -42,7 +42,6 @@ class Target(UserControl):
     def build(self):
         return Column(
             width=230,
-            # alignment=alignment.top_center,
             alignment=CrossAxisAlignment.CENTER,
             controls=[
                 Container(
@@ -113,6 +112,34 @@ class Target(UserControl):
                         ]
                     )
                 ),
+            ]
+        )
+
+class TargetEdit(Target):
+    """Budgetwise Target Component"""
+
+    def __init__(
+        self,
+        target_title: str = "Target Title",
+        target_description: str = "Target Description",
+        percentage: float = 0.3,
+        start_date: datetime = datetime.date.today(),
+        end_date: datetime = datetime.date(datetime.datetime.now().year + 1, datetime.datetime.now().month, datetime.datetime.now().day),
+        icon: str = "fact_check",
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.target_title = target_title
+        self.target_description = target_description
+        self.percentage = percentage
+        self.start_date = start_date
+        self.end_date = end_date
+        self.icon = icon
+
+    def build(self):
+        return Column(
+            controls=[            
+                super().build(),
                 Container(
                     height=20, width=230,
                     padding=Padding(20,0,20,0),
@@ -125,7 +152,6 @@ class Target(UserControl):
                 )
             ]
         )
-    
 
 class TargetForm(UserControl):
     def __init__(self,**kwargs):

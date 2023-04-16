@@ -1,24 +1,18 @@
 """Target Page module"""
 
-from ui.target import Target, TargetForm
+from ui.target import TargetEdit, TargetForm
 from ui.Dashboard import WelcomeMessage
 import datetime
 
-from flet import ProgressBar, Divider, Icon, alignment
 from flet_core import (
     UserControl,
     Column,
-    CrossAxisAlignment,
     Container,
     Padding,
     Margin,
-    BoxShadow,
-    Offset,
-    MainAxisAlignment,
     Text,
-    TextAlign,
-    FontWeight,
     Row,
+    ScrollMode,
 )
 
 class TargetPage(UserControl):
@@ -51,15 +45,20 @@ class TargetPage(UserControl):
                                 controls=[
                                     Container(
                                         content=Text(value="Targets", size=20),
-                                        padding=Padding(10,5,0,0)
+                                        padding=Padding(10,5,10,0)
                                     ),
                                     Container(
-                                        content=Row(
+                                        content=Row(scroll=ScrollMode.AUTO,
+                                        width=890,
                                             controls=[
-                                                Target(),
-                                                Target(target_title="Beli iphone 20",
+                                                TargetEdit(),
+                                                TargetEdit(target_title="Beli iphone 20",
                                                     target_description="iPhone adalah kebutuhan yang aku perlukan untuk hidup :)",
-                                                    percentage=0.7,icon="phone_iphone")
+                                                    percentage=0.7,icon="phone_iphone"),
+                                                TargetEdit(),
+                                                TargetEdit(),
+                                                TargetEdit(),
+                                                TargetEdit(),
                                             ]
                                         )
                                     )

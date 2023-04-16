@@ -1,6 +1,7 @@
 """Component for BudgetWise's dashboard"""
 
 import datetime
+from ui.target import Target
 from flet_core import (
     UserControl,
     Text,
@@ -21,7 +22,8 @@ from flet_core import (
     DataTable,
     DataRow,
     DataColumn,
-    DataCell
+    DataCell,
+    ScrollMode,
 )
 
 class WelcomeMessage(UserControl):
@@ -463,10 +465,19 @@ class Targets(UserControl):
         return(
             Container(
                 bgcolor="#FFFFFF",
+                padding=Padding(5,10,5,10),
+                border_radius=20,
+                height=225,
                 content=
                     Column(
                         controls=[
-                            Text(value="Targets")
+                            Text(value="Targets",size=20),
+                            Column(scroll=ScrollMode.AUTO, spacing=5, height=170,
+                                controls=[
+                                    Target(),
+                                    Target(),
+                                ]
+                            )
                         ]
                     )
             )

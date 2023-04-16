@@ -17,10 +17,10 @@ from flet_core.types import (
     MainAxisAlignment,
 )
 
-from src.ui.Dashboard import Dashboard
-from src.ui.navbar import Navbar, NavbarItem
-from src.ui.profile_card import ProfileCard
-from src.ui.target_page import TargetPage
+from ui.Dashboard import Dashboard
+from ui.navbar import Navbar, NavbarItem
+from ui.profile_card import ProfileCard
+from ui.target_page import TargetPage
 
 
 def main(page: Page):
