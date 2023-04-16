@@ -17,10 +17,6 @@ from flet_core import (
     LineChartDataPoint,
     colors,
     LineChart,
-    DataTable,
-    DataRow,
-    DataColumn,
-    DataCell,
     ScrollMode,
 )
 from src.ui.target import Target

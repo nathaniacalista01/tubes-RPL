@@ -1,6 +1,7 @@
 """Manage Transaction Page Module"""
+from flet import *
 import datetime
-from src.ui.dashboard import WelcomeMessage
+
 
 from flet_core import (
     UserControl,
