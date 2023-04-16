@@ -39,7 +39,9 @@ class WelcomeMessage(UserControl):
                 Column(
                     controls=[
                         Text(
-                            value=self.welcome_message, size=32, weight=FontWeight.W_700
+                            value=self.welcome_message,
+                            size=32,
+                            weight=FontWeight.W_700,
                         ),
                         Text(
                             value="4.45 pm 15 April 2023",
@@ -148,7 +150,11 @@ class SaldoOverviewFirstRow(UserControl):
         return Row(
             controls=[
                 Container(
-                    content=Text(value=self.title, size=32, weight=FontWeight.W_600),
+                    content=Text(
+                        value=self.title,
+                        size=32,
+                        weight=FontWeight.W_600,
+                    ),
                     expand=2,
                 ),
                 Container(
@@ -255,10 +261,10 @@ class SaldoOverviewSecondRow(UserControl):
 
     def build(self):
         return Row(
-            alignment=MainAxisAlignment.START,
+            alignment=MainAxisAlignment.SPACE_BETWEEN,
             controls=[
                 Container(
-                    expand=2,
+                    expand=True,
                     margin=0,
                     content=Row(
                         controls=[
@@ -268,18 +274,20 @@ class SaldoOverviewSecondRow(UserControl):
                     ),
                 ),
                 Container(
-                    expand=1,
                     content=Row(
                         controls=[
-                            Container(
-                                expand=1, content=Image(src="images/green-button.svg")
+                            Row(
+                                controls=[
+                                    Image(src="images/green-button.svg"),
+                                    Text(value="Income"),
+                                ],
                             ),
-                            Container(expand=2, content=Text(value="Income")),
-                            Container(
-                                expand=1,
-                                content=(Image(src="images/purple-button.svg")),
+                            Row(
+                                controls=[
+                                    Image(src="images/purple-button.svg"),
+                                    Text(value="Expense"),
+                                ],
                             ),
-                            Container(expand=2, content=Text(value="Expense")),
                         ]
                     ),
                 ),
@@ -324,7 +332,7 @@ class SaldoChart(UserControl):
                 stroke_cap_round=True,
             ),
         ]
-        return Container(content=LineChart(data_series=data_1, height=200))
+        return LineChart(data_series=data_1)
 
 
 class SaldoOverview(UserControl):
@@ -335,14 +343,14 @@ class SaldoOverview(UserControl):
 
     def build(self):
         return Container(
-            padding=Padding(20, 30, 20, 0),
+            padding=Padding(20, 30, 20, 10),
             border_radius=20,
             bgcolor="#FFFFFF",
             content=Column(
                 controls=[
                     SaldoOverviewFirstRow(),
                     SaldoOverviewSecondRow(),
-                    SaldoChart(),
+                    SaldoChart(expand=True),
                 ]
             ),
         )
@@ -356,9 +364,7 @@ class BalanceRow(UserControl):
 
     def build(self):
         return Container(
-            bgcolor="#FF0000",
             content=Row(
-                alignment=MainAxisAlignment.CENTER,
                 spacing=24,
                 controls=[
                     SaldoOverview(expand=True),
@@ -391,136 +397,158 @@ class RecentTransactions(UserControl):
 
     def build(self):
         return Container(
-            margin=Margin(0, 10, 0, 0),
-            padding=Padding(20, 10, 20, 10),
+            padding=Padding(20, 30, 20, 10),
             border_radius=20,
             bgcolor="#FFFFFF",
-            content=Column(
+            content=Row(
                 controls=[
-                    Text(value="Recent Transactions", size=32, weight=FontWeight.W_600),
-                    DataTable(
-                        column_spacing=80,
-                        bgcolor="#F6F3F3",
-                        border_radius=20,
-                        columns=[
-                            DataColumn(
-                                label=Text(
-                                    value=self.column_two,
-                                    text_align=TextAlign.CENTER,
-                                    color="#707EAF",
-                                    weight=FontWeight.W_700,
-                                )
-                            ),
-                            DataColumn(
-                                label=Text(
-                                    value=self.column_three,
-                                    text_align=TextAlign.CENTER,
-                                    color="#707EAF",
-                                    weight=FontWeight.W_700,
-                                )
-                            ),
-                            DataColumn(
-                                label=Text(
-                                    value=self.column_four,
-                                    text_align=TextAlign.CENTER,
-                                    color="#707EAF",
-                                    weight=FontWeight.W_700,
-                                )
-                            ),
-                            DataColumn(
-                                label=Text(
-                                    value=self.column_five,
-                                    text_align=TextAlign.CENTER,
-                                    color="#707EAF",
-                                    weight=FontWeight.W_700,
-                                )
-                            ),
-                            DataColumn(
-                                label=Text(
-                                    value=self.column_six,
-                                    text_align=TextAlign.CENTER,
-                                    color="#707EAF",
-                                    weight=FontWeight.W_700,
-                                )
-                            ),
-                        ],
-                        rows=[
-                            DataRow(
-                                cells=[
-                                    DataCell(
-                                        Text(
-                                            value="shopping",
-                                            text_align=TextAlign.CENTER,
-                                            color="#707EAF",
-                                            weight=FontWeight.W_600,
+                    Container(
+                        expand=True,
+                        content=Column(
+                            controls=[
+                                Text(
+                                    value="Recent Transactions",
+                                    size=32,
+                                    weight=FontWeight.W_600,
+                                ),
+                                Row(
+                                    controls=[
+                                        DataTable(
+                                            expand=True,
+                                            bgcolor="#F6F3F3",
+                                            border_radius=20,
+                                            columns=[
+                                                DataColumn(
+                                                    label=Text(
+                                                        value=self.column_two,
+                                                        text_align=TextAlign.CENTER,
+                                                        color="#707EAF",
+                                                        weight=FontWeight.W_700,
+                                                    )
+                                                ),
+                                                DataColumn(
+                                                    label=Text(
+                                                        value=self.column_three,
+                                                        text_align=TextAlign.CENTER,
+                                                        color="#707EAF",
+                                                        weight=FontWeight.W_700,
+                                                    )
+                                                ),
+                                                DataColumn(
+                                                    label=Text(
+                                                        value=self.column_four,
+                                                        text_align=TextAlign.CENTER,
+                                                        color="#707EAF",
+                                                        weight=FontWeight.W_700,
+                                                    )
+                                                ),
+                                                DataColumn(
+                                                    label=Text(
+                                                        value=self.column_five,
+                                                        text_align=TextAlign.CENTER,
+                                                        color="#707EAF",
+                                                        weight=FontWeight.W_700,
+                                                    )
+                                                ),
+                                                DataColumn(
+                                                    label=Text(
+                                                        value=self.column_six,
+                                                        text_align=TextAlign.CENTER,
+                                                        color="#707EAF",
+                                                        weight=FontWeight.W_700,
+                                                    )
+                                                ),
+                                            ],
+                                            rows=[
+                                                DataRow(
+                                                    cells=[
+                                                        DataCell(
+                                                            Text(
+                                                                value="shopping",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#707EAF",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Text(
+                                                                value="12:28:16 PM",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#707EAF",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Text(
+                                                                value="Rp 69.000,00",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#707EAF",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Image(
+                                                                src="images/notes.svg"
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Text(
+                                                                value="Expense",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#F2428A",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                    ]
+                                                ),
+                                                DataRow(
+                                                    cells=[
+                                                        DataCell(
+                                                            Text(
+                                                                value="Utilities",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#707EAF",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Text(
+                                                                value="7:34:13 AM",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#707EAF",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Text(
+                                                                value="Rp 55.000,00",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#707EAF",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Image(
+                                                                src="images/notes.svg"
+                                                            )
+                                                        ),
+                                                        DataCell(
+                                                            Text(
+                                                                value="Income",
+                                                                text_align=TextAlign.CENTER,
+                                                                color="#0ADEA6",
+                                                                weight=FontWeight.W_600,
+                                                            )
+                                                        ),
+                                                    ]
+                                                ),
+                                            ],
                                         )
-                                    ),
-                                    DataCell(
-                                        Text(
-                                            value="12:28:16 PM",
-                                            text_align=TextAlign.CENTER,
-                                            color="#707EAF",
-                                            weight=FontWeight.W_600,
-                                        )
-                                    ),
-                                    DataCell(
-                                        Text(
-                                            value="Rp 69.000,00",
-                                            text_align=TextAlign.CENTER,
-                                            color="#707EAF",
-                                            weight=FontWeight.W_600,
-                                        )
-                                    ),
-                                    DataCell(Image(src="images/notes.svg")),
-                                    DataCell(
-                                        Text(
-                                            value="Expense",
-                                            text_align=TextAlign.CENTER,
-                                            color="#F2428A",
-                                            weight=FontWeight.W_600,
-                                        )
-                                    ),
-                                ]
-                            ),
-                            DataRow(
-                                cells=[
-                                    DataCell(
-                                        Text(
-                                            value="Utilities",
-                                            text_align=TextAlign.CENTER,
-                                            color="#707EAF",
-                                            weight=FontWeight.W_600,
-                                        )
-                                    ),
-                                    DataCell(
-                                        Text(
-                                            value="7:34:13 AM",
-                                            text_align=TextAlign.CENTER,
-                                            color="#707EAF",
-                                            weight=FontWeight.W_600,
-                                        )
-                                    ),
-                                    DataCell(
-                                        Text(
-                                            value="Rp 55.000,00",
-                                            text_align=TextAlign.CENTER,
-                                            color="#707EAF",
-                                            weight=FontWeight.W_600,
-                                        )
-                                    ),
-                                    DataCell(Image(src="images/notes.svg")),
-                                    DataCell(
-                                        Text(
-                                            value="Income",
-                                            text_align=TextAlign.CENTER,
-                                            color="#0ADEA6",
-                                            weight=FontWeight.W_600,
-                                        )
-                                    ),
-                                ]
-                            ),
-                        ],
-                    ),
+                                    ]
+                                ),
+                            ],
+                        ),
+                    )
                 ]
             ),
         )
@@ -535,21 +563,29 @@ class Targets(UserControl):
     def build(self):
         return Container(
             bgcolor="#FFFFFF",
-            padding=Padding(5, 10, 5, 10),
+            padding=Padding(20, 30, 20, 10),
             border_radius=20,
-            height=225,
-            content=Column(
+            content=Row(
                 controls=[
-                    Text(value="Targets", size=20),
                     Column(
-                        scroll=ScrollMode.AUTO,
-                        spacing=5,
-                        height=170,
                         controls=[
-                            Target(),
-                            Target(),
-                        ],
-                    ),
+                            Text(
+                                value="Targets",
+                                size=32,
+                                weight=FontWeight.W_600,
+                            ),
+                            Column(
+                                expand=True,
+                                scroll=ScrollMode.AUTO,
+                                spacing=5,
+                                height=170,
+                                controls=[
+                                    Target(),
+                                    Target(),
+                                ],
+                            ),
+                        ]
+                    )
                 ]
             ),
         )
@@ -558,15 +594,19 @@ class Targets(UserControl):
 class RecentTransactionTarget(UserControl):
     """Row that consist of RecentTransactions and Target"""
 
-    def __init__(
-        self,
-        **kwargs,
-    ):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def build(self):
         return Container(
-            content=Row(controls=[RecentTransactions(expand=3), Targets(expand=1)])
+            content=Row(
+                alignment=MainAxisAlignment.CENTER,
+                spacing=24,
+                controls=[
+                    RecentTransactions(expand=True),
+                    Targets(width=260),
+                ],
+            )
         )
 
 

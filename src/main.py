@@ -41,7 +41,7 @@ def main(page: Page):
 
     def change_page(index: int):
         page_container.current.controls[0] = views[index]
-        page.update()
+        page_container.current.update()
 
     # Put the pages inside this list
     views = [
