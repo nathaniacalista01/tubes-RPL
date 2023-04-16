@@ -17,9 +17,10 @@ from flet_core.types import (
     MainAxisAlignment,
 )
 
-from src.ui.dashboard import Dashboard
+from src.ui.Dashboard import Dashboard
 from src.ui.navbar import Navbar, NavbarItem
 from src.ui.profile_card import ProfileCard
+from src.ui.target_page import TargetPage
 
 
 def main(page: Page):
@@ -46,7 +47,7 @@ def main(page: Page):
     views = [
         Dashboard(),
         Text("Manage Transaction", size=50),
-        Text("Plan Target", size=50),
+        TargetPage(),
         Text("Article", size=50),
         Text("Settings", size=50),
     ]
