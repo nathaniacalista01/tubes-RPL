@@ -6,7 +6,7 @@ from flet import ProgressBar, Divider, Icon, alignment
 from flet_core import (
     UserControl,
     Column,
-    CrossAxisAlignment,
+    MainAxisAlignment,
     Container,
     Padding,
     Margin,
@@ -16,7 +16,9 @@ from flet_core import (
     border,
     ElevatedButton,
     TextField,
+    InputBorder,
 )
+
 
 class Target(UserControl):
     """Budgetwise Target Component"""
@@ -27,7 +29,11 @@ class Target(UserControl):
         target_description: str = "Target Description",
         percentage: float = 0.3,
         start_date: datetime = datetime.date.today(),
-        end_date: datetime = datetime.date(datetime.datetime.now().year + 1, datetime.datetime.now().month, datetime.datetime.now().day),
+        end_date: datetime = datetime.date(
+            datetime.datetime.now().year + 1,
+            datetime.datetime.now().month,
+            datetime.datetime.now().day,
+        ),
         icon: str = "fact_check",
         **kwargs
     ):
@@ -42,12 +48,12 @@ class Target(UserControl):
     def build(self):
         return Column(
             width=230,
-            alignment=CrossAxisAlignment.CENTER,
+            alignment=MainAxisAlignment.CENTER,
             controls=[
                 Container(
                     bgcolor="#F1ECFF",
-                    padding=Padding(15,15,15,15),
-                    margin=Margin(20,0,20,0),
+                    padding=Padding(15, 15, 15, 15),
+                    margin=Margin(20, 0, 20, 0),
                     border_radius=20,
                     border=border.all(color="black"),
                     content=Column(
@@ -56,7 +62,7 @@ class Target(UserControl):
                             Row(
                                 controls=[
                                     Container(
-                                        Icon(name=self.icon,size=50),
+                                        Icon(name=self.icon, size=50),
                                     ),
                                     Column(
                                         spacing=3,
@@ -71,9 +77,9 @@ class Target(UserControl):
                                                     color="black",
                                                 ),
                                             ),
-                                            Divider(height=0,color="black"),
+                                            Divider(height=0, color="black"),
                                             Container(
-                                                padding=Padding(0,0,0,10),
+                                                padding=Padding(0, 0, 0, 10),
                                                 content=Text(
                                                     value=self.target_description,
                                                     text_align=TextAlign.LEFT,
@@ -85,35 +91,65 @@ class Target(UserControl):
                                     ),
                                 ],
                             ),
-                            ProgressBar(width=190,bar_height=10,color="#1FC3E8",bgcolor="#385682",value=self.percentage),
+                            ProgressBar(
+                                width=190,
+                                bar_height=10,
+                                color="#1FC3E8",
+                                bgcolor="#385682",
+                                value=self.percentage,
+                            ),
                             Container(
                                 alignment=alignment.center_right,
-                                content=Text(value=str(self.percentage*100) + "% completed", color="#6182B2", size=8, text_align=TextAlign.RIGHT),
-                                padding=Padding(0,0,0,10)
+                                content=Text(
+                                    value=str(self.percentage * 100) + "% completed",
+                                    color="#6182B2",
+                                    size=8,
+                                    text_align=TextAlign.RIGHT,
+                                ),
+                                padding=Padding(0, 0, 0, 10),
                             ),
                             Row(
                                 controls=[
                                     Column(
                                         spacing=2,
                                         controls=[
-                                            Text(value="Start Date :", color="#2B9F18",size=9),
-                                            Text(value="End Date   :", color="#EF6161",size=9)
-                                        ]
+                                            Text(
+                                                value="Start Date :",
+                                                color="#2B9F18",
+                                                size=9,
+                                            ),
+                                            Text(
+                                                value="End Date   :",
+                                                color="#EF6161",
+                                                size=9,
+                                            ),
+                                        ],
                                     ),
                                     Column(
                                         spacing=2,
                                         controls=[
-                                            Text(value=self.start_date.strftime("%d %B %Y"), size=9),
-                                            Text(value=self.end_date.strftime("%d %B %Y"), size=9)
-                                        ]
+                                            Text(
+                                                value=self.start_date.strftime(
+                                                    "%d %B %Y"
+                                                ),
+                                                size=9,
+                                            ),
+                                            Text(
+                                                value=self.end_date.strftime(
+                                                    "%d %B %Y"
+                                                ),
+                                                size=9,
+                                            ),
+                                        ],
                                     ),
                                 ]
-                            )
-                        ]
-                    )
+                            ),
+                        ],
+                    ),
                 ),
-            ]
+            ],
         )
+
 
 class TargetEdit(Target):
     """Budgetwise Target Component"""
@@ -124,7 +160,11 @@ class TargetEdit(Target):
         target_description: str = "Target Description",
         percentage: float = 0.3,
         start_date: datetime = datetime.date.today(),
-        end_date: datetime = datetime.date(datetime.datetime.now().year + 1, datetime.datetime.now().month, datetime.datetime.now().day),
+        end_date: datetime = datetime.date(
+            datetime.datetime.now().year + 1,
+            datetime.datetime.now().month,
+            datetime.datetime.now().day,
+        ),
         icon: str = "fact_check",
         **kwargs
     ):
@@ -138,23 +178,32 @@ class TargetEdit(Target):
 
     def build(self):
         return Column(
-            controls=[            
+            controls=[
                 super().build(),
                 Container(
-                    height=20, width=230,
-                    padding=Padding(20,0,20,0),
+                    height=20,
+                    width=230,
+                    padding=Padding(20, 0, 20, 0),
                     content=Row(
                         controls=[
-                            ElevatedButton(text="Edit",color="black",bgcolor="#D9D9D9",width=90),
-                            ElevatedButton(text="Delete",color="black",bgcolor="#D9D9D9",width=90),
+                            ElevatedButton(
+                                text="Edit", color="black", bgcolor="#D9D9D9", width=90
+                            ),
+                            ElevatedButton(
+                                text="Delete",
+                                color="black",
+                                bgcolor="#D9D9D9",
+                                width=90,
+                            ),
                         ]
-                    )                         
-                )
+                    ),
+                ),
             ]
         )
 
+
 class TargetForm(UserControl):
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def build(self):
@@ -162,35 +211,42 @@ class TargetForm(UserControl):
             width=1070,
             controls=[
                 Container(
-                    bgcolor="white",                     
+                    bgcolor="white",
                     height=250,
-                    padding=Padding(10,10,10,0),
-                    margin=Margin(0,0,20,0),
+                    padding=Padding(10, 10, 10, 0),
+                    margin=Margin(0, 0, 20, 0),
                     border_radius=20,
                     content=Column(
                         controls=[
                             Container(
                                 height=25,
-                                content=TextField(label="Title",text_size=12)
+                                content=TextField(label="Title", text_size=12),
                             ),
                             Container(
                                 height=25,
-                                content=TextField(label="Nominal",text_size=12)
+                                content=TextField(label="Nominal", text_size=12),
                             ),
                             Container(
                                 height=25,
-                                content=TextField(label="Target Date",text_size=12)
+                                content=TextField(label="Target Date", text_size=12),
                             ),
                             Container(
                                 height=70,
-                                content=TextField(label="Descriptions",border="underline",text_size=12,multiline=True)
+                                content=TextField(
+                                    label="Descriptions",
+                                    border=InputBorder.UNDERLINE,
+                                    text_size=12,
+                                    multiline=True,
+                                ),
                             ),
                             Container(
                                 alignment=alignment.center_right,
-                                content=ElevatedButton(text="Add Target", bgcolor="#00FF47")
-                            )
+                                content=ElevatedButton(
+                                    text="Add Target", bgcolor="#00FF47"
+                                ),
+                            ),
                         ]
-                    )
+                    ),
                 ),
-            ]
+            ],
         )
