@@ -578,8 +578,10 @@ class Targets(UserControl):
                                 expand=True,
                                 scroll=ScrollMode.AUTO,
                                 spacing=5,
-                                height=170,
                                 controls=[
+                                    Target(),
+                                    Target(),
+                                    Target(),
                                     Target(),
                                     Target(),
                                 ],
