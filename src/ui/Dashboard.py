@@ -1,6 +1,5 @@
 """Component for BudgetWise's dashboard"""
 
-from src.ui.target import Target
 from flet_core import (
     UserControl,
     Text,
@@ -24,8 +23,7 @@ from flet_core import (
     DataCell,
     ScrollMode,
 )
-
-
+from src.ui.target import Target
 class WelcomeMessage(UserControl):
     """Welcome Message Component in Dashboard"""
 

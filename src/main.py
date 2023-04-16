@@ -17,7 +17,7 @@ from flet_core.types import (
     MainAxisAlignment,
 )
 
-from src.ui.Dashboard import Dashboard
+from src.ui.dashboard import Dashboard
 from src.ui.navbar import Navbar, NavbarItem
 from src.ui.profile_card import ProfileCard
 from src.ui.target_page import TargetPage

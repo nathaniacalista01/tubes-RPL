@@ -1,7 +1,7 @@
 """Target Page module"""
 
-from ui.target import TargetEdit, TargetForm
-from ui.Dashboard import WelcomeMessage
+from src.ui.target import TargetEdit, TargetForm
+from src.ui.dashboard import WelcomeMessage
 import datetime
 
 from flet_core import (

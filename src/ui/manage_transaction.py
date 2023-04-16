@@ -1,7 +1,5 @@
 """Manage Transaction Page Module"""
 import datetime
-from ui.Dashboard import WelcomeMessage
-
 from flet_core import (
     UserControl,
     PieChart,
@@ -18,6 +16,7 @@ from flet_core import (
 )
 
 class ManageTransaction(UserControl):
+    """ Component for Manage Transactions """
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
 
@@ -27,7 +26,6 @@ class ManageTransaction(UserControl):
             content=Column(
                 spacing=0,
                 controls=[
-                    WelcomeMessage(),
                     Container(
                         height=200,
                         content= PieChart(
@@ -54,10 +52,9 @@ class ManageTransaction(UserControl):
                                     color="green",
                                 ),
                             ]
-                        )                        
-                    ),
+                        )),
                     Container(
-                        bgcolor="white",                     
+                        bgcolor="white",
                         height=300,
                         width=1070,
                         margin=Margin(0,10,20,0),
@@ -87,9 +84,9 @@ class ManageTransaction(UserControl):
                 ]
             )
         )
-    
 
 class History(UserControl):
+    """Component to display transactions's history"""
     def __init__(self,
         icon: str="attach_money",
         title: str="payment",
@@ -122,3 +119,4 @@ class History(UserControl):
                 )
             ]
         )
+    
