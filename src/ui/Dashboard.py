@@ -1,28 +1,32 @@
+"""Component for BudgetWise's dashboard"""
 from flet_core import (
     UserControl,
     Text,
-    Container, 
-    Column, 
+    Container,
+    Column,
     Row,
     Margin,
-    FontWeight, 
+    FontWeight,
     Padding,
-    TextAlign, 
-    BoxShadow, 
-    Image, 
-    MainAxisAlignment, 
-    LineChartData, 
-    LineChartDataPoint, 
-    colors, 
+    TextAlign,
+    BoxShadow,
+    Image,
+    MainAxisAlignment,
+    LineChartData,
+    LineChartDataPoint,
+    colors,
     LineChart,
-    DataTable,DataRow,DataColumn,DataCell
-
+    DataTable,
+    DataRow,
+    DataColumn,
+    DataCell
 )
 
 class WelcomeMessage(UserControl):
-    def __init__(self, welcome_str : str = "Hello, Jane Doe",**kwargs):
+    """Welcome Message Component in Dashboard"""
+    def __init__(self, welcome_str : str ="Hello, Jane Doe",**kwargs):
         super().__init__(**kwargs)
-        self.welcome_message = welcome_str 
+        self.welcome_message = welcome_str
     def build(self):
         return(
             Row(
@@ -38,6 +42,7 @@ class WelcomeMessage(UserControl):
         )
 
 class SaldoCard(UserControl):
+    """ Saldo Card Components in dashboard"""
     def __init__ (
         self,
         title : str = "Balances",
@@ -51,7 +56,6 @@ class SaldoCard(UserControl):
         self.total_income = total_income
         self.total_expenes = total_expense
         self.total_balance = total_balance
-    
     def build(self):
         return(
             Container(
@@ -64,21 +68,22 @@ class SaldoCard(UserControl):
                         controls=[
                             Text(value=self.title,size=32,weight=FontWeight.W_700),
                             Text(value=self.total_income, color="#793DFD"),
-                            # Masukin Jumlah Pemasukan 
+                            # Masukin Jumlah Pemasukan
                             Text(value = "6.025.440,00", size=16,weight=FontWeight.W_600),
 
                             Text(value=self.total_expenes, color="#793DFD", size=16),
                             #Jumlah pengeluaran
                             Text(value = "4.502.440,00", size=16,weight=FontWeight.W_600),
-                            
+
                             Text(value = self.total_balance,color="#793DFD"),
                             Text(value="2.000.000,00",size=16, weight=FontWeight.W_600)
                         ]
-                    )            
+                    )
             )
         )
 
 class SaldoOverviewFirstRow(UserControl):
+    """First row in Saldo Overview Components"""
     def __init__(
         self,
         title : str = "Balance Overview",
@@ -96,7 +101,7 @@ class SaldoOverviewFirstRow(UserControl):
         self.third_button = third_button
         self.fourth_button = fourth_button
         self.fifth_button = fifth_button
-    
+
     def build(self):
         return(
             Row(
@@ -123,7 +128,7 @@ class SaldoOverviewFirstRow(UserControl):
                                         ),
                                         shadow= BoxShadow(
                                             spread_radius=0.01,
-                                            blur_radius=0.2,                                            
+                                            blur_radius=0.2,
                                         )
                                     ),
                                     Container(
@@ -141,7 +146,6 @@ class SaldoOverviewFirstRow(UserControl):
                                             spread_radius=0.01,
                                             blur_radius=0.2,
                                             color="black",
-                                            
                                         )
                                     ),
                                     Container(
@@ -159,7 +163,6 @@ class SaldoOverviewFirstRow(UserControl):
                                             spread_radius=0.01,
                                             blur_radius=0.2,
                                             color="black",
-                                            
                                         )
                                     ),
                                     Container(
@@ -194,7 +197,6 @@ class SaldoOverviewFirstRow(UserControl):
                                             spread_radius=0.01,
                                             blur_radius=0.2,
                                             color="black",
-                                            
                                         )
                                     )
                                 ],
@@ -206,6 +208,7 @@ class SaldoOverviewFirstRow(UserControl):
         )
 
 class SaldoOverviewSecondRow(UserControl):
+    """Second row for Saldo Overview Components"""
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
     def build(self):
@@ -232,7 +235,7 @@ class SaldoOverviewSecondRow(UserControl):
                                         Image(
                                             src="images/green-button.svg"
                                         )
-                                    )    
+                                    )
                                 ),
                                 Container(
                                     expand = 2,
@@ -258,6 +261,7 @@ class SaldoOverviewSecondRow(UserControl):
         )
 
 class SaldoChart(UserControl):
+    """Components for line chart at dashboard"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     def build(self):
@@ -290,7 +294,6 @@ class SaldoChart(UserControl):
             stroke_width=4,
             stroke_cap_round=True,
         ),
-        
     ]
         return(
             Container(
@@ -300,17 +303,15 @@ class SaldoChart(UserControl):
                         height=200
                     )
             )
-            
         )
 
 class SaldoOverview(UserControl):
+    """Saldo Overview Components that consist of several rows"""
     def __init__(
         self,
         **kwargs
     ):
-        
         super().__init__(**kwargs)
-    
     def build(self):
         return(
             Container(
@@ -326,12 +327,12 @@ class SaldoOverview(UserControl):
                             SaldoOverviewSecondRow(),
                             SaldoChart()
                         ]
-                    )  
-
+                    )
             )
         )
 
 class BalanceRow(UserControl):
+    """Row for balance that consist of two cards"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     def build(self):
@@ -346,11 +347,10 @@ class BalanceRow(UserControl):
                         ]
                     )
             )
-            
         )
 
 class RecentTransactions(UserControl) :
-    
+    """Recent Transactions's Card"""
     def __init__(
         self,
         title : str = "Recent Transactions",
@@ -368,8 +368,8 @@ class RecentTransactions(UserControl) :
         self.column_four = column_four
         self.column_five = column_five
         self.column_six = column_six
-    
-    def build(self): 
+
+    def build(self):
         return(
             Container(
                 margin = Margin(0,10,0,0),
@@ -385,29 +385,62 @@ class RecentTransactions(UserControl) :
                                 bgcolor="#F6F3F3",
                                 border_radius = 20,
                                 columns= [
-                                    DataColumn(label=Text(value = self.column_two,text_align = "center",color="#707EAF",weight=FontWeight.W_700)),
-                                    DataColumn(label=Text(value=self.column_three,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
-                                    DataColumn(label=Text(value = self.column_four,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
-                                    DataColumn(label=Text(value = self.column_five,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
-                                    DataColumn(label=Text(value = self.column_six,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
+                                    DataColumn(label=
+                                                Text(value = self.column_two,text_align = "center",
+                                                    color="#707EAF",
+                                                    weight=FontWeight.W_700
+                                                    )),
+                                    DataColumn(label=
+                                               Text(value=self.column_three,text_align="center",
+                                                    color="#707EAF",
+                                                    weight=FontWeight.W_700
+                                                )),
+                                    DataColumn(label=
+                                               Text(value = self.column_four,text_align="center",
+                                                    color="#707EAF",
+                                                    weight=FontWeight.W_700)),
+                                    DataColumn(label=
+                                               Text(value = self.column_five,text_align="center",
+                                                    color="#707EAF",weight=FontWeight.W_700
+                                                )),
+                                    DataColumn(label=
+                                                Text(value = self.column_six,text_align="center",
+                                                    color="#707EAF",weight=FontWeight.W_700
+                                                )),
                                 ],
                                 rows = [
                                     DataRow(
                                         cells=[
-                                            DataCell(Text(value = "shopping",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
-                                            DataCell(Text(value="12:28:16 PM",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
-                                            DataCell(Text(value="Rp 69.000,00",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value = "shopping",
+                                                        text_align = "center",
+                                                        color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value="12:28:16 PM",
+                                                          text_align = "center",
+                                                          color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value="Rp 69.000,00",
+                                                          text_align = "center",
+                                                          color="#707EAF",weight=FontWeight.W_600)),
                                             DataCell(Image(src="images/notes.svg")),
-                                            DataCell(Text(value="Expense",text_align = "center",color="#F2428A",weight=FontWeight.W_600))
+                                            DataCell(Text(value="Expense",
+                                                          text_align = "center",
+                                                          color="#F2428A",weight=FontWeight.W_600))
                                         ]
                                     ),
                                     DataRow(
                                         cells=[
-                                            DataCell(Text(value = "Utilities",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
-                                            DataCell(Text(value="7:34:13 AM",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
-                                            DataCell(Text(value = "Rp 55.000,00",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value = "Utilities",
+                                                          text_align = "center",
+                                                          color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value="7:34:13 AM",
+                                                          text_align = "center",
+                                                          color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value = "Rp 55.000,00",
+                                                          text_align = "center",
+                                                          color="#707EAF",weight=FontWeight.W_600)),
                                             DataCell(Image(src="images/notes.svg")),
-                                            DataCell(Text(value="Income",text_align = "center",color="#0ADEA6",weight=FontWeight.W_600))
+                                            DataCell(Text(value="Income",
+                                                          text_align = "center",
+                                                          color="#0ADEA6",weight=FontWeight.W_600))
                                         ]
                                     )
                                 ]
@@ -418,10 +451,10 @@ class RecentTransactions(UserControl) :
         )
 
 class Targets(UserControl):
+    """Targets Component in Dashboard"""
     def __init__(
-        self, 
+        self,
         **kwargs
-
     ):
         super().__init__(**kwargs)
     def build(self):
@@ -434,14 +467,14 @@ class Targets(UserControl):
                             Text(value="Targets")
                         ]
                     )
-                
             )
         )
 
 class RecentTransactionTarget(UserControl):
+    """Row that consist of RecentTransactions and Target"""
     def __init__(self, **kwargs,):
         super().__init__(**kwargs)
-    
+
     def build(self):
         return(
             Container(
@@ -456,9 +489,10 @@ class RecentTransactionTarget(UserControl):
         )
 
 class Dashboard(UserControl):
+    """Dashboard Component"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-    
+
     def build(self):
         return (
             Container(
@@ -471,7 +505,5 @@ class Dashboard(UserControl):
                             RecentTransactionTarget()
                         ]
                     )
-                
             )
-           
         )
