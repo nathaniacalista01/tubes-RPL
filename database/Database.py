@@ -15,7 +15,7 @@ class Transaksi(Database):
     def __init__(self):
         name = "Transaksi"
         attributes = ["id_transaksi", "tipe_transaksi", "id_sumber"]
-        attributeDescription = ["INTEGER PRIMARY KEY AUTOINCREMENT", "TEXT", "INTEGER"]
+        attributeDescription = ["INTEGER PRIMARY KEY AUTOINCREMENT", "TEXT", "INTEGER REFERENCES Pemasukan(id_pemasukan) ON DELETE CASCADE, FOREIGN KEY (id_sumber) REFERENCES Pengeluaran(id_pengeluaran) ON DELETE CASCADE"]
         super().__init__(name, attributes, attributeDescription)
 
 class Target(Database):
