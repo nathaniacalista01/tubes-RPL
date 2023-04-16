@@ -15,8 +15,8 @@ from flet_core import (
     LineChartDataPoint, 
     colors, 
     LineChart,
-    ChartAxis,
-    ChartAxisLabel
+    DataTable,DataRow,DataColumn,DataCell
+
 )
 
 class WelcomeMessage(UserControl):
@@ -59,7 +59,6 @@ class SaldoCard(UserControl):
                 margin = Margin(0,20,0,0),
                 padding = Padding(20,30,20,0),
                 border_radius = 20,
-                expand=True,
                 content=
                     Column(
                         controls=[
@@ -315,8 +314,9 @@ class SaldoOverview(UserControl):
     def build(self):
         return(
             Container(
-                margin = Margin(0,30,0,0),
-                padding = Padding(20,30,20,0),
+                margin = Margin(0,10,0,0),
+                padding = Padding(20,10,30,0),
+                expand = True,
                 border_radius = 20,
                 bgcolor = "#FFFFFF",
                 content=
@@ -353,28 +353,67 @@ class RecentTransactions(UserControl) :
     
     def __init__(
         self,
-        column_one : str = "Category\nIcon",
+        title : str = "Recent Transactions",
         column_two : str = "Category",
         column_three : str = "Transaction\nTime",
         column_four : str ="Transaction\nAmount",
-        column_five: str ="Type",
+        column_five: str ="Notes",
+        column_six : str = "Type",
         **kwargs
     ):
         super().__init__(**kwargs)
-        self.height = super().height
-        self.column_one = column_one
+        self.title = title,
         self.column_two = column_two
         self.column_three = column_three
         self.column_four = column_four
         self.column_five = column_five
+        self.column_six = column_six
     
     def build(self): 
         return(
             Container(
-                bgcolor = "#E9EFFD",
-                content =[
-                    Text(value="This is table")
-                ]
+                margin = Margin(0,10,0,0),
+                padding = Padding(20,10,20,10),
+                border_radius = 20,
+                bgcolor = "#FFFFFF",
+                content =
+                    Column(
+                        controls=[
+                            Text(value="Recent Transactions",size=32,weight=FontWeight.W_600),
+                            DataTable(
+                                column_spacing = 80,
+                                bgcolor="#F6F3F3",
+                                border_radius = 20,
+                                columns= [
+                                    DataColumn(label=Text(value = self.column_two,text_align = "center",color="#707EAF",weight=FontWeight.W_700)),
+                                    DataColumn(label=Text(value=self.column_three,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
+                                    DataColumn(label=Text(value = self.column_four,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
+                                    DataColumn(label=Text(value = self.column_five,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
+                                    DataColumn(label=Text(value = self.column_six,text_align="center",color="#707EAF",weight=FontWeight.W_700)),
+                                ],
+                                rows = [
+                                    DataRow(
+                                        cells=[
+                                            DataCell(Text(value = "shopping",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value="12:28:16 PM",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value="Rp 69.000,00",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Image(src="images/notes.svg")),
+                                            DataCell(Text(value="Expense",text_align = "center",color="#F2428A",weight=FontWeight.W_600))
+                                        ]
+                                    ),
+                                    DataRow(
+                                        cells=[
+                                            DataCell(Text(value = "Utilities",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value="7:34:13 AM",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Text(value = "Rp 55.000,00",text_align = "center",color="#707EAF",weight=FontWeight.W_600)),
+                                            DataCell(Image(src="images/notes.svg")),
+                                            DataCell(Text(value="Income",text_align = "center",color="#0ADEA6",weight=FontWeight.W_600))
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
             )
         )
 
@@ -388,13 +427,14 @@ class Targets(UserControl):
     def build(self):
         return(
             Container(
-                content=[
+                bgcolor="#FFFFFF",
+                content=
                     Column(
                         controls=[
-                            
+                            Text(value="Targets")
                         ]
                     )
-                ]
+                
             )
         )
 
@@ -403,13 +443,16 @@ class RecentTransactionTarget(UserControl):
         super().__init__(**kwargs)
     
     def build(self):
-        Container(
-            content=
-                Row(
-                    controls=[
-                        RecentTransactions(expand=5),
-                    ]
-                )
+        return(
+            Container(
+                content=
+                    Row(
+                        controls=[
+                            RecentTransactions(expand = 3),
+                            Targets(expand = 1)
+                        ]
+                    )
+            )
         )
 
 class Dashboard(UserControl):
@@ -419,13 +462,13 @@ class Dashboard(UserControl):
     def build(self):
         return (
             Container(
-                margin = Margin(40,30,0,0),
+                margin = Margin(40,10,0,0),
                 content=
                     Column(
                         controls=[
                             WelcomeMessage(),
                             BalanceRow(),
-                            
+                            RecentTransactionTarget()
                         ]
                     )
                 
