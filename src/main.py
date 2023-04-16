@@ -46,8 +46,8 @@ def main(page: Page):
 
     # Put the pages inside this list
     views = [
-        Dashboard(),
-        ManageTransaction(),
+        Dashboard(expand=True),
+        Text("Manage Transaction", size=50),
         TargetPage(),
         Text("Article", size=50),
         Text("Settings", size=50),
@@ -100,6 +100,7 @@ def main(page: Page):
                     border_radius=border_radius.only(30, 0, 30, 0),
                     bgcolor="#E9EFFD",
                     expand=True,
+                    padding=24,
                     content=Column(
                         ref=page_container,
                         controls=[views[navbar.current.selected_index]],
