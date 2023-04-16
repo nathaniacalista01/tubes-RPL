@@ -47,7 +47,7 @@ def main(page: Page):
     # Put the pages inside this list
     views = [
         Dashboard(expand=True),
-        Text("Manage Transaction", size=50),
+        ManageTransaction(),
         TargetPage(),
         Text("Article", size=50),
         Text("Settings", size=50),
