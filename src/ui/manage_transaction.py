@@ -5,16 +5,11 @@ import datetime
 
 from flet_core import (
     UserControl,
-    PieChart,
     Container,
     Column,
-    PieChartSection,
     Padding,
     Text,
-    ScrollMode,
     Row,
-    Icon,
-    alignment,
     DataTable,
     DataRow,
     DataColumn,

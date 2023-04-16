@@ -100,7 +100,7 @@ def main(page: Page):
                     border_radius=border_radius.only(30, 0, 30, 0),
                     bgcolor="#E9EFFD",
                     expand=True,
-                    padding=24,
+                    padding=35,
                     content=Column(
                         ref=page_container,
                         controls=[views[navbar.current.selected_index]],

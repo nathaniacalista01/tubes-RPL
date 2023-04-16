@@ -1,11 +1,15 @@
 """Component for BudgetWise's dashboard"""
+from datetime import datetime
+from typing import Optional, List
 
 from flet_core import (
+    alignment,
     UserControl,
     Text,
     Container,
     Column,
     Row,
+    Icon,
     Margin,
     FontWeight,
     Padding,
@@ -18,8 +22,16 @@ from flet_core import (
     colors,
     LineChart,
     ScrollMode,
+    Stack,
 )
+from flet_core.matplotlib_chart import MatplotlibChart
 from src.ui.target import Target
+import matplotlib
+import matplotlib.pyplot as plt
+
+matplotlib.use("svg")
+
+
 class WelcomeMessage(UserControl):
     """Welcome Message Component in Dashboard"""
 
@@ -118,28 +130,39 @@ class SaldoCard(UserControl):
         )
 
 
-class SaldoOverviewFirstRow(UserControl):
+class FirstRow(UserControl):
     """First row in Saldo Overview Components"""
 
     def __init__(
         self,
-        title: str = "Balance Overview",
-        first_button: str = "All",
-        second_button: str = "1M",
-        third_button: str = "3M",
-        fourth_button: str = "6M",
-        fifth_button: str = "1Y",
+        title: str,
+        labels: Optional[List[str]] = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
         self.title = title
-        self.first_button = first_button
-        self.second_button = second_button
-        self.third_button = third_button
-        self.fourth_button = fourth_button
-        self.fifth_button = fifth_button
+        self.labels = labels
 
     def build(self):
+        buttons = [
+            Container(
+                margin=Margin(0, 10, 0, 5),
+                padding=Padding(8, 2, 8, 2),
+                border_radius=10,
+                bgcolor="#FFFFFF",
+                content=Text(
+                    value=label,
+                    color="black",
+                    size=16,
+                    text_align=TextAlign.CENTER,
+                ),
+                shadow=BoxShadow(
+                    spread_radius=0.01,
+                    blur_radius=0.2,
+                ),
+            )
+            for label in self.labels
+        ]
         return Row(
             controls=[
                 Container(
@@ -148,97 +171,11 @@ class SaldoOverviewFirstRow(UserControl):
                         size=32,
                         weight=FontWeight.W_600,
                     ),
-                    expand=2,
+                    expand=True,
                 ),
                 Container(
-                    margin=Margin(0, 0, 10, 0),
                     content=Row(
-                        controls=[
-                            Container(
-                                margin=Margin(0, 10, 0, 5),
-                                padding=Padding(8, 2, 8, 2),
-                                border_radius=10,
-                                bgcolor="#FFFFFF",
-                                content=Text(
-                                    value=self.first_button,
-                                    color="black",
-                                    size=16,
-                                    text_align=TextAlign.CENTER,
-                                ),
-                                shadow=BoxShadow(
-                                    spread_radius=0.01,
-                                    blur_radius=0.2,
-                                ),
-                            ),
-                            Container(
-                                margin=Margin(0, 10, 0, 5),
-                                padding=Padding(8, 2, 8, 2),
-                                border_radius=10,
-                                bgcolor="#FFFFFF",
-                                content=Text(
-                                    value=self.second_button,
-                                    color="black",
-                                    size=16,
-                                    text_align=TextAlign.CENTER,
-                                ),
-                                shadow=BoxShadow(
-                                    spread_radius=0.01,
-                                    blur_radius=0.2,
-                                    color="black",
-                                ),
-                            ),
-                            Container(
-                                margin=Margin(0, 10, 0, 5),
-                                padding=Padding(8, 2, 8, 2),
-                                border_radius=10,
-                                bgcolor="#FFFFFF",
-                                content=Text(
-                                    value=self.third_button,
-                                    color="black",
-                                    size=16,
-                                    text_align=TextAlign.CENTER,
-                                ),
-                                shadow=BoxShadow(
-                                    spread_radius=0.01,
-                                    blur_radius=0.2,
-                                    color="black",
-                                ),
-                            ),
-                            Container(
-                                margin=Margin(0, 10, 0, 5),
-                                padding=Padding(8, 2, 8, 2),
-                                border_radius=10,
-                                bgcolor="#FFFFFF",
-                                content=Text(
-                                    value=self.fourth_button,
-                                    color="black",
-                                    size=16,
-                                    text_align=TextAlign.CENTER,
-                                ),
-                                shadow=BoxShadow(
-                                    spread_radius=0.01,
-                                    blur_radius=0.2,
-                                    color="black",
-                                ),
-                            ),
-                            Container(
-                                margin=Margin(0, 10, 0, 5),
-                                padding=Padding(8, 2, 8, 2),
-                                border_radius=10,
-                                bgcolor="#FFFFFF",
-                                content=Text(
-                                    value=self.fifth_button,
-                                    color="black",
-                                    size=16,
-                                    text_align=TextAlign.CENTER,
-                                ),
-                                shadow=BoxShadow(
-                                    spread_radius=0.01,
-                                    blur_radius=0.2,
-                                    color="black",
-                                ),
-                            ),
-                        ],
+                        controls=[*buttons],
                         expand=1,
                     ),
                 ),
@@ -341,7 +278,10 @@ class SaldoOverview(UserControl):
             bgcolor="#FFFFFF",
             content=Column(
                 controls=[
-                    SaldoOverviewFirstRow(),
+                    FirstRow(
+                        title="Balance Overview",
+                        labels=["All", "1M", "3M", "6M", "1Y"],
+                    ),
                     SaldoOverviewSecondRow(),
                     SaldoChart(expand=True),
                 ]
@@ -406,6 +346,74 @@ class Targets(UserControl):
         )
 
 
+class TransactionsDiagram(UserControl):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.sizes = [31.8, 18.2, 22.7, 27.3]
+        self.colors = ["#F44336", "#FFEB3B", "#2196F3", "#4CAF50"]
+        self.labels = ["Category 1", "Category 2", "Category 3", "Other"]
+
+    def build(self):
+        fig, ax = plt.subplots()
+        plt.tight_layout(pad=-4.5)
+        ax.pie(
+            self.sizes,
+            colors=self.colors,
+            autopct="%1.1f%%",
+            pctdistance=0.75,
+            textprops={"fontsize": 20},
+            wedgeprops={"linewidth": 7, "edgecolor": "white"},
+        )
+        plt.gcf().gca().add_artist(plt.Circle((0, 0), 0.5, color="white"))
+        legend = Column(
+            spacing=5,
+            controls=[
+                Row(
+                    spacing=5,
+                    controls=[
+                        Container(
+                            width=13,
+                            height=13,
+                            bgcolor=color,
+                        ),
+                        Text(
+                            value=label,
+                        ),
+                    ],
+                )
+                for label, color in zip(self.labels, self.colors)
+            ],
+        )
+        return Container(
+            bgcolor="#FFFFFF",
+            padding=Padding(20, 30, 20, 10),
+            border_radius=20,
+            content=Column(
+                controls=[
+                    FirstRow(
+                        title="Transaction Overview",
+                        labels=["Income", "Expense"],
+                    ),
+                    Stack(
+                        expand=True,
+                        controls=[
+                            Container(
+                                alignment=alignment.center,
+                                content=MatplotlibChart(fig, expand=True),
+                            ),
+                            Container(
+                                top=0,
+                                right=0,
+                                alignment=alignment.center,
+                                content=legend,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        )
+
+
 class RecentTransactionTarget(UserControl):
     """Row that consist of RecentTransactions and Target"""
 
@@ -415,9 +423,10 @@ class RecentTransactionTarget(UserControl):
     def build(self):
         return Container(
             content=Row(
-                alignment=MainAxisAlignment.CENTER,
+                alignment=MainAxisAlignment.END,
                 spacing=24,
                 controls=[
+                    TransactionsDiagram(expand=True),
                     Targets(width=260),
                 ],
             )
@@ -439,4 +448,38 @@ class Dashboard(UserControl):
                     RecentTransactionTarget(expand=1),
                 ]
             )
+        )
+
+
+class History(UserControl):
+    def __init__(
+        self,
+        icon: str = "attach_money",
+        title: str = "payment",
+        date: datetime = datetime.today(),
+        nominal: float = 0.0,
+        **kwargs,
+    ):
+        super().__init__(**kwargs)
+        self.icon = icon
+        self.title = title
+        self.date = date
+        self.nominal = nominal
+
+    def build(self):
+        return Row(
+            controls=[
+                Icon(name=self.icon, size=30),
+                Column(
+                    spacing=2,
+                    controls=[
+                        Text(value=self.title, size=15),
+                        Text(value=self.date.strftime("%B %d, %Y"), size=10),
+                    ],
+                ),
+                Container(
+                    alignment=alignment.center_right,
+                    content=Text(value="$" + str(self.nominal), size=15),
+                ),
+            ],
         )
