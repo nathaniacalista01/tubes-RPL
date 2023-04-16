@@ -1,4 +1,6 @@
 """Component for BudgetWise's dashboard"""
+
+import datetime
 from flet_core import (
     UserControl,
     Text,
@@ -34,7 +36,7 @@ class WelcomeMessage(UserControl):
                     Column(
                         controls=[
                             Text(value=self.welcome_message, size=32,weight=FontWeight.W_700),
-                            Text(value="4.45 pm 15 April 2023", weight=FontWeight.W_700,size=13)
+                            Text(value=datetime.datetime.now().strftime("%I:%M %p %d %B %Y"), weight=FontWeight.W_700,size=13)
                         ]
                     )
                 ]

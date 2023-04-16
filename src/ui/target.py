@@ -48,7 +48,7 @@ class Target(UserControl):
                 Container(
                     bgcolor="#F1ECFF",
                     padding=Padding(15,15,15,15),
-                    margin=20,
+                    margin=Margin(20,0,20,0),
                     border_radius=20,
                     border=border.all(color="black"),
                     content=Column(
@@ -137,9 +137,9 @@ class TargetForm(UserControl):
             controls=[
                 Container(
                     bgcolor="white",                     
-                    height=270,
-                    padding=Padding(10,10,10,10),
-                    margin=Margin(20,20,20,10),
+                    height=250,
+                    padding=Padding(10,10,10,0),
+                    margin=Margin(0,0,20,0),
                     border_radius=20,
                     content=Column(
                         controls=[
@@ -156,7 +156,7 @@ class TargetForm(UserControl):
                                 content=TextField(label="Target Date",text_size=12)
                             ),
                             Container(
-                                height=100,
+                                height=70,
                                 content=TextField(label="Descriptions",border="underline",text_size=12,multiline=True)
                             ),
                             Container(
