@@ -1,36 +1,33 @@
 class Database:
-    def __init__(self):
-        self.name = None
-        self.attributes = None
-        self.attributeDescription = None
-
-    def insertData(self, tableName, columns, values):
-        ...
-    
-    def updateData(self, tableName, columns, values, condition):
-        ...
-
-    def deleteData(self, tableName, condition):
-        ...
+    def __init__(self, name, attributes, attributeDescription):
+        self.name = name
+        self.attributes = attributes
+        self.attributeDescription = attributeDescription
 
 class Pemasukan(Database):
     def __init__(self):
-        Database.__init__(self)
-        self.name = "Pemasukan"
-        self.attributes = ["id_pemasukan", "nominal", "tanggal", "kategori", "catatan"]
-        self.attributeDescription = ["INTEGER PRIMARY KEY AUTOINCREMENT", "INTEGER", "TEXT", "TEXT", "TEXT"]
+        name = "Pemasukan"
+        attributes = ["id_pemasukan", "nominal", "tanggal", "kategori", "catatan"]
+        attributeDescription = ["INTEGER PRIMARY KEY AUTOINCREMENT", "INTEGER", "TEXT", "TEXT", "TEXT"]
+        super().__init__(name, attributes, attributeDescription)
 
 class Transaksi(Database):
     def __init__(self):
-        Database.__init__(self)
-        self.name = "Transaksi"
+        name = "Transaksi"
+        attributes = ["id_transaksi", "tipe_transaksi", "id_sumber"]
+        attributeDescription = ["INTEGER PRIMARY KEY AUTOINCREMENT", "TEXT", "INTEGER"]
+        super().__init__(name, attributes, attributeDescription)
 
 class Target(Database):
     def __init__(self):
-        Database.__init__(self)
-        self.name = "Target"
+        name = "Target"
+        attributes = ["id_target", "judul", "nominal_target", "catatan", "tanggal_dibuat", "tanggal_tercapai"]
+        attributeDescription = ["INTEGER PRIMARY KEY AUTOINCREMENT", "TEXT", "INTEGER", "TEXT", "TEXT", "TEXT"]
+        super().__init__(name, attributes, attributeDescription)
 
 class Pengeluaran(Database):
     def __init__(self):
-        Database.__init__(self)
-        self.name = "Pengeluaran"
+        name = "Pengeluaran"
+        attributes = ["id_pengeluaran", "nominal", "tanggal", "kategori", "catatan"]
+        attributeDescription = ["INTEGER PRIMARY KEY AUTOINCREMENT", "INTEGER", "TEXT", "TEXT", "TEXT"]
+        super().__init__(name, attributes, attributeDescription)
