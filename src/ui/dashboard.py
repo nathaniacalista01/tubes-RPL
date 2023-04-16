@@ -50,7 +50,6 @@ class WelcomeMessage(UserControl):
 
 class SaldoCard(UserControl):
     """Saldo Card Components in dashboard"""
-
     def __init__(
         self,
         title: str = "Balances",
