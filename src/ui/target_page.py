@@ -47,20 +47,18 @@ class TargetPage(UserControl):
                                         content=Text(value="Targets", size=20),
                                         padding=Padding(10,5,10,0)
                                     ),
-                                    Container(
-                                        content=Row(scroll=ScrollMode.AUTO,
+                                    Row(scroll=ScrollMode.AUTO,
                                         width=890,
-                                            controls=[
-                                                TargetEdit(),
-                                                TargetEdit(target_title="Beli iphone 20",
-                                                    target_description="iPhone adalah kebutuhan yang aku perlukan untuk hidup :)",
-                                                    percentage=0.7,icon="phone_iphone"),
-                                                TargetEdit(),
-                                                TargetEdit(),
-                                                TargetEdit(),
-                                                TargetEdit(),
-                                            ]
-                                        )
+                                        controls=[
+                                            TargetEdit(),
+                                            TargetEdit(target_title="Beli iphone 20",
+                                                target_description="iPhone adalah kebutuhan yang aku perlukan untuk hidup :)",
+                                                percentage=0.7,icon="phone_iphone"),
+                                            TargetEdit(),
+                                            TargetEdit(),
+                                            TargetEdit(),
+                                            TargetEdit(),
+                                        ]
                                     )
                                 ]
                         )
