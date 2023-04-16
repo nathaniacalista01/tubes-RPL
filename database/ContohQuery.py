@@ -20,13 +20,16 @@ db.delete_data("Pemasukan", condition)
 
 # Contoh select
 rows = db.select_data("Pemasukan")
-for row in rows:
-    print(row["id_pemasukan"], row["nominal"], row["tanggal"], row["kategori"], row["catatan"])
+# for row in rows:
+#     print(row["id_pemasukan"], row["nominal"], row["tanggal"], row["kategori"], row["catatan"])
     
 columns = ["nominal", "tanggal"]
 rows = db.select_data("Pemasukan", columns)
-for row in rows:
-    print(row["nominal"], row["tanggal"])
+# for row in rows:
+#     print(row["nominal"], row["tanggal"])
 
 # Buat cek data
-db.show_data("Pemasukan")
+# db.show_data("Pemasukan")
+rows = db.fetch_data('Pemasukan')
+for row in rows:
+    print(row['id_pemasukan'], row['nominal'], row['tanggal'], row['kategori'], row['catatan'])

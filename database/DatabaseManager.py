@@ -75,3 +75,10 @@ class DatabaseManager:
         print("Table data:")
         for row in data:
             print(row)
+
+    def fetch_data(self, table_name):
+        query = f"SELECT * FROM {table_name}"
+        result = self.connection.execute(query)
+        rows = result.fetchall()
+        return rows
+
