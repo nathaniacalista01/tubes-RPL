@@ -1,211 +1,188 @@
 """Manage Transaction Page Module"""
-from flet import *
+import locale
+from datetime import date
+from typing import Optional, List
+
+import flet as ft
+
+from src.model import Transaction
 from src.ui.forms import TransactionsForms
-import datetime
 
-from flet_core import (
-    UserControl,
-    Container,
-    Column,
-    Padding,
-    Text,
-    Row,
-    DataTable,
-    DataRow,
-    DataColumn,
-    DataCell,
-    TextAlign,
-    FontWeight,
-    Image,
-)
+locale.setlocale(locale.LC_ALL, "id_ID")
 
 
-class RecentTransactions(UserControl):
+class RecentTransactions(ft.UserControl):
     """Recent Transactions's Card"""
 
     def __init__(
         self,
-        title: str = "Recent Transactions",
-        column_two: str = "Category",
-        column_three: str = "Transaction\nTime",
-        column_four: str = "Transaction\nAmount",
-        column_five: str = "Notes",
-        column_six: str = "Type",
+        transactions: Optional[List[Transaction]] = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
-        self.title = (title,)
-        self.column_two = column_two
-        self.column_three = column_three
-        self.column_four = column_four
-        self.column_five = column_five
-        self.column_six = column_six
+        self.headers = [
+            "Category",
+            "Transaction\nTime",
+            "Transaction\nAmount",
+            "Notes",
+            "Type",
+            "Action",
+        ]
+        self.transactions = [] if transactions is None else transactions
+        self.table_ref = ft.Ref[ft.DataTable]()
+
+    def delete_row(self, e: ft.ControlEvent):
+        self.transactions.pop(e.control.data)
+        self.table_ref.current.rows.pop(e.control.data)
+        self.controls = [self.build()]
+        self.update()
 
     def build(self):
-        return Container(
-            padding=Padding(20, 10, 20, 10),
+        return ft.Container(
+            padding=ft.Padding(20, 10, 20, 10),
             border_radius=20,
             bgcolor="#FFFFFF",
-            content=Row(
+            content=ft.Row(
                 controls=[
-                    Container(
+                    ft.Container(
                         expand=True,
-                        content=Column(
+                        content=ft.Column(
                             controls=[
-                                Text(
+                                ft.Text(
                                     value="Recent Transactions",
                                     size=32,
-                                    weight=FontWeight.W_600,
+                                    weight=ft.FontWeight.W_600,
                                 ),
-                                Row(
+                                ft.Row(
                                     controls=[
-                                        DataTable(
+                                        ft.DataTable(
+                                            ref=self.table_ref,
                                             expand=True,
+                                            heading_text_style=ft.TextStyle(
+                                                weight=ft.FontWeight.W_700,
+                                                color="#707EAF",
+                                            ),
                                             bgcolor="#F6F3F3",
                                             border_radius=20,
                                             columns=[
-                                                DataColumn(
-                                                    label=Text(
-                                                        value=self.column_two,
-                                                        text_align=TextAlign.CENTER,
-                                                        color="#707EAF",
-                                                        weight=FontWeight.W_700,
+                                                ft.DataColumn(
+                                                    label=ft.Text(
+                                                        value=header,
+                                                        text_align=ft.TextAlign.CENTER,
                                                     )
-                                                ),
-                                                DataColumn(
-                                                    label=Text(
-                                                        value=self.column_three,
-                                                        text_align=TextAlign.CENTER,
-                                                        color="#707EAF",
-                                                        weight=FontWeight.W_700,
-                                                    )
-                                                ),
-                                                DataColumn(
-                                                    label=Text(
-                                                        value=self.column_four,
-                                                        text_align=TextAlign.CENTER,
-                                                        color="#707EAF",
-                                                        weight=FontWeight.W_700,
-                                                    )
-                                                ),
-                                                DataColumn(
-                                                    label=Text(
-                                                        value=self.column_five,
-                                                        text_align=TextAlign.CENTER,
-                                                        color="#707EAF",
-                                                        weight=FontWeight.W_700,
-                                                    )
-                                                ),
-                                                DataColumn(
-                                                    label=Text(
-                                                        value=self.column_six,
-                                                        text_align=TextAlign.CENTER,
-                                                        color="#707EAF",
-                                                        weight=FontWeight.W_700,
-                                                    )
-                                                ),
+                                                )
+                                                for header in self.headers
                                             ],
                                             rows=[
-                                                DataRow(
+                                                ft.DataRow(
                                                     cells=[
-                                                        DataCell(
-                                                            Text(
-                                                                value="shopping",
-                                                                text_align=TextAlign.CENTER,
+                                                        ft.DataCell(
+                                                            ft.Text(
+                                                                value=transaction.category,
+                                                                text_align=ft.TextAlign.CENTER,
                                                                 color="#707EAF",
-                                                                weight=FontWeight.W_600,
+                                                                weight=ft.FontWeight.W_600,
                                                             )
                                                         ),
-                                                        DataCell(
-                                                            Text(
-                                                                value="12:28:16 PM",
-                                                                text_align=TextAlign.CENTER,
+                                                        ft.DataCell(
+                                                            ft.Text(
+                                                                value=transaction.time.strftime(
+                                                                    "%x"
+                                                                ),
+                                                                text_align=ft.TextAlign.CENTER,
                                                                 color="#707EAF",
-                                                                weight=FontWeight.W_600,
+                                                                weight=ft.FontWeight.W_600,
                                                             )
                                                         ),
-                                                        DataCell(
-                                                            Text(
-                                                                value="Rp 69.000,00",
-                                                                text_align=TextAlign.CENTER,
+                                                        ft.DataCell(
+                                                            ft.Text(
+                                                                value=locale.currency(
+                                                                    transaction.amount,
+                                                                    grouping=True,
+                                                                ),
+                                                                text_align=ft.TextAlign.CENTER,
                                                                 color="#707EAF",
-                                                                weight=FontWeight.W_600,
+                                                                weight=ft.FontWeight.W_600,
                                                             )
                                                         ),
-                                                        DataCell(
-                                                            Image(
-                                                                src="images/notes.svg"
+                                                        ft.DataCell(
+                                                            ft.Image(
+                                                                src="images/notes.svg",
+                                                                tooltip=transaction.notes,
                                                             )
                                                         ),
-                                                        DataCell(
-                                                            Text(
-                                                                value="Expense",
-                                                                text_align=TextAlign.CENTER,
-                                                                color="#F2428A",
-                                                                weight=FontWeight.W_600,
+                                                        ft.DataCell(
+                                                            ft.Text(
+                                                                value=transaction.type,
+                                                                text_align=ft.TextAlign.CENTER,
+                                                                color="#F2428A"
+                                                                if transaction.type
+                                                                == "Expense"
+                                                                else "#0ADEA6",
+                                                                weight=ft.FontWeight.W_600,
                                                             )
                                                         ),
-                                                    ]
-                                                ),
-                                                DataRow(
-                                                    cells=[
-                                                        DataCell(
-                                                            Text(
-                                                                value="Utilities",
-                                                                text_align=TextAlign.CENTER,
-                                                                color="#707EAF",
-                                                                weight=FontWeight.W_600,
-                                                            )
+                                                        ft.DataCell(
+                                                            ft.Row(
+                                                                spacing=0,
+                                                                controls=[
+                                                                    ft.IconButton(
+                                                                        ft.icons.EDIT,
+                                                                        icon_color="amber",
+                                                                    ),
+                                                                    ft.IconButton(
+                                                                        ft.icons.DELETE_ROUNDED,
+                                                                        icon_color="red",
+                                                                        on_click=self.delete_row,
+                                                                        data=i,
+                                                                    ),
+                                                                ],
+                                                            ),
                                                         ),
-                                                        DataCell(
-                                                            Text(
-                                                                value="7:34:13 AM",
-                                                                text_align=TextAlign.CENTER,
-                                                                color="#707EAF",
-                                                                weight=FontWeight.W_600,
-                                                            )
-                                                        ),
-                                                        DataCell(
-                                                            Text(
-                                                                value="Rp 55.000,00",
-                                                                text_align=TextAlign.CENTER,
-                                                                color="#707EAF",
-                                                                weight=FontWeight.W_600,
-                                                            )
-                                                        ),
-                                                        DataCell(
-                                                            Image(
-                                                                src="images/notes.svg"
-                                                            )
-                                                        ),
-                                                        DataCell(
-                                                            Text(
-                                                                value="Income",
-                                                                text_align=TextAlign.CENTER,
-                                                                color="#0ADEA6",
-                                                                weight=FontWeight.W_600,
-                                                            )
-                                                        ),
-                                                    ]
-                                                ),
+                                                    ],
+                                                )
+                                                for i, transaction in enumerate(
+                                                    self.transactions
+                                                )
                                             ],
-                                        )
-                                    ]
+                                        ),
+                                    ],
                                 ),
                             ],
                         ),
-                    )
-                ]
+                    ),
+                ],
             ),
         )
 
 
-class ManageTransaction(UserControl):
+class ManageTransaction(ft.UserControl):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def build(self):
-        return Column(
+        return ft.Column(
             spacing=0,
-            controls=[RecentTransactions(expand=2), TransactionsForms(expand=2)],
+            controls=[
+                RecentTransactions(
+                    expand=1,
+                    transactions=[
+                        Transaction(
+                            category="Shopping",
+                            time=date.today(),
+                            amount=65000,
+                            type="Expense",
+                            notes="Belanja IPhone di Singapura",
+                        ),
+                        Transaction(
+                            category="Utilities",
+                            time=date.today(),
+                            amount=46000,
+                            type="Income",
+                            notes="",
+                        ),
+                    ],
+                ),
+                TransactionsForms(expand=1),
+            ],
         )

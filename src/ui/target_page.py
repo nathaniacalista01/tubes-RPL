@@ -1,22 +1,13 @@
 """Target Page module"""
 
-from src.ui.target import TargetEdit, TargetForm
-from src.ui.dashboard import WelcomeMessage
+import flet as ft
 import datetime
 
-from flet_core import (
-    UserControl,
-    Column,
-    Container,
-    Padding,
-    Margin,
-    Text,
-    Row,
-    ScrollMode,
-)
+from src.ui.target import TargetEdit, TargetForm
+from src.ui.dashboard import WelcomeMessage
 
 
-class TargetPage(UserControl):
+class TargetPage(ft.UserControl):
     """Budgetwise Target Page"""
 
     def __init__(self, date: datetime = datetime.date.today(), **kwargs):
@@ -24,44 +15,48 @@ class TargetPage(UserControl):
         self.date = date
 
     def build(self):
-        return Container(
-            margin=Margin(40, 10, 0, 0),
-            content=Column(
+        return ft.Container(
+            margin=ft.margin.only(left=40, top=10),
+            content=ft.Column(
                 width=1070,
                 controls=[
                     WelcomeMessage(),
                     TargetForm(),
-                    Container(
+                    ft.Container(
                         bgcolor="white",
                         height=270,
                         width=1070,
-                        padding=Padding(10, 10, 0, 0),
-                        margin=Margin(0, 10, 20, 0),
+                        padding=ft.padding.all(10),
+                        margin=ft.margin.only(top=10, right=20),
                         border_radius=20,
-                        content=Column(
+                        content=ft.Column(
                             controls=[
-                                Container(
-                                    content=Text(value="Targets", size=20),
-                                    padding=Padding(10, 5, 10, 0),
+                                ft.Container(
+                                    content=ft.Text(value="Targets", size=20),
+                                    padding=ft.padding.only(left=10, top=5, right=10),
                                 ),
-                                Row(
-                                    scroll=ScrollMode.AUTO,
-                                    width=890,
-                                    controls=[
-                                        TargetEdit(),
-                                        TargetEdit(
-                                            target_title="Beli iphone 20",
-                                            target_description="iPhone adalah kebutuhan yang aku perlukan untuk hidup :)",
-                                            percentage=0.7,
-                                            icon="phone_iphone",
-                                        ),
-                                        TargetEdit(),
-                                        TargetEdit(),
-                                        TargetEdit(),
-                                        TargetEdit(),
-                                    ],
+                                ft.Container(
+                                    padding=ft.padding.only(bottom=10),
+                                    content=ft.Row(
+                                        scroll=ft.ScrollMode.HIDDEN,
+                                        width=890,
+                                        controls=[
+                                            TargetEdit(),
+                                            TargetEdit(
+                                                target_title="Beli iphone 20",
+                                                target_description="iPhone adalah kebutuhan yang aku perlukan untuk "
+                                                                   "hidup :)",
+                                                percentage=0.7,
+                                                icon="phone_iphone",
+                                            ),
+                                            TargetEdit(),
+                                            TargetEdit(),
+                                            TargetEdit(),
+                                            TargetEdit(),
+                                        ],
+                                    ),
                                 ),
-                            ]
+                            ],
                         ),
                     ),
                 ],

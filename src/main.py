@@ -1,4 +1,6 @@
 """This is UI module for BudgetWise App"""
+
+from flet import margin
 from flet.flet import app
 from flet_core import (
     Theme,
@@ -7,8 +9,6 @@ from flet_core import (
 from flet_core.stack import Stack
 from flet_core.column import Column
 from flet_core.container import Container
-from flet_core.margin import Margin
-from flet_core.padding import Padding
 from flet_core.page import Page
 from flet_core.ref import Ref
 from flet_core.row import Row
@@ -38,7 +38,6 @@ def main(page: Page):
     page.bgcolor = "#2A3575"
 
     page_container = Ref[Stack]()
-    navbar = Ref[Navbar]()
 
     def change_page(index: int):
         for view in page_container.current.controls:
@@ -62,14 +61,13 @@ def main(page: Page):
             controls=[
                 Container(
                     bgcolor="#2A3575",
-                    padding=Padding(35, 35, 35, 35),
+                    padding=35,
                     content=Column(
                         controls=[
                             ProfileCard(),
                             Container(
-                                margin=Margin(0, 70, 0, 0),
+                                margin=margin.only(top=70),
                                 content=Navbar(
-                                    ref=navbar,
                                     on_item_selected=change_page,
                                     items=[
                                         NavbarItem(
