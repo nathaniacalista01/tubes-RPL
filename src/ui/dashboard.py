@@ -361,8 +361,11 @@ class TransactionsDiagram(UserControl):
             self.sizes,
             colors=self.colors,
             autopct="%1.1f%%",
+            pctdistance=0.75,
             textprops={"fontsize": 20},
+            wedgeprops={"linewidth": 7, "edgecolor": "white"},
         )
+        plt.gcf().gca().add_artist(plt.Circle((0, 0), 0.5, color="white"))
         legend = Column(
             spacing=5,
             controls=[
