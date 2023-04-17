@@ -6,14 +6,13 @@ stages:
 pylint:
   stage: lint
   tags:
-    - windows
+    - linux
+  before_script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install pylint
   script:
-    - |
-      choco install python
-      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      gitlab-test\Scripts\activate.bat
-      pip install pylint
-      pylint --fail-under 9.0 ./src
+    - pylint --fail-under 9.0 src | tee pylint.log
   artifacts:
     when: always
     paths:
@@ -22,14 +21,13 @@ pylint:
 black:
   stage: lint
   tags:
-    - windows
+    - linux
+  before_script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install black
   script:
-    - |
-      choco install python
-      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      gitlab-test\Scripts\activate.bat
-      pip install black
-      black --check --verbose .
+    - black --check . | tee black.log
   artifacts:
     when: always
     paths:
@@ -38,15 +36,14 @@ black:
 test:
   stage: test
   tags:
-    - windows
+    - linux
+  before_script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
   script:
-    - |
-      choco install python
-      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      gitlab-test\Scripts\activate.bat
-      pip install -r requirements.txt
-      python -m unittest discover
+    - python -m unittest discover | tee test-results.log
   artifacts:
     when: always
     paths:
-      - test-results.xml
+      - test-results.log
