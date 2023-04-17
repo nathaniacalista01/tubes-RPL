@@ -5,7 +5,7 @@ import flet as ft
 from src.ui.target import TargetForms, Targets
 from src.ui.dashboard import WelcomeMessage
 
-from model import Target
+from src.model import Target
 
 targets = [
     Target(
