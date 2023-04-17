@@ -7,13 +7,14 @@ pylint:
   stage: lint
   tags:
     - windows
-  before_script:
-    - $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-    - python -m venv gitlab-test
-    - source venv\bin\activate
-    - pip install pylint
   script:
-    - pylint --fail-under 9.0 ./src
+    - |
+      choco install python
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      python -m venv gitlab-test
+      source venv\bin\activate
+      pip install pylint
+      pylint --fail-under 9.0 ./src
   artifacts:
     when: always
     paths:
@@ -21,15 +22,16 @@ pylint:
 
 black:
   stage: lint
-  before_script:
-    - $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-    - python -m venv gitlab-test
-    - source venv\bin\activate
-    - pip install black
   tags:
     - windows
   script:
-    - black --check --verbose .
+    - |
+      choco install python
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      python -m venv gitlab-test
+      source venv\bin\activate
+      pip install black
+      black --check --verbose .
   artifacts:
     when: always
     paths:
@@ -37,15 +39,16 @@ black:
 
 test:
   stage: test
-  before_script:
-    - $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-    - python -m venv gitlab-test
-    - source venv\bin\activate
-    - pip install -r requirements.txt
   tags:
     - windows
   script:
-    - python -m unittest discover
+    - |
+      choco install python
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      python -m venv gitlab-test
+      source venv\bin\activate
+      pip install -r requirements.txt
+      python -m unittest discover
   artifacts:
     when: always
     paths:
