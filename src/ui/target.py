@@ -187,52 +187,116 @@ class TargetEdit(Target):
         )
 
 
-class TargetForm(ft.UserControl):
-    """Target form component"""
-    def __init__(self, **kwargs):
+class TargetForms(ft.UserControl):
+    """Component for target's forms """
+    def __init__(
+        self,
+        title: str = "Title",
+        nominal: float = 0.0,
+        target_date: datetime = datetime.date.today(),
+        description: str = "Description",
+        **kwargs
+    ):
         super().__init__(**kwargs)
+        self.title = title
+        self.nominal = nominal
+        self.target_date = target_date
+        self.description = description
+
+    @staticmethod
+    def new_forms(name: str, keyboard_type: ft.KeyboardType):
+        """Components for new form's input """
+        return ft.Container(
+            expand=True,
+            height=45,
+            bgcolor="#ebebeb",
+            border_radius=ft.border_radius.all(6),
+            margin=ft.margin.only(top=10),
+            padding=ft.padding.all(8),
+            content=ft.Column(
+                spacing=1,
+                controls=[
+                    ft.TextField(
+                        border_color="transparent",
+                        height=30,
+                        text_size=13,
+                        label=name,
+                        label_style=ft.TextStyle(size=13),
+                        content_padding=ft.padding.only(top=30),
+                        cursor_color="black",
+                        cursor_width=1,
+                        cursor_height=18,
+                        color="black",
+                        keyboard_type=keyboard_type,
+                    )
+                ],
+            ),
+        )
+    @staticmethod
+    def desc_forms(name: str):
+        """Component for forms' descriptions """
+        return ft.Container(
+            expand=True,
+            height=65,
+            bgcolor="#ebebeb",
+            border_radius=ft.border_radius.all(6),
+            margin=ft.margin.only(top=10),
+            padding=ft.padding.all(8),
+            content=ft.Column(
+                spacing=1,
+                controls=[
+                    ft.TextField(
+                        border_color="transparent",
+                        height=65,
+                        text_size=13,
+                        label=name,
+                        label_style=ft.TextStyle(size=13),
+                        content_padding=ft.padding.only(top=30),
+                        cursor_color="black",
+                        cursor_width=1,
+                        cursor_height=18,
+                        color="black",
+                        multiline=True,
+                    )
+                ],
+            ),
+        )
 
     def build(self):
-        return ft.Column(
-            width=1070,
-            controls=[
-                ft.Container(
-                    bgcolor="white",
-                    height=250,
-                    padding=ft.Padding(10, 10, 10, 0),
-                    margin=ft.Margin(0, 0, 20, 0),
-                    border_radius=20,
-                    content=ft.Column(
+        return ft.Container(
+            expand=True,
+            bgcolor="#FFFFFF",
+            border=ft.border.all(1, "#ebebeb"),
+            border_radius=20,
+            padding=15,
+            margin=ft.margin.only(top=10),
+            content=ft.Column(
+                expand=True,
+                controls=[
+                    ft.Text(
+                        value="Add Target",
+                        size=32,
+                        weight=ft.FontWeight.W_600,
+                    ),
+                    ft.Row(
                         controls=[
-                            ft.Container(
-                                height=25,
-                                content=ft.TextField(label="Title", text_size=12),
-                            ),
-                            ft.Container(
-                                height=25,
-                                content=ft.TextField(label="Nominal", text_size=12),
-                            ),
-                            ft.Container(
-                                height=25,
-                                content=ft.TextField(label="Target Date", text_size=12),
-                            ),
-                            ft.Container(
-                                height=70,
-                                content=ft.TextField(
-                                    label="Descriptions",
-                                    border=ft.InputBorder.UNDERLINE,
-                                    text_size=12,
-                                    multiline=True,
-                                ),
-                            ),
-                            ft.Container(
-                                alignment=ft.alignment.center_right,
-                                content=ft.ElevatedButton(
-                                    text="Add Target", bgcolor="#00FF47"
-                                ),
-                            ),
+                            self.new_forms("Title", ft.KeyboardType.TEXT),
+                            self.new_forms("Nominal", ft.KeyboardType.NUMBER),
+                            self.new_forms("Target Date", ft.KeyboardType.DATETIME),
                         ]
                     ),
-                ),
-            ],
+                    ft.Row(controls=[self.desc_forms(self.description)]),
+                    ft.Row(
+                        alignment=ft.MainAxisAlignment.END,
+                        controls=[
+                            ft.ElevatedButton(
+                                width=100,
+                                bgcolor="#6761B9",
+                                color="white",
+                                text="Add",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
         )

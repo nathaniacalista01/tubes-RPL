@@ -33,10 +33,10 @@ class RecentTransactions(ft.UserControl):
         self.table_ref = ft.Ref[ft.DataTable]()
         self.form_ref = form_ref
 
-    def delete_row(self, evt: ft.ControlEvent):
-        """Event handler on transaction data delete"""
-        self.transactions.pop(evt.control.data)
-        self.table_ref.current.rows.pop(evt.control.data)
+    def delete_row(self, event: ft.ControlEvent):
+        """Function to delete row"""
+        self.transactions.pop(event.control.data)
+        self.table_ref.current.rows.pop(event.control.data)
         self.controls = [self.build()]
         self.update()
 
@@ -136,10 +136,7 @@ class RecentTransactions(ft.UserControl):
                                                                         ft.icons.EDIT,
                                                                         icon_color="amber",
                                                                         on_click=self.edit_transaction,
-                                                                        data=(
-                                                                            i,
-                                                                            transaction,
-                                                                        ),
+                                                                        data=(i, transaction),
                                                                     ),
                                                                     ft.IconButton(
                                                                         ft.icons.DELETE_ROUNDED,
@@ -168,7 +165,7 @@ class RecentTransactions(ft.UserControl):
 
 
 class ManageTransaction(ft.UserControl):
-    """Manage Transaction page for BudgetWise"""
+    """Component for manage transactions"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.form_ref = ft.Ref[TransactionsForms]()

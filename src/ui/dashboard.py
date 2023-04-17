@@ -332,9 +332,9 @@ class TransactionsDiagram(ft.UserControl):
         self.labels = ["Category 1", "Category 2", "Category 3", "Other"]
 
     def build(self):
-        fig, axes = plt.subplots()
+        fig, axis = plt.subplots()
         plt.tight_layout(pad=-4.5)
-        axes.pie(
+        axis.pie(
             self.sizes,
             colors=self.colors,
             autopct="%1.1f%%",
