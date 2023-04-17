@@ -17,6 +17,7 @@ class RecentTransactions(ft.UserControl):
     def __init__(
         self,
         transactions: Optional[List[Transaction]] = None,
+        form_ref: Optional[ft.Ref[TransactionsForms]] = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -30,12 +31,17 @@ class RecentTransactions(ft.UserControl):
         ]
         self.transactions = [] if transactions is None else transactions
         self.table_ref = ft.Ref[ft.DataTable]()
+        self.form_ref = form_ref
 
-    def delete_row(self, e: ft.ControlEvent):
-        self.transactions.pop(e.control.data)
-        self.table_ref.current.rows.pop(e.control.data)
+    def delete_row(self, event: ft.ControlEvent):
+        """Function to delete row"""
+        self.transactions.pop(event.control.data)
+        self.table_ref.current.rows.pop(event.control.data)
         self.controls = [self.build()]
         self.update()
+
+    def edit_transaction(self, evt: ft.ControlEvent):
+        """Event handler on transaction data edit"""
 
     def build(self):
         return ft.Container(
@@ -53,11 +59,11 @@ class RecentTransactions(ft.UserControl):
                                     size=32,
                                     weight=ft.FontWeight.W_600,
                                 ),
-                                ft.Row(
+                                ft.ListView(
+                                    expand=True,
                                     controls=[
                                         ft.DataTable(
                                             ref=self.table_ref,
-                                            expand=True,
                                             heading_text_style=ft.TextStyle(
                                                 weight=ft.FontWeight.W_700,
                                                 color="#707EAF",
@@ -129,6 +135,11 @@ class RecentTransactions(ft.UserControl):
                                                                     ft.IconButton(
                                                                         ft.icons.EDIT,
                                                                         icon_color="amber",
+                                                                        on_click=self.edit_transaction,
+                                                                        data=(
+                                                                            i,
+                                                                            transaction,
+                                                                        ),
                                                                     ),
                                                                     ft.IconButton(
                                                                         ft.icons.DELETE_ROUNDED,
@@ -157,8 +168,11 @@ class RecentTransactions(ft.UserControl):
 
 
 class ManageTransaction(ft.UserControl):
+    """Component for manage transactions"""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.form_ref = ft.Ref[TransactionsForms]()
 
     def build(self):
         return ft.Column(
@@ -173,16 +187,18 @@ class ManageTransaction(ft.UserControl):
                             amount=65000,
                             type="Expense",
                             notes="Belanja IPhone di Singapura",
-                        ),
-                        Transaction(
-                            category="Utilities",
-                            time=date.today(),
-                            amount=46000,
-                            type="Income",
-                            notes="",
-                        ),
+                        )
+                        for _ in range(10)
+                        # Transaction(
+                        #     category="Utilities",
+                        #     time=date.today(),
+                        #     amount=46000,
+                        #     type="Income",
+                        #     notes="",
+                        # ),
                     ],
+                    form_ref=self.form_ref,
                 ),
-                TransactionsForms(expand=1),
+                TransactionsForms(ref=self.form_ref, expand=1),
             ],
         )
