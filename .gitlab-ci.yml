@@ -8,8 +8,6 @@ pylint:
   tags:
     - linux
   before_script:
-    - python -m venv venv
-    - source venv/bin/activate
     - pip install -r requirements.txt
   script:
     - pylint --fail-under 9.0 src | tee pylint.log
@@ -23,8 +21,6 @@ black:
   tags:
     - linux
   before_script:
-    - python -m venv venv
-    - source venv/bin/activate
     - pip install -r requirements.txt
   script:
     - black --check . | tee black.log
@@ -38,8 +34,6 @@ test:
   tags:
     - linux
   before_script:
-    - python -m venv venv
-    - source venv/bin/activate
     - pip install -r requirements.txt
   script:
     - python -m unittest discover | tee test-results.log
