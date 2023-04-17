@@ -1,11 +1,14 @@
+"""Budgetwise's models"""
+
 from dataclasses import dataclass
 from datetime import date
-from typing import Literal, Union
+from typing import Literal
 
 
 @dataclass
 class Transaction:
     """Transaction model"""
+
     category: str
     time: date
     amount: float

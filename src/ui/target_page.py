@@ -1,7 +1,6 @@
 """Target Page module"""
-
-import flet as ft
 import datetime
+import flet as ft
 
 from src.ui.target import TargetForms, Targets
 from src.ui.dashboard import WelcomeMessage
@@ -37,7 +36,6 @@ class TargetPage(ft.UserControl):
         return ft.Container(
             margin=ft.margin.only(left=40, top=10),
             content=ft.Column(
-                width=1070,
                 controls=[
                     # WelcomeMessage(),
                     TargetForms(),
