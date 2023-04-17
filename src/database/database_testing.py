@@ -31,6 +31,7 @@ for value in values:
 # rows = db.select_data("Pemasukan")
 # for row in rows:
 #     print(row["id_pemasukan"], row["nominal"], row["tanggal"], row["kategori"], row["catatan"])
+
 # columns = ["nominal", "tanggal"]
 # rows = db.select_data("Pemasukan", columns)
 # for row in rows:

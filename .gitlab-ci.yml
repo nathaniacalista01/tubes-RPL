@@ -8,9 +8,9 @@ pylint:
   tags:
     - linux
   before_script:
-    - pip install pylint
+    - pip install -r requirements.txt
   script:
-    - pylint --fail-under 9.0 ./src
+    - pylint --fail-under 9.0 src | tee pylint.log
   artifacts:
     when: always
     paths:
@@ -18,12 +18,12 @@ pylint:
 
 black:
   stage: lint
-  before_script:
-    - pip install black
   tags:
     - linux
+  before_script:
+    - pip install -r requirements.txt
   script:
-    - black --check .
+    - black --check . | tee black.log
   artifacts:
     when: always
     paths:
@@ -31,13 +31,13 @@ black:
 
 test:
   stage: test
-  before_script:
-    - pip install -r requirements.txt
   tags:
     - linux
+  before_script:
+    - pip install -r requirements.txt
   script:
-    - python -m unittest discover
+    - python -m unittest discover | tee test-results.log
   artifacts:
     when: always
     paths:
-      - test-results.xml
+      - test-results.log

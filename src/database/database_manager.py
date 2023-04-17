@@ -4,6 +4,7 @@ import sqlite3
 from src.database import Pemasukan, Pengeluaran, Transaksi, Target
 
 
+
 class DatabaseManager:
     """Class for database manager"""
 

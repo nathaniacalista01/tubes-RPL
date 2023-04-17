@@ -1,10 +1,30 @@
 """Target Page module"""
-
 import datetime
 import flet as ft
 
-from src.ui.target import TargetEdit, TargetForms
+from src.ui.target import TargetForms, Targets
 from src.ui.dashboard import WelcomeMessage
+
+from src.model import Target
+
+targets = [
+    Target(
+        id_target=1,
+        judul="title1",
+        nominal_target=5000,
+        catatan="desc1",
+        tanggal_dibuat=datetime.date.today(),
+        tanggal_tercapai=datetime.date.today(),
+    ),
+    Target(
+        id_target=2,
+        judul="title2",
+        nominal_target=50000,
+        catatan="desc2",
+        tanggal_dibuat=datetime.date.today(),
+        tanggal_tercapai=datetime.date.today(),
+    ),
+]
 
 
 class TargetPage(ft.UserControl):
@@ -18,47 +38,10 @@ class TargetPage(ft.UserControl):
         return ft.Container(
             margin=ft.margin.only(left=40, top=10),
             content=ft.Column(
-                width=1070,
                 controls=[
-                    WelcomeMessage(),
+                    # WelcomeMessage(),
                     TargetForms(),
-                    ft.Container(
-                        bgcolor="white",
-                        height=270,
-                        width=1070,
-                        padding=ft.padding.all(10),
-                        margin=ft.margin.only(top=10, right=20),
-                        border_radius=20,
-                        content=ft.Column(
-                            controls=[
-                                ft.Container(
-                                    content=ft.Text(value="Targets", size=20),
-                                    padding=ft.padding.only(left=10, top=5, right=10),
-                                ),
-                                ft.Container(
-                                    padding=ft.padding.only(bottom=10),
-                                    content=ft.Row(
-                                        scroll=ft.ScrollMode.HIDDEN,
-                                        width=890,
-                                        controls=[
-                                            TargetEdit(),
-                                            TargetEdit(
-                                                target_title="Beli iphone 20",
-                                                target_description="iPhone adalah kebutuhan yang aku perlukan untuk "
-                                                "hidup :)",
-                                                percentage=0.7,
-                                                icon="phone_iphone",
-                                            ),
-                                            TargetEdit(),
-                                            TargetEdit(),
-                                            TargetEdit(),
-                                            TargetEdit(),
-                                        ],
-                                    ),
-                                ),
-                            ],
-                        ),
-                    ),
+                    Targets(targets=targets),
                 ],
             ),
         )
