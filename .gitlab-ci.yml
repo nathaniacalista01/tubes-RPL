@@ -8,8 +8,8 @@ pylint:
   tags:
     - windows
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
-    - python -m venv venv
+    - $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+    - python -m venv gitlab-test
     - source venv\bin\activate
     - pip install pylint
   script:
@@ -22,8 +22,8 @@ pylint:
 black:
   stage: lint
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
-    - python -m venv venv
+    - $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+    - python -m venv gitlab-test
     - source venv\bin\activate
     - pip install black
   tags:
@@ -38,8 +38,8 @@ black:
 test:
   stage: test
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
-    - python -m venv venv
+    - $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+    - python -m venv gitlab-test
     - source venv\bin\activate
     - pip install -r requirements.txt
   tags:
