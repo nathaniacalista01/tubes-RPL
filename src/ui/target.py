@@ -2,25 +2,10 @@
 
 import datetime
 
-from flet import ProgressBar, Divider, Icon, alignment
-from flet_core import (
-    UserControl,
-    Column,
-    MainAxisAlignment,
-    Container,
-    Padding,
-    Margin,
-    Text,
-    TextAlign,
-    Row,
-    border,
-    ElevatedButton,
-    TextField,
-    InputBorder,
-)
+import flet as ft
 
 
-class Target(UserControl):
+class Target(ft.UserControl):
     """Budgetwise Target Component"""
 
     def __init__(
@@ -46,43 +31,43 @@ class Target(UserControl):
         self.icon = icon
 
     def build(self):
-        return Column(
+        return ft.Column(
             width=230,
-            alignment=MainAxisAlignment.CENTER,
+            alignment=ft.MainAxisAlignment.CENTER,
             controls=[
-                Container(
+                ft.Container(
                     bgcolor="#F1ECFF",
-                    padding=Padding(15, 15, 15, 15),
-                    margin=Margin(20, 0, 20, 0),
+                    padding=ft.Padding(15, 15, 15, 15),
+                    margin=ft.Margin(20, 0, 20, 0),
                     border_radius=20,
-                    border=border.all(color="black"),
-                    content=Column(
+                    border=ft.border.all(color="black"),
+                    content=ft.Column(
                         spacing=0,
                         controls=[
-                            Row(
+                            ft.Row(
                                 controls=[
-                                    Container(
-                                        Icon(name=self.icon, size=50),
+                                    ft.Container(
+                                        ft.Icon(name=self.icon, size=50),
                                     ),
-                                    Column(
+                                    ft.Column(
                                         spacing=3,
                                         width=100,
                                         height=70,
                                         controls=[
-                                            Container(
-                                                content=Text(
+                                            ft.Container(
+                                                content=ft.Text(
                                                     value=self.target_title,
-                                                    text_align=TextAlign.LEFT,
+                                                    text_align=ft.TextAlign.LEFT,
                                                     size=11,
                                                     color="black",
                                                 ),
                                             ),
-                                            Divider(height=0, color="black"),
-                                            Container(
-                                                padding=Padding(0, 0, 0, 10),
-                                                content=Text(
+                                            ft.Divider(height=0, color="black"),
+                                            ft.Container(
+                                                padding=ft.Padding(0, 0, 0, 10),
+                                                content=ft.Text(
                                                     value=self.target_description,
-                                                    text_align=TextAlign.LEFT,
+                                                    text_align=ft.TextAlign.LEFT,
                                                     size=7,
                                                     color="black",
                                                 ),
@@ -91,50 +76,50 @@ class Target(UserControl):
                                     ),
                                 ],
                             ),
-                            ProgressBar(
+                            ft.ProgressBar(
                                 width=190,
                                 bar_height=10,
                                 color="#1FC3E8",
                                 bgcolor="#385682",
                                 value=self.percentage,
                             ),
-                            Container(
-                                alignment=alignment.center_right,
-                                content=Text(
+                            ft.Container(
+                                alignment=ft.alignment.center_right,
+                                content=ft.Text(
                                     value=str(self.percentage * 100) + "% completed",
                                     color="#6182B2",
                                     size=8,
-                                    text_align=TextAlign.RIGHT,
+                                    text_align=ft.TextAlign.RIGHT,
                                 ),
-                                padding=Padding(0, 0, 0, 10),
+                                padding=ft.Padding(0, 0, 0, 10),
                             ),
-                            Row(
+                            ft.Row(
                                 controls=[
-                                    Column(
+                                    ft.Column(
                                         spacing=2,
                                         controls=[
-                                            Text(
+                                            ft.Text(
                                                 value="Start Date :",
                                                 color="#2B9F18",
                                                 size=9,
                                             ),
-                                            Text(
+                                            ft.Text(
                                                 value="End Date   :",
                                                 color="#EF6161",
                                                 size=9,
                                             ),
                                         ],
                                     ),
-                                    Column(
+                                    ft.Column(
                                         spacing=2,
                                         controls=[
-                                            Text(
+                                            ft.Text(
                                                 value=self.start_date.strftime(
                                                     "%d %B %Y"
                                                 ),
                                                 size=9,
                                             ),
-                                            Text(
+                                            ft.Text(
                                                 value=self.end_date.strftime(
                                                     "%d %B %Y"
                                                 ),
@@ -177,19 +162,19 @@ class TargetEdit(Target):
         self.icon = icon
 
     def build(self):
-        return Column(
+        return ft.Column(
             controls=[
                 super().build(),
-                Container(
+                ft.Container(
                     height=20,
                     width=230,
-                    padding=Padding(20, 0, 20, 0),
-                    content=Row(
+                    padding=ft.Padding(20, 0, 20, 0),
+                    content=ft.Row(
                         controls=[
-                            ElevatedButton(
+                            ft.ElevatedButton(
                                 text="Edit", color="black", bgcolor="#D9D9D9", width=90
                             ),
-                            ElevatedButton(
+                            ft.ElevatedButton(
                                 text="Delete",
                                 color="black",
                                 bgcolor="#D9D9D9",
@@ -202,46 +187,47 @@ class TargetEdit(Target):
         )
 
 
-class TargetForm(UserControl):
+class TargetForm(ft.UserControl):
+    """Target form component"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def build(self):
-        return Column(
+        return ft.Column(
             width=1070,
             controls=[
-                Container(
+                ft.Container(
                     bgcolor="white",
                     height=250,
-                    padding=Padding(10, 10, 10, 0),
-                    margin=Margin(0, 0, 20, 0),
+                    padding=ft.Padding(10, 10, 10, 0),
+                    margin=ft.Margin(0, 0, 20, 0),
                     border_radius=20,
-                    content=Column(
+                    content=ft.Column(
                         controls=[
-                            Container(
+                            ft.Container(
                                 height=25,
-                                content=TextField(label="Title", text_size=12),
+                                content=ft.TextField(label="Title", text_size=12),
                             ),
-                            Container(
+                            ft.Container(
                                 height=25,
-                                content=TextField(label="Nominal", text_size=12),
+                                content=ft.TextField(label="Nominal", text_size=12),
                             ),
-                            Container(
+                            ft.Container(
                                 height=25,
-                                content=TextField(label="Target Date", text_size=12),
+                                content=ft.TextField(label="Target Date", text_size=12),
                             ),
-                            Container(
+                            ft.Container(
                                 height=70,
-                                content=TextField(
+                                content=ft.TextField(
                                     label="Descriptions",
-                                    border=InputBorder.UNDERLINE,
+                                    border=ft.InputBorder.UNDERLINE,
                                     text_size=12,
                                     multiline=True,
                                 ),
                             ),
-                            Container(
-                                alignment=alignment.center_right,
-                                content=ElevatedButton(
+                            ft.Container(
+                                alignment=ft.alignment.center_right,
+                                content=ft.ElevatedButton(
                                     text="Add Target", bgcolor="#00FF47"
                                 ),
                             ),

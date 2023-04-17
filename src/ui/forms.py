@@ -1,11 +1,14 @@
 """Components for creating transactions forms"""
+from typing import Optional
 
 import flet as ft
 
 
 class TransactionsForms(ft.UserControl):
+    """Transaction forms component"""
     def __init__(
         self,
+        ref: Optional[ft.Ref["TransactionsForms"]] = None,
         category: str = "Category",
         amount: str = "Transaction Amount",
         notes: str = "Notes",
@@ -17,9 +20,11 @@ class TransactionsForms(ft.UserControl):
         self.amount = amount
         self.notes = notes
         self.type = transaction_type
+        self.ref = ref
 
     @staticmethod
     def dropdown(name: str):
+        """Custom dropdown"""
         return ft.Container(
             expand=True,
             height=45,
@@ -50,6 +55,7 @@ class TransactionsForms(ft.UserControl):
 
     @staticmethod
     def new_forms(name: str):
+        """Custom text field"""
         return ft.Container(
             expand=True,
             height=45,

@@ -1,3 +1,4 @@
+"""BudgetWise's navigation bar"""
 from typing import Any, Callable, Optional, List
 
 from flet_core import (
@@ -18,6 +19,7 @@ from flet_core import (
 
 
 class NavbarItem(UserControl):
+    """Navbar Item component"""
     def __init__(self, img_src: str, text: str, on_item_selected: Any = None, **kwargs):
         super().__init__(**kwargs)
         self.img_src = img_src
@@ -75,12 +77,13 @@ class Navbar(UserControl):
         ]
         self.on_item_selected = on_item_selected
 
-    def item_selected(self, e: ControlEvent):
+    def item_selected(self, evt: ControlEvent):
+        """Event handler on navbar item selected"""
         item = self.item_refs[self.selected_index].current
         item.image_ref.current.color = colors.with_opacity(0.4, "white")
         item.text_ref.current.color = colors.with_opacity(0.4, "white")
         item.update()
-        self.selected_index = e.control.data
+        self.selected_index = evt.control.data
         item = self.item_refs[self.selected_index].current
         item.image_ref.current.color = "white"
         item.text_ref.current.color = "white"

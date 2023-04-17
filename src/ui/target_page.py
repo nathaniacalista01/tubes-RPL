@@ -1,7 +1,6 @@
 """Target Page module"""
-
-import flet as ft
 import datetime
+import flet as ft
 
 from src.ui.target import TargetEdit, TargetForm
 from src.ui.dashboard import WelcomeMessage
