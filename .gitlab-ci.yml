@@ -11,9 +11,7 @@ pylint:
     - |
       choco install python
       $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      dir env: | format-table Name,Value
-      python -m venv gitlab-test
-      source venv\bin\activate
+      .\gitlab-test\Scripts\activate
       pip install pylint
       pylint --fail-under 9.0 ./src
   artifacts:
@@ -29,9 +27,7 @@ black:
     - |
       choco install python
       $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      dir env: | format-table Name,Value
-      python -m venv gitlab-test
-      source venv\bin\activate
+      .\gitlab-test\Scripts\activate
       pip install black
       black --check --verbose .
   artifacts:
@@ -47,9 +43,7 @@ test:
     - |
       choco install python
       $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      dir env: | format-table Name,Value
-      python -m venv gitlab-test
-      source venv\bin\activate
+      .\gitlab-test\Scripts\activate
       pip install -r requirements.txt
       python -m unittest discover
   artifacts:
