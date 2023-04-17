@@ -4,7 +4,6 @@ import sqlite3
 from src.database import Pemasukan, Pengeluaran, Transaksi, Target
 
 
-
 class DatabaseManager:
     """Class for database manager"""
 
@@ -74,15 +73,24 @@ class DatabaseManager:
         self.create_table(self.transaksi)
         self.create_table(self.target)
 
-    def insert_data(self, table_name, columns, values):
+    def insert_data(self, table_name, columns, values, returning=False):
         """Function to insert data"""
         placeholders = ", ".join(["?" for _ in range(len(values))])
         query = (
             f"INSERT INTO {table_name} ({','.join(columns)}) VALUES ({placeholders})"
+            + (" RETURNING *" if returning else "")
         )
-        self.connection.execute(query, values)
-        self.commit_changes()
+        cursor = self.connection.cursor()
+        cursor.execute(query, values)
+        return_value = None
         print(f"Data inserted into {table_name}")
+        if returning:
+            try:
+                return_value = cursor.fetchone()
+            except StopIteration:
+                return_value = None
+        self.commit_changes()
+        return return_value
 
     def update_data(self, table_name, columns, values, condition):
         """Function to update data"""

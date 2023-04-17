@@ -8,7 +8,7 @@ from src.model import Target
 import flet as ft
 
 
-class Target_Box(ft.UserControl):
+class TargetBox(ft.UserControl):
     """Budgetwise Target Component"""
 
     def __init__(
@@ -174,7 +174,7 @@ class Targets(ft.UserControl):
                                         ft.Column(
                                             height=250,
                                             controls=[
-                                                Target_Box(
+                                                TargetBox(
                                                     target_title=t.judul,
                                                     target_description=t.catatan,
                                                     start_date=t.tanggal_dibuat,

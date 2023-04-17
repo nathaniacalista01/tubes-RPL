@@ -10,7 +10,7 @@ class Transaction:
     """Transaction model"""
 
     category: str
-    time: date
+    date: date
     amount: float
     notes: str
     type: Literal["Expense", "Income"]

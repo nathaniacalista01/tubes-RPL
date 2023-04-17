@@ -5,6 +5,7 @@ from typing import Optional, List
 
 import flet as ft
 
+import src.database as db
 from src.model import Transaction
 from src.ui.forms import TransactionsForms
 
@@ -92,7 +93,7 @@ class RecentTransactions(ft.UserControl):
                                                         ),
                                                         ft.DataCell(
                                                             ft.Text(
-                                                                value=transaction.time.strftime(
+                                                                value=transaction.date.strftime(
                                                                     "%x"
                                                                 ),
                                                                 text_align=ft.TextAlign.CENTER,
@@ -170,9 +171,37 @@ class RecentTransactions(ft.UserControl):
 class ManageTransaction(ft.UserControl):
     """Component for manage transactions"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], **kwargs):
         super().__init__(**kwargs)
         self.form_ref = ft.Ref[TransactionsForms]()
+        self.db_ref = db_ref
+
+    def add_transaction(self, event: ft.ControlEvent):
+        data: Transaction = event.control.data
+        database = self.db_ref.current
+        if data.type == "Expense":
+            table_name = database.pengeluaran.name
+        else:
+            table_name = database.pemasukan.name
+        inserted_data = database.insert_data(
+            table_name=table_name,
+            columns=["nominal", "tanggal", "kategori", "catatan"],
+            values=[
+                data.amount,
+                data.date,
+                data.category,
+                data.notes,
+            ],
+            returning=True,
+        )
+        database.insert_data(
+            table_name=database.transaksi.name,
+            columns=["tipe_transaksi", "id_sumber"],
+            values=[
+                "Pengeluaran" if data.type == "Expense" else "Pemasukan",
+                inserted_data[0],
+            ],
+        )
 
     def build(self):
         return ft.Column(
@@ -183,7 +212,7 @@ class ManageTransaction(ft.UserControl):
                     transactions=[
                         Transaction(
                             category="Shopping",
-                            time=date.today(),
+                            date=date.today(),
                             amount=65000,
                             type="Expense",
                             notes="Belanja IPhone di Singapura",
@@ -199,6 +228,10 @@ class ManageTransaction(ft.UserControl):
                     ],
                     form_ref=self.form_ref,
                 ),
-                TransactionsForms(ref=self.form_ref, expand=1),
+                TransactionsForms(
+                    ref=self.form_ref,
+                    on_submit=self.add_transaction,
+                    expand=1,
+                ),
             ],
         )

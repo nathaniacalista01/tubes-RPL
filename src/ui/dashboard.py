@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import flet as ft
 from flet.matplotlib_chart import MatplotlibChart
 
-from src.ui.target import Target_Box
+from src.ui.target import TargetBox
 
 matplotlib.use("svg")
 
@@ -309,11 +309,11 @@ class Targets(ft.UserControl):
                                 scroll=ft.ScrollMode.AUTO,
                                 spacing=5,
                                 controls=[
-                                    Target_Box(),
-                                    Target_Box(),
-                                    Target_Box(),
-                                    Target_Box(),
-                                    Target_Box(),
+                                    TargetBox(),
+                                    TargetBox(),
+                                    TargetBox(),
+                                    TargetBox(),
+                                    TargetBox(),
                                 ],
                             ),
                         ]
