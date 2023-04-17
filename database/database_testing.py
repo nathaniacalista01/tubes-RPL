@@ -1,7 +1,8 @@
-import DatabaseManager
+"""Driver for database"""
+import database_manager
 
 
-db = DatabaseManager.DatabaseManager()
+db = database_manager.DatabaseManager()
 # Contoh insert
 # columns = ["nominal", "tanggal", "kategori", "catatan"]
 # values = [1000, "2022-01-01", "Gaji", "Pembayaran gaji bulan Januari"]
