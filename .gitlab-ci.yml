@@ -25,7 +25,7 @@ black:
   tags:
     - windows
   script:
-    - C:\Python310\python -m black --check .
+    - C:\Python310\python -m black --check --verbose .
   artifacts:
     when: always
     paths:
