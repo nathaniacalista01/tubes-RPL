@@ -256,6 +256,7 @@ class TargetForms(ft.UserControl):
                 spacing=1,
                 controls=[
                     ft.TextField(
+                        
                         ref = ref,
                         on_change = on_change,
                         border_color="transparent",
@@ -312,7 +313,7 @@ class TargetForms(ft.UserControl):
             nominal_target=self.nominal.current.value,
             catatan= self.description.current.value,
             tanggal_dibuat=datetime.date.today(),
-            tanggal_tercapai=self.target_date.current.value
+            tanggal_tercapai=datetime.datetime.strptime(self.target_date.current.value,"%d-%m-%Y").date()
         )
         self.on_submit(event)
 
@@ -337,7 +338,7 @@ class TargetForms(ft.UserControl):
                             self.new_forms("Title", ft.KeyboardType.TEXT,ref = self.title),
                             self.new_forms("Nominal", ft.KeyboardType.NUMBER,
                                            ref = self.nominal),
-                            self.new_forms("Target Date", ft.KeyboardType.DATETIME,
+                            self.new_forms("Target Date (DD-MM-YYYY)", ft.KeyboardType.DATETIME,
                                            ref=self.target_date),
                         ]
                     ),
