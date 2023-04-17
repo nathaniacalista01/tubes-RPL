@@ -11,7 +11,7 @@ pylint:
     - |
       choco install python
       $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      & gitlab-test\Scripts\activate.bat
+      gitlab-test\Scripts\activate.bat
       pip install pylint
       pylint --fail-under 9.0 ./src
   artifacts:
@@ -27,7 +27,7 @@ black:
     - |
       choco install python
       $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      & gitlab-test\Scripts\activate.bat
+      gitlab-test\Scripts\activate.bat
       pip install black
       black --check --verbose .
   artifacts:
@@ -43,7 +43,7 @@ test:
     - |
       choco install python
       $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      & gitlab-test\Scripts\activate.bat
+      gitlab-test\Scripts\activate.bat
       pip install -r requirements.txt
       python -m unittest discover
   artifacts:
