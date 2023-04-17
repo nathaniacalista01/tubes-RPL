@@ -2,8 +2,8 @@
 
 import flet as ft
 
-
 class TransactionsForms(ft.UserControl):
+    """Forms to add new transactions"""
     def __init__(
         self,
         category: str = "Category",
@@ -20,6 +20,7 @@ class TransactionsForms(ft.UserControl):
 
     @staticmethod
     def dropdown(name: str):
+        """Produce dropdown for transaction type"""
         return ft.Container(
             expand=True,
             height=45,
@@ -50,6 +51,7 @@ class TransactionsForms(ft.UserControl):
 
     @staticmethod
     def new_forms(name: str):
+        """Component for new input for a form"""
         return ft.Container(
             expand=True,
             height=45,

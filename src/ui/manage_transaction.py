@@ -31,9 +31,10 @@ class RecentTransactions(ft.UserControl):
         self.transactions = [] if transactions is None else transactions
         self.table_ref = ft.Ref[ft.DataTable]()
 
-    def delete_row(self, e: ft.ControlEvent):
-        self.transactions.pop(e.control.data)
-        self.table_ref.current.rows.pop(e.control.data)
+    def delete_row(self, event: ft.ControlEvent):
+        """Function to delete row"""
+        self.transactions.pop(event.control.data)
+        self.table_ref.current.rows.pop(event.control.data)
         self.controls = [self.build()]
         self.update()
 
@@ -157,6 +158,7 @@ class RecentTransactions(ft.UserControl):
 
 
 class ManageTransaction(ft.UserControl):
+    """Component for manage transactions"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

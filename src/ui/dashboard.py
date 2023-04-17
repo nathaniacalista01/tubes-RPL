@@ -145,10 +145,11 @@ class FirstRow(UserControl):
         self.selected_index = 0
         self.refs = [Ref[OutlinedButton]() for _ in labels]
 
-    def select_item(self, e: ControlEvent):
-        e.control.disabled = True
+    def select_item(self, event: ControlEvent):
+        """Function to selecet item"""
+        event.control.disabled = True
         self.refs[self.selected_index].current.disabled = False
-        self.selected_index = e.control.data
+        self.selected_index = event.control.data
         self.update()
 
     def build(self):
@@ -345,6 +346,7 @@ class Targets(UserControl):
 
 
 class TransactionsDiagram(UserControl):
+    """Component to display Transactions's Diagram"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.sizes = [31.8, 18.2, 22.7, 27.3]
@@ -352,9 +354,9 @@ class TransactionsDiagram(UserControl):
         self.labels = ["Category 1", "Category 2", "Category 3", "Other"]
 
     def build(self):
-        fig, ax = plt.subplots()
+        fig, axis = plt.subplots()
         plt.tight_layout(pad=-4.5)
-        ax.pie(
+        axis.pie(
             self.sizes,
             colors=self.colors,
             autopct="%1.1f%%",

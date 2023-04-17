@@ -187,6 +187,7 @@ class TargetEdit(Target):
         )
 
 class TargetForms(ft.UserControl):
+    """Component for target's forms """
     def __init__(
         self,
         title: str = "Title",
@@ -202,7 +203,8 @@ class TargetForms(ft.UserControl):
         self.description = description
 
     @staticmethod
-    def new_forms(name: str, type: ft.KeyboardType):
+    def new_forms(name: str, keyboard_type: ft.KeyboardType):
+        """Components for new form's input """
         return ft.Container(
             expand=True,
             height=45,
@@ -224,14 +226,14 @@ class TargetForms(ft.UserControl):
                         cursor_width=1,
                         cursor_height=18,
                         color="black",
-                        keyboard_type=type,
+                        keyboard_type=keyboard_type,
                     )
                 ],
             ),
         )
-    
     @staticmethod
     def desc_forms(name: str):
+        """Component for forms' descriptions """
         return ft.Container(
             expand=True,
             height=65,
