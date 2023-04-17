@@ -17,18 +17,15 @@ class TargetPage(ft.UserControl):
         return ft.Container(
             margin=ft.margin.only(left=40, top=10),
             content=ft.Column(
-                width=1070,
                 controls=[
                     WelcomeMessage(),
                     TargetForms(),
                     ft.Container(
                         bgcolor="white",
-                        height=270,
-                        width=1070,
                         padding=ft.padding.all(10),
-                        margin=ft.margin.only(top=10, right=20),
+                        margin=ft.margin.only(top=10),
                         border_radius=20,
-                        content=ft.Column(
+                        content=ft.ListView(
                             controls=[
                                 ft.Container(
                                     content=ft.Text(value="Targets", size=20),
