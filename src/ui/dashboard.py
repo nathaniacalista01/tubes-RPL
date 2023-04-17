@@ -325,6 +325,7 @@ class Targets(ft.UserControl):
 
 class TransactionsDiagram(ft.UserControl):
     """Transaction Diagram component for BudgetWise"""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.sizes = [31.8, 18.2, 22.7, 27.3]

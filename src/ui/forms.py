@@ -6,6 +6,7 @@ import flet as ft
 
 class TransactionsForms(ft.UserControl):
     """Forms to add new transactions"""
+
     def __init__(
         self,
         ref: Optional[ft.Ref["TransactionsForms"]] = None,

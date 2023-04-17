@@ -20,6 +20,7 @@ from flet_core import (
 
 class NavbarItem(UserControl):
     """Navbar Item component"""
+
     def __init__(self, img_src: str, text: str, on_item_selected: Any = None, **kwargs):
         super().__init__(**kwargs)
         self.img_src = img_src

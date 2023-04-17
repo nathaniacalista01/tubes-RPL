@@ -1,5 +1,6 @@
 import sqlite3, Database
 
+
 class DatabaseManager:
     def __init__(self):
         self.pemasukan = Database.Pemasukan()
@@ -11,23 +12,53 @@ class DatabaseManager:
         self.initialize_tables()
 
     def create_table(self, table):
-        columns = ', '.join([f'{column} {description}' for column, description in zip(table.attributes, table.attributeDescription)])
+        columns = ", ".join(
+            [
+                f"{column} {description}"
+                for column, description in zip(
+                    table.attributes, table.attributeDescription
+                )
+            ]
+        )
         self.connection.execute(f"CREATE TABLE IF NOT EXISTS {table.name} ({columns})")
         self.commit_changes()
 
         if table.name == "Pemasukan":
-            self.insert_data(table.name, ["id_pemasukan", "nominal", "tanggal", "kategori", "catatan"], [9999, 9999, "2023-04-17", "dummy_kategori", "dummy_catatan"])
+            self.insert_data(
+                table.name,
+                ["id_pemasukan", "nominal", "tanggal", "kategori", "catatan"],
+                [9999, 9999, "2023-04-17", "dummy_kategori", "dummy_catatan"],
+            )
             self.delete_data(table.name, "id_pemasukan = 9999")
         elif table.name == "Pengeluaran":
-            self.insert_data(table.name, ["id_pengeluaran", "nominal", "tanggal", "kategori", "catatan"], [19999, 19999, "2023-04-17", "dummy_kategori", "dummy_catatan"])
+            self.insert_data(
+                table.name,
+                ["id_pengeluaran", "nominal", "tanggal", "kategori", "catatan"],
+                [19999, 19999, "2023-04-17", "dummy_kategori", "dummy_catatan"],
+            )
             self.delete_data(table.name, "id_pengeluaran = 19999")
         elif table.name == "Transaksi":
-            self.insert_data(table.name, ["id_transaksi", "tipe_transaksi", "id_sumber"], [29999, "pemasukan", 29999])
+            self.insert_data(
+                table.name,
+                ["id_transaksi", "tipe_transaksi", "id_sumber"],
+                [29999, "pemasukan", 29999],
+            )
             self.delete_data(table.name, "id_transaksi = 29999")
         elif table.name == "Target":
-            self.insert_data(table.name, ["id_target", "judul", "nominal_target", "catatan", "tanggal_dibuat", "tanggal_tercapai"], [89999,"dummy_judul", 0, "dummy_catatan", "2023-04-17", "2023-04-17"])
+            self.insert_data(
+                table.name,
+                [
+                    "id_target",
+                    "judul",
+                    "nominal_target",
+                    "catatan",
+                    "tanggal_dibuat",
+                    "tanggal_tercapai",
+                ],
+                [89999, "dummy_judul", 0, "dummy_catatan", "2023-04-17", "2023-04-17"],
+            )
             self.delete_data(table.name, "id_target = 89999")
-            
+
         print(f"Table {table.name} created")
 
     def initialize_tables(self):
@@ -37,14 +68,16 @@ class DatabaseManager:
         self.create_table(self.target)
 
     def insert_data(self, table_name, columns, values):
-        placeholders = ', '.join(['?' for _ in range(len(values))])
-        query = f"INSERT INTO {table_name} ({','.join(columns)}) VALUES ({placeholders})"
+        placeholders = ", ".join(["?" for _ in range(len(values))])
+        query = (
+            f"INSERT INTO {table_name} ({','.join(columns)}) VALUES ({placeholders})"
+        )
         self.connection.execute(query, values)
         self.commit_changes()
         print(f"Data inserted into {table_name}")
 
     def update_data(self, table_name, columns, values, condition):
-        set_statement = ', '.join([f"{column}=?" for column in columns])
+        set_statement = ", ".join([f"{column}=?" for column in columns])
         query = f"UPDATE {table_name} SET {set_statement} WHERE {condition}"
         self.connection.execute(query, values)
         self.commit_changes()
@@ -57,19 +90,19 @@ class DatabaseManager:
         print(f"Data deleted from {table_name}")
 
     def select_data(self, table_name, columns=None, condition=None):
-        column_list = '*' if columns is None else ','.join(columns)
+        column_list = "*" if columns is None else ",".join(columns)
         query = f"SELECT {column_list} FROM {table_name}"
         if condition is not None:
             query += f" WHERE {condition}"
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
-    
+
     def executeQuery(self, query):
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
-    
+
     def resetDatabase(self):
         self.connection.execute("DROP TABLE IF EXISTS Pemasukan")
         self.connection.execute("DROP TABLE IF EXISTS Pengeluaran")
@@ -78,7 +111,7 @@ class DatabaseManager:
         self.commit_changes()
         self.initialize_tables()
         print("Database reset")
-    
+
     def commit_changes(self):
         self.connection.commit()
 
@@ -104,4 +137,3 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
-

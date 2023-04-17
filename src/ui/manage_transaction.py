@@ -136,7 +136,10 @@ class RecentTransactions(ft.UserControl):
                                                                         ft.icons.EDIT,
                                                                         icon_color="amber",
                                                                         on_click=self.edit_transaction,
-                                                                        data=(i, transaction),
+                                                                        data=(
+                                                                            i,
+                                                                            transaction,
+                                                                        ),
                                                                     ),
                                                                     ft.IconButton(
                                                                         ft.icons.DELETE_ROUNDED,
@@ -166,6 +169,7 @@ class RecentTransactions(ft.UserControl):
 
 class ManageTransaction(ft.UserControl):
     """Component for manage transactions"""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.form_ref = ft.Ref[TransactionsForms]()

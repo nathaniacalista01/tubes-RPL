@@ -41,7 +41,7 @@ class TargetPage(ft.UserControl):
                                             TargetEdit(
                                                 target_title="Beli iphone 20",
                                                 target_description="iPhone adalah kebutuhan yang "
-                                                                   "aku perlukan untuk hidup :)",
+                                                "aku perlukan untuk hidup :)",
                                                 percentage=0.7,
                                                 icon="phone_iphone",
                                             ),
