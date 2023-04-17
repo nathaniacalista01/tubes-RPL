@@ -8,9 +8,12 @@ pylint:
   tags:
     - windows
   script:
-    - .\gitlab-test\Scripts\activate.bat
-    - pip install pylint
-    - pylint --fail-under 9.0 ./src
+    - |
+      choco install python
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      & ".\gitlab-test\Scripts\activate"
+      pip install pylint
+      pylint --fail-under 9.0 ./src
   artifacts:
     when: always
     paths:
@@ -21,9 +24,12 @@ black:
   tags:
     - windows
   script:
-    - .\gitlab-test\Scripts\activate.bat
-    - pip install black
-    - black --check --verbose .
+    - |
+      choco install python
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      & ".\gitlab-test\Scripts\activate"
+      pip install black
+      black --check --verbose .
   artifacts:
     when: always
     paths:
@@ -34,9 +40,12 @@ test:
   tags:
     - windows
   script:
-    - .\gitlab-test\Scripts\activate.bat
-    - pip install -r requirements.txt
-    - python -m unittest discover
+    - |
+      choco install python
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      & ".\gitlab-test\Scripts\activate"
+      pip install -r requirements.txt
+      python -m unittest discover
   artifacts:
     when: always
     paths:
