@@ -1,7 +1,7 @@
 """Target Page module"""
 
-import flet as ft
 import datetime
+import flet as ft
 
 from src.ui.target import TargetEdit, TargetForms
 from src.ui.dashboard import WelcomeMessage
@@ -45,7 +45,7 @@ class TargetPage(ft.UserControl):
                                             TargetEdit(
                                                 target_title="Beli iphone 20",
                                                 target_description="iPhone adalah kebutuhan yang aku perlukan untuk "
-                                                                   "hidup :)",
+                                                "hidup :)",
                                                 percentage=0.7,
                                                 icon="phone_iphone",
                                             ),

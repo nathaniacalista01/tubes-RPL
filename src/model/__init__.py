@@ -6,6 +6,7 @@ from typing import Literal, Union
 @dataclass
 class Transaction:
     """Transaction model"""
+
     category: str
     time: date
     amount: float

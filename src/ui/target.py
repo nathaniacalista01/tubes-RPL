@@ -186,6 +186,7 @@ class TargetEdit(Target):
             ]
         )
 
+
 class TargetForms(ft.UserControl):
     def __init__(
         self,
@@ -229,7 +230,7 @@ class TargetForms(ft.UserControl):
                 ],
             ),
         )
-    
+
     @staticmethod
     def desc_forms(name: str):
         return ft.Container(
