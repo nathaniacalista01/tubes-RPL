@@ -8,7 +8,6 @@ pylint:
   tags:
     - windows
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
     - pip install pylint
   script:
     - pylint --fail-under 9.0 ./src
@@ -20,12 +19,11 @@ pylint:
 black:
   stage: lint
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
     - pip install black
   tags:
     - windows
   script:
-    - black --check .
+    - black --check --verbose .
   artifacts:
     when: always
     paths:
@@ -34,7 +32,6 @@ black:
 test:
   stage: test
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
     - pip install -r requirements.txt
   tags:
     - windows
