@@ -3,7 +3,7 @@
 import flet as ft
 import datetime
 
-from src.ui.target import TargetEdit, TargetForm
+from src.ui.target import TargetEdit, TargetForms
 from src.ui.dashboard import WelcomeMessage
 
 
@@ -21,7 +21,7 @@ class TargetPage(ft.UserControl):
                 width=1070,
                 controls=[
                     WelcomeMessage(),
-                    TargetForm(),
+                    TargetForms(),
                     ft.Container(
                         bgcolor="white",
                         height=270,
