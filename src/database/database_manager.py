@@ -1,16 +1,18 @@
 """Database Manager"""
 import sqlite3
-import database
+
+from src.database import Pemasukan, Pengeluaran, Transaksi, Target
+
 
 
 class DatabaseManager:
     """Class for database manager"""
 
     def __init__(self):
-        self.pemasukan = database.Pemasukan()
-        self.pengeluaran = database.Pengeluaran()
-        self.transaksi = database.Transaksi()
-        self.target = database.Target()
+        self.pemasukan = Pemasukan()
+        self.pengeluaran = Pengeluaran()
+        self.transaksi = Transaksi()
+        self.target = Target()
         self.connection = sqlite3.connect("BudgetWise.db")
         self.connection.row_factory = sqlite3.Row
         self.initialize_tables()
