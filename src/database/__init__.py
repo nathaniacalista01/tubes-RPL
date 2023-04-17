@@ -1,3 +1,3 @@
 """Database module for BudgetWise App"""
-from Database import *
-from database_manager import *
+from src.database.Database import *
+from src.database.database_manager import *

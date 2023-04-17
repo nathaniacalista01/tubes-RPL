@@ -2,6 +2,7 @@
 
 import flet as ft
 
+import src.database as db
 from src.ui.dashboard import Dashboard
 from src.ui.manage_transaction import ManageTransaction
 from src.ui.navbar import Navbar, NavbarItem
@@ -23,6 +24,8 @@ def main(page: ft.Page):
     page.bgcolor = "#2A3575"
 
     page_container = ft.Ref[ft.Stack]()
+    database = ft.Ref[db.DatabaseManager]()
+    database.current = db.DatabaseManager()
 
     def change_page(index: int):
         for view in page_container.current.controls:
@@ -33,7 +36,7 @@ def main(page: ft.Page):
     # Put the pages inside this list
     views = [
         Dashboard(expand=True),
-        ManageTransaction(expand=True),
+        ManageTransaction(db_ref=database, expand=True),
         TargetPage(expand=True),
         ft.Text("Article", size=50),
         ft.Text("Settings", size=50),
