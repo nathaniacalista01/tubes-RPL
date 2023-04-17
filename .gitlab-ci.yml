@@ -8,10 +8,10 @@ pylint:
   tags:
     - windows
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
-    - pip install pylint
+    - choco install python3 --params "/InstallDir:C:\Python310"
+    - C:\Python310\python -m pip install pylint
   script:
-    - pylint --fail-under 9.0 ./src
+    - C:\Python310\python -m pylint --fail-under 9.0 ./src
   artifacts:
     when: always
     paths:
@@ -20,12 +20,12 @@ pylint:
 black:
   stage: lint
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
-    - pip install black
+    - choco install python3 --params "/InstallDir:C:\Python310"
+    - C:\Python310\python -m pip install black
   tags:
     - windows
   script:
-    - black --check .
+    - C:\Python310\python -m black --check .
   artifacts:
     when: always
     paths:
@@ -34,12 +34,12 @@ black:
 test:
   stage: test
   before_script:
-    - SET PATH=%PATH%;C:\Python310\Scripts
-    - pip install -r requirements.txt
+    - choco install python3 --params "/InstallDir:C:\Python310"
+    - C:\Python310\python -m pip install -r requirements.txt
   tags:
     - windows
   script:
-    - python -m unittest discover
+    - C:\Python310\python -m unittest discover
   artifacts:
     when: always
     paths:
