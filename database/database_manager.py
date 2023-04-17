@@ -1,9 +1,9 @@
-"""Module that manage all databases"""
+"""Database Manager"""
 import sqlite3
 import database
 
 class DatabaseManager:
-    """Clas for database manager """
+    """Class for database manager """
     def __init__(self):
         self.pemasukan = database.Pemasukan()
         self.pengeluaran = database.Pengeluaran()
@@ -15,30 +15,31 @@ class DatabaseManager:
 
     def create_table(self, table):
         """Function to create new table"""
-        columns = ', '.join([f'{column} {description}' for column,
-                             description in zip(table.attributes, table.attributeDescription)])
+        columns = ', '.join([f'{column} {description}' for column, description in
+                             zip(table.attributes, table.attribute_description)])
         self.connection.execute(f"CREATE TABLE IF NOT EXISTS {table.name} ({columns})")
         self.commit_changes()
 
         if table.name == "Pemasukan":
-            self.insert_data(table.name, ["id_pemasukan", "nominal", "tanggal",
-                                          "kategori", "catatan"],
+            self.insert_data(table.name,
+                             ["id_pemasukan", "nominal", "tanggal", "kategori", "catatan"],
                               [9999, 9999, "2023-04-17", "dummy_kategori", "dummy_catatan"])
             self.delete_data(table.name, "id_pemasukan = 9999")
         elif table.name == "Pengeluaran":
-            self.insert_data(table.name, ["id_pengeluaran", "nominal", "tanggal",
-                                          "kategori", "catatan"],
-                              [19999, 19999, "2023-04-17", "dummy_kategori", "dummy_catatan"])
+            self.insert_data(table.name,
+                             ["id_pengeluaran", "nominal", "tanggal", "kategori", "catatan"],
+                             [19999, 19999, "2023-04-17", "dummy_kategori", "dummy_catatan"])
             self.delete_data(table.name, "id_pengeluaran = 19999")
         elif table.name == "Transaksi":
-            self.insert_data(table.name, ["id_transaksi", "tipe_transaksi", "id_sumber"],
-                              [29999, "pemasukan", 29999])
+            self.insert_data(table.name,
+                             ["id_transaksi", "tipe_transaksi", "id_sumber"],
+                             [29999, "pemasukan", 29999])
             self.delete_data(table.name, "id_transaksi = 29999")
         elif table.name == "Target":
-            self.insert_data(table.name, ["id_target", "judul", "nominal_target", "catatan",
-                                        "tanggal_dibuat", "tanggal_tercapai"], 
-                                        [89999,"dummy_judul", 0, "dummy_catatan", "2023-04-17",
-                                         "2023-04-17"])
+            self.insert_data(table.name,
+                             ["id_target", "judul", "nominal_target", "catatan",
+                               "tanggal_dibuat", "tanggal_tercapai"],
+                             [89999,"dummy_judul", 0, "dummy_catatan", "2023-04-17", "2023-04-17"])
             self.delete_data(table.name, "id_target = 89999")
         print(f"Table {table.name} created")
 
@@ -73,7 +74,7 @@ class DatabaseManager:
         print(f"Data deleted from {table_name}")
 
     def select_data(self, table_name, columns=None, condition=None):
-        """Function to delete data on some conditions"""
+        """Function to select data on some conditions"""
         column_list = '*' if columns is None else ','.join(columns)
         query = f"SELECT {column_list} FROM {table_name}"
         if condition is not None:
@@ -81,7 +82,7 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
-    def execurte_query(self, query):
+    def execute_query(self, query):
         """Function to execute query"""
         result = self.connection.execute(query)
         rows = result.fetchall()

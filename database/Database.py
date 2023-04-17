@@ -12,8 +12,8 @@ class Pemasukan(Database):
     def __init__(self):
         name = "Pemasukan"
         attributes = ["id_pemasukan", "nominal", "tanggal", "kategori", "catatan"]
-        attribute_description = ["INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 10000",
-                                "INTEGER", "TEXT", "TEXT", "TEXT"]
+        attribute_description = ["INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 10000", "INTEGER",
+                                  "TEXT", "TEXT", "TEXT"]
         super().__init__(name, attributes, attribute_description)
 
 class Transaksi(Database):
@@ -21,21 +21,17 @@ class Transaksi(Database):
     def __init__(self):
         name = "Transaksi"
         attributes = ["id_transaksi", "tipe_transaksi", "id_sumber"]
-        attribute_description = ["INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 30000",
-                                "TEXT", 
-                                "INTEGER REFERENCES Pemasukan(id_pemasukan) ON DELETE CASCADE"
-                                "FOREIGN KEY (id_sumber) REFERENCES Pengeluaran(id_pengeluaran)"
-                                "ON DELETE CASCADE"]
+        attribute_description = ["INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 30000", "TEXT","INTEGER REFERENCES Pemasukan(id_pemasukan) ON DELETE CASCADE, FOREIGN KEY (id_sumber) REFERENCES Pengeluaran(id_pengeluaran) ON DELETE CASCADE"]
         super().__init__(name, attributes, attribute_description)
 
 class Target(Database):
     """Class to handle Target Database"""
     def __init__(self):
         name = "Target"
-        attributes = ["id_target", "judul", "nominal_target", "catatan",
-                      "tanggal_dibuat", "tanggal_tercapai"]
+        attributes = ["id_target", "judul", "nominal_target",
+                      "catatan", "tanggal_dibuat", "tanggal_tercapai"]
         attribute_description = ["INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 90000",
-                                 "TEXT", "INTEGER", "TEXT", "TEXT", "TEXT"]
+                                  "TEXT", "INTEGER", "TEXT", "TEXT", "TEXT"]
         super().__init__(name, attributes, attribute_description)
 
 class Pengeluaran(Database):
@@ -46,4 +42,3 @@ class Pengeluaran(Database):
         attribute_description = ["INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 20000",
                                  "INTEGER", "TEXT", "TEXT", "TEXT"]
         super().__init__(name, attributes, attribute_description)
-        
