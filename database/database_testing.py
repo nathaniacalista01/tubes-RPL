@@ -1,7 +1,8 @@
-import DatabaseManager
+"""Driver for database"""
+import database_manager
 
 
-db = DatabaseManager.DatabaseManager()
+db = database_manager.DatabaseManager()
 # Contoh insert
 # columns = ["nominal", "tanggal", "kategori", "catatan"]
 # values = [1000, "2022-01-01", "Gaji", "Pembayaran gaji bulan Januari"]
@@ -29,7 +30,6 @@ for value in values:
 # rows = db.select_data("Pemasukan")
 # for row in rows:
 #     print(row["id_pemasukan"], row["nominal"], row["tanggal"], row["kategori"], row["catatan"])
-    
 # columns = ["nominal", "tanggal"]
 # rows = db.select_data("Pemasukan", columns)
 # for row in rows:
@@ -40,3 +40,4 @@ for value in values:
 rows = db.fetch_data('Pemasukan')
 for row in rows:
     print(row['id_pemasukan'], row['nominal'], row['tanggal'], row['kategori'], row['catatan'])
+    
