@@ -12,7 +12,7 @@ class DatabaseManager:
         self.pengeluaran = Pengeluaran()
         self.transaksi = Transaksi()
         self.target = Target()
-        self.connection = sqlite3.connect("BudgetWise.db")
+        self.connection = sqlite3.connect("BudgetWise.db", check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.initialize_tables()
 

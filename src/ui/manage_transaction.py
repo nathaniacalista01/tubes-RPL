@@ -177,6 +177,7 @@ class ManageTransaction(ft.UserControl):
         self.db_ref = db_ref
 
     def add_transaction(self, event: ft.ControlEvent):
+        """Function to insert new transaction into database"""
         data: Transaction = event.control.data
         database = self.db_ref.current
         if data.type == "Expense":

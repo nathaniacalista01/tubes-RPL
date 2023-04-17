@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 import flet as ft
 from flet.matplotlib_chart import MatplotlibChart
-
 from src.ui.target import TargetBox
 
 matplotlib.use("svg")
