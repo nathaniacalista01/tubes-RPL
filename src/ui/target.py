@@ -1,11 +1,13 @@
 """Target component module"""
 
 import datetime
+from typing import Optional, List
+
+from model import Target
 
 import flet as ft
 
-
-class Target(ft.UserControl):
+class Target_Box(ft.UserControl):
     """Budgetwise Target Component"""
 
     def __init__(
@@ -134,57 +136,79 @@ class Target(ft.UserControl):
                 ),
             ],
         )
-
-
-class TargetEdit(Target):
-    """Budgetwise Target Component"""
-
+    
+class Targets(ft.UserControl):
     def __init__(
         self,
-        target_title: str = "Target Title",
-        target_description: str = "Target Description",
-        percentage: float = 0.3,
-        start_date: datetime = datetime.date.today(),
-        end_date: datetime = datetime.date(
-            datetime.datetime.now().year + 1,
-            datetime.datetime.now().month,
-            datetime.datetime.now().day,
-        ),
-        icon: str = "fact_check",
+        targets: Optional[List[Target]] = None,
         **kwargs
     ):
         super().__init__(**kwargs)
-        self.target_title = target_title
-        self.target_description = target_description
-        self.percentage = percentage
-        self.start_date = start_date
-        self.end_date = end_date
-        self.icon = icon
+        self.targets = [] if targets is None else targets
+
+    def delete_target(self, e: ft.ControlEvent):
+        self.targets.pop(e.control.data)
+        self.controls = [self.build()]
+        self.update()
 
     def build(self):
-        return ft.Column(
-            controls=[
-                super().build(),
-                ft.Container(
-                    height=20,
-                    width=230,
-                    padding=ft.Padding(20, 0, 20, 0),
-                    content=ft.Row(
-                        controls=[
-                            ft.ElevatedButton(
-                                text="Edit", color="black", bgcolor="#D9D9D9", width=90
-                            ),
-                            ft.ElevatedButton(
-                                text="Delete",
-                                color="black",
-                                bgcolor="#D9D9D9",
-                                width=90,
-                            ),
-                        ]
-                    ),
-                ),
-            ]
-        )
+        return ft.Column(controls=[ft.Container(
+                        bgcolor="white",
+                        height=280,
+                        width=1100,
+                        padding=ft.padding.all(10),
+                        margin=ft.margin.only(top=10, right=20),
+                        border_radius=20,
+                        content=ft.Column(
+                            controls=[
+                                ft.Container(
+                                    content=ft.Text(value="Targets", size=20),
+                                    padding=ft.padding.only(left=10, top=5, right=10),
+                                ),
+                                ft.Container(
+                                    padding=ft.padding.only(bottom=10),
+                                    content=ft.Row(
+                                        scroll=ft.ScrollMode.HIDDEN,
+                                        width=890,
+                                        controls=[
+                                            ft.Column(
+                                                height=250,
+                                                controls=[
+                                                    Target_Box(
+                                                        target_title=t.judul,
+                                                        target_description=t.catatan,
+                                                        start_date=t.tanggal_dibuat,
+                                                        end_date=t.tanggal_tercapai,
+                                                    ),
+                                                    ft.Container(
+                                                        height=20,
+                                                        width=230,
+                                                        padding=ft.Padding(20, 0, 20, 0),
+                                                        content=ft.Row(
+                                                            controls=[
+                                                                ft.ElevatedButton(
+                                                                    text="Edit", color="black", bgcolor="#D9D9D9", width=90
+                                                                ),
+                                                                ft.ElevatedButton(
+                                                                    text="Delete",
+                                                                    color="black",
+                                                                    bgcolor="#D9D9D9",
+                                                                    width=90,
+                                                                    on_click=self.delete_target,
+                                                                    data=i
+                                                                ),
+                                                            ]
+                                                        ),
+                                                    ),
+                                                ]
+                                            ) for i, t in enumerate(self.targets)
+                                        ],
+                                    ),
+                                ),
+                            ],
+                        ),
+                    )]
+                    )
 
 class TargetForms(ft.UserControl):
     def __init__(
