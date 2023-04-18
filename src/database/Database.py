@@ -1,6 +1,4 @@
 """Handle BudgetWise's Database"""
-
-
 class Database:
     """Parent class for all other database's classes"""
 
@@ -58,8 +56,8 @@ class Target(Database):
             "TEXT",
             "INTEGER",
             "TEXT",
-            "TEXT",
-            "TEXT",
+            "DATE",
+            "DATE",
         ]
         super().__init__(name, attributes, attribute_description)
 
