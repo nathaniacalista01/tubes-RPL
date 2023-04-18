@@ -8,7 +8,8 @@ from typing import Literal
 @dataclass
 class Transaction:
     """Transaction model"""
-
+    id_transaksi : int
+    id_sumber : int
     category: str
     date: date
     amount: float

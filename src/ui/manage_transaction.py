@@ -1,7 +1,7 @@
 """Manage Transaction Page Module"""
 import locale
 from datetime import date
-from typing import Optional, List
+from typing import Optional, List,Any
 
 import flet as ft
 
@@ -19,6 +19,7 @@ class RecentTransactions(ft.UserControl):
         self,
         transactions: Optional[List[Transaction]] = None,
         form_ref: Optional[ft.Ref[TransactionsForms]] = None,
+        on_delete : Any = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -33,13 +34,8 @@ class RecentTransactions(ft.UserControl):
         self.transactions = [] if transactions is None else transactions
         self.table_ref = ft.Ref[ft.DataTable]()
         self.form_ref = form_ref
-
-    def delete_row(self, event: ft.ControlEvent):
-        """Function to delete row"""
-        self.transactions.pop(event.control.data)
-        self.table_ref.current.rows.pop(event.control.data)
-        self.controls = [self.build()]
-        self.update()
+        self.on_delete = on_delete
+    
 
     def edit_transaction(self, evt: ft.ControlEvent):
         """Event handler on transaction data edit"""
@@ -93,9 +89,7 @@ class RecentTransactions(ft.UserControl):
                                                         ),
                                                         ft.DataCell(
                                                             ft.Text(
-                                                                value=transaction.date.strftime(
-                                                                    "%x"
-                                                                ),
+                                                                value=transaction.date,
                                                                 text_align=ft.TextAlign.CENTER,
                                                                 color="#707EAF",
                                                                 weight=ft.FontWeight.W_600,
@@ -145,7 +139,7 @@ class RecentTransactions(ft.UserControl):
                                                                     ft.IconButton(
                                                                         ft.icons.DELETE_ROUNDED,
                                                                         icon_color="red",
-                                                                        on_click=self.delete_row,
+                                                                        on_click=self.on_delete,
                                                                         data=i,
                                                                     ),
                                                                 ],
@@ -175,14 +169,78 @@ class ManageTransaction(ft.UserControl):
         super().__init__(**kwargs)
         self.form_ref = ft.Ref[TransactionsForms]()
         self.db_ref = db_ref
+        self.type = ""
+        self.transactions_expense = db_ref.current.fetch_data("transaksi_pengeluaran")
+        self.transactions_income = db_ref.current.fetch_data("transaksi_pemasukan")
+        self.transactions = []
+        for rows in self.transactions_expense : 
+            new = Transaction(
+                id_transaksi=rows["id_transaksi"],
+                id_sumber=rows["id_pengeluaran"],
+                category=rows["kategori"],
+                date=rows["tanggal"],
+                amount=rows["nominal"],
+                notes=rows["catatan"],
+                type='Expense'
+            )
+            self.transactions.append(new)
+        for rows in self.transactions_income : 
+            new = Transaction(
+                id_transaksi=rows["id_transaksi"],
+                id_sumber=rows["id_pemasukan"],
+                category=rows["kategori"],
+                date=rows["tanggal"],
+                amount=rows["nominal"],
+                notes=rows["catatan"],
+                type='Income'
+            )
+            self.transactions.append(new)
+
+    def fetch_data(self):
+        """Procedure to fetch data from database"""
+        self.transactions_expense = self.db_ref.current.fetch_data("transaksi_pengeluaran")
+        self.transactions_income = self.db_ref.current.fetch_data("transaksi_pemasukan")
+        self.update()
+    
+    def add_transactions_list(self):
+        """Add new transactions into transactions list"""
+        if(self.type == "Income"):
+            income_data = self.transactions_income[len(self.transactions_income)-1]
+            new_income = Transaction(
+                id_transaksi=income_data["id_transaksi"],
+                id_sumber=income_data["id_pemasukan"],
+                category=income_data["kategori"],
+                date=income_data["tanggal"],
+                amount=income_data["nominal"],
+                notes=income_data["catatan"],
+                type="Income"
+            )
+            self.transactions.append(new_income)
+        else:
+            last_data = self.transactions_expense[len(self.transactions_expense)-1]
+            
+            new = Transaction(
+                id_transaksi=last_data["id_transaksi"],
+                id_sumber=last_data["id_pengeluaran"],
+                category=last_data["kategori"],
+                date=last_data["tanggal"],
+                amount=last_data["nominal"],
+                notes=last_data["catatan"],
+                type="Expense"
+            )
+            self.transactions.append(new)
+        self.controls=[self.build()]
+        self.update()
 
     def add_transaction(self, event: ft.ControlEvent):
         """Function to insert new transaction into database"""
         data: Transaction = event.control.data
         database = self.db_ref.current
         if data.type == "Expense":
+            self.type = "pengeluaran"
             table_name = database.pengeluaran.name
         else:
+            self.type = "Income"
             table_name = database.pemasukan.name
         inserted_data = database.insert_data(
             table_name=table_name,
@@ -203,6 +261,22 @@ class ManageTransaction(ft.UserControl):
                 inserted_data[0],
             ],
         )
+        self.fetch_data()
+        self.add_transactions_list()
+    
+    def delete_row(self, event: ft.ControlEvent):
+        """Function to delete row"""
+        deleted_item = self.transactions.pop(event.control.data)
+        transactions_query="id_transaksi="
+        self.db_ref.current.delete_data("Transaksi",f'{transactions_query}{deleted_item.id_transaksi}')
+        if(deleted_item.type == "Expense"):
+            expense_query  = "id_pengeluaran="
+            self.db_ref.current.delete_data("Pengeluaran",f'{expense_query}{deleted_item.id_sumber}')
+        else:
+            income_query = "id_pemasukan="
+            self.db_ref.current.delete_data("Pemasukan",f'{income_query}{deleted_item.id_sumber}')
+        self.controls = [self.build()]
+        self.update()
 
     def build(self):
         return ft.Column(
@@ -210,24 +284,9 @@ class ManageTransaction(ft.UserControl):
             controls=[
                 RecentTransactions(
                     expand=1,
-                    transactions=[
-                        Transaction(
-                            category="Shopping",
-                            date=date.today(),
-                            amount=65000,
-                            type="Expense",
-                            notes="Belanja IPhone di Singapura",
-                        )
-                        for _ in range(10)
-                        # Transaction(
-                        #     category="Utilities",
-                        #     time=date.today(),
-                        #     amount=46000,
-                        #     type="Income",
-                        #     notes="",
-                        # ),
-                    ],
+                    transactions=self.transactions,
                     form_ref=self.form_ref,
+                    on_delete = self.delete_row,
                 ),
                 TransactionsForms(
                     ref=self.form_ref,
