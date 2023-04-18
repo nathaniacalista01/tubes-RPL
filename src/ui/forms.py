@@ -96,6 +96,8 @@ class TransactionsForms(ft.UserControl):
     def submit(self, event: ft.ControlEvent):
         """Methods to submit new transactions"""
         event.control.data = model.Transaction(
+            id_transaksi=9000,
+            id_sumber=2000,
             type=self.type_dropdown.current.value,
             category=self.category_field.current.value,
             amount=float(self.amount_field.current.value)
