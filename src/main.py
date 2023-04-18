@@ -36,7 +36,7 @@ def main(page: ft.Page):
 
     # Put the pages inside this list
     views = [
-        Dashboard(expand=True),
+        Dashboard(expand=True, db_ref = database),
         ManageTransaction(db_ref=database, expand=True),
         TargetPage(db_ref = database,expand=True),
         ft.Text("Article", size=50),

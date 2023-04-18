@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import flet as ft
 from flet.matplotlib_chart import MatplotlibChart
 from src.ui.target import TargetBox
+import src.database as db
+import src.saldo as saldo
 
 matplotlib.use("svg")
 
@@ -41,28 +43,45 @@ class SaldoCard(ft.UserControl):
 
     def __init__(
         self,
+        value_saldo : saldo.Saldo,
         title: str = "Balances",
         total_income: str = "Total Income",
         total_expense: str = "Total Expense",
-        total_balance: str = "Total Balance",
+        balance_title: str = "Total Balance",
         **kwargs,
     ):
         super().__init__(**kwargs)
         self.title = title
         self.total_income = total_income
         self.total_expense = total_expense
-        self.total_balance = total_balance
+        self.balance_title = balance_title
+        self.saldo = value_saldo
+        self.income_value = value_saldo.get_income()
+        self.expense_value = value_saldo.get_expense()
+        self.total_balance = value_saldo.get_saldo()
+
+    def refresh_data(self,event:ft.ControlEvent):
+        self.income_value = self.saldo.get_income()
+        self.expense_value = self.saldo.get_expense()
+        self.total_balance = self.saldo.get_saldo()
+        self.update()
+        self.controls = [self.build()]
+        self.update()
 
     def build(self):
         return ft.Container(
             bgcolor="#FFFFFF",
-            padding=ft.Padding(20, 30, 20, 0),
+            padding=ft.Padding(20, 10, 20, 0),
             border_radius=20,
             content=ft.Row(
                 controls=[
                     ft.Column(
                         spacing=0,
                         controls=[
+                            ft.IconButton(
+                                icon=ft.icons.REFRESH,
+                                on_click=self.refresh_data
+                            ),
                             ft.Text(
                                 value=self.title,
                                 size=32,
@@ -75,7 +94,7 @@ class SaldoCard(ft.UserControl):
                             ),
                             # Masukin Jumlah Pemasukan
                             ft.Text(
-                                value="6.025.440,00",
+                                value=self.income_value,
                                 size=18,
                                 weight=ft.FontWeight.W_600,
                             ),
@@ -86,17 +105,17 @@ class SaldoCard(ft.UserControl):
                             ),
                             # Jumlah pengeluaran
                             ft.Text(
-                                value="4.502.440,00",
+                                value=self.expense_value ,
                                 size=18,
                                 weight=ft.FontWeight.W_600,
                             ),
                             ft.Text(
-                                value=self.total_balance,
+                                value=self.balance_title,
                                 size=18,
                                 color="#793DFD",
                             ),
                             ft.Text(
-                                value="2.000.000,00",
+                                value=self.total_balance,
                                 size=18,
                                 weight=ft.FontWeight.W_600,
                             ),
@@ -270,15 +289,16 @@ class SaldoOverview(ft.UserControl):
 class BalanceRow(ft.UserControl):
     """Row for balance that consist of two cards"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, nilai_saldo,**kwargs):
         super().__init__(**kwargs)
+        self.nilai_saldo = nilai_saldo
 
     def build(self):
         return ft.Row(
             spacing=24,
             controls=[
                 SaldoOverview(expand=True),
-                SaldoCard(width=260),
+                SaldoCard(width=260,value_saldo = self.nilai_saldo),
             ],
         )
 
@@ -412,14 +432,15 @@ class RecentTransactionTarget(ft.UserControl):
 class Dashboard(ft.UserControl):
     """Dashboard Component"""
 
-    def __init__(self, **kwargs):
+    def __init__(self,db_ref: ft.Ref[db.DatabaseManager] ,**kwargs):
         super().__init__(**kwargs)
+        self.saldo = saldo.Saldo(db_ref = db_ref)
 
     def build(self):
         return ft.Column(
             controls=[
                 WelcomeMessage(),
-                BalanceRow(expand=1),
+                BalanceRow(expand=1, nilai_saldo = self.saldo),
                 RecentTransactionTarget(expand=1),
             ]
         )
