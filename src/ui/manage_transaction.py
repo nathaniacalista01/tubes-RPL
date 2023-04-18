@@ -1,7 +1,7 @@
 """Manage Transaction Page Module"""
 import locale
 from datetime import date
-from typing import Optional, List
+from typing import Optional, List, Any
 
 import flet as ft
 
@@ -10,6 +10,88 @@ from src.model import Transaction
 from src.ui.forms import TransactionsForms
 
 locale.setlocale(locale.LC_ALL, "id_ID")
+
+
+class TransactionRow(ft.DataRow):
+    def __init__(
+        self,
+        transaction_data: Transaction,
+        on_edit: Any,
+        on_delete: Any,
+        row_idx: int,
+        **kwargs,
+    ):
+        self.ref = ft.Ref[ft.DataRow]()
+        self.row_idx = row_idx
+        self.transaction_data = transaction_data
+        self._on_edit = on_edit
+        self._on_delete = on_delete
+        super().__init__(
+            ref=self.ref,
+            cells=self.create_cells(),
+            **kwargs,
+        )
+
+    def create_cells(self):
+        return [
+            ft.DataCell(
+                ft.Text(
+                    value=self.transaction_data.category,
+                    text_align=ft.TextAlign.CENTER,
+                    color="#707EAF",
+                    weight=ft.FontWeight.W_600,
+                )
+            ),
+            ft.DataCell(
+                ft.Text(
+                    value=self.transaction_data.date.strftime("%x"),
+                    text_align=ft.TextAlign.CENTER,
+                    color="#707EAF",
+                    weight=ft.FontWeight.W_600,
+                )
+            ),
+            ft.DataCell(
+                ft.Text(
+                    value=locale.currency(self.transaction_data.amount, grouping=True),
+                    text_align=ft.TextAlign.CENTER,
+                    color="#707EAF",
+                    weight=ft.FontWeight.W_600,
+                )
+            ),
+            ft.DataCell(
+                ft.Image(
+                    src="images/notes.svg",
+                    tooltip=self.transaction_data.notes,
+                )
+            ),
+            ft.DataCell(
+                ft.Text(
+                    value=self.transaction_data.type,
+                    text_align=ft.TextAlign.CENTER,
+                    color="#F2428A" if self.transaction_data.type == "Expense" else "#0ADEA6",
+                    weight=ft.FontWeight.W_600,
+                )
+            ),
+            ft.DataCell(
+                ft.Row(
+                    spacing=0,
+                    controls=[
+                        ft.IconButton(
+                            ft.icons.EDIT,
+                            icon_color="amber",
+                            on_click=self._on_edit,
+                            data=self,
+                        ),
+                        ft.IconButton(
+                            ft.icons.DELETE_ROUNDED,
+                            icon_color="red",
+                            on_click=self._on_delete,
+                            data=self,
+                        ),
+                    ],
+                ),
+            ),
+        ]
 
 
 class RecentTransactions(ft.UserControl):
@@ -36,13 +118,30 @@ class RecentTransactions(ft.UserControl):
 
     def delete_row(self, event: ft.ControlEvent):
         """Function to delete row"""
-        self.transactions.pop(event.control.data)
-        self.table_ref.current.rows.pop(event.control.data)
+        self.transactions.pop(event.control.data.row_idx)
+        self.table_ref.current.rows.pop(event.control.data.row_idx)
         self.controls = [self.build()]
         self.update()
 
-    def edit_transaction(self, evt: ft.ControlEvent):
+    def edit_transaction(self, event: ft.ControlEvent):
         """Event handler on transaction data edit"""
+        add_transaction = self.form_ref.current.on_submit
+
+        def update_row(event2: ft.ControlEvent):
+            event.control.data.transaction_data = event2.control.data
+            event.control.data.ref.current.cells = event.control.data.create_cells()
+            event.control.data.ref.current.update()
+            self.form_ref.current.default_values = None
+            self.form_ref.current.title = "Add Transaction"
+            self.form_ref.current.on_submit = add_transaction
+            self.form_ref.current.controls = [self.form_ref.current.build()]
+            self.form_ref.current.update()
+
+        self.form_ref.current.default_values = event.control.data.transaction_data
+        self.form_ref.current.title = "Edit Transaction"
+        self.form_ref.current.on_submit = update_row
+        self.form_ref.current.controls = [self.form_ref.current.build()]
+        self.form_ref.current.update()
 
     def build(self):
         return ft.Container(
@@ -81,77 +180,11 @@ class RecentTransactions(ft.UserControl):
                                                 for header in self.headers
                                             ],
                                             rows=[
-                                                ft.DataRow(
-                                                    cells=[
-                                                        ft.DataCell(
-                                                            ft.Text(
-                                                                value=transaction.category,
-                                                                text_align=ft.TextAlign.CENTER,
-                                                                color="#707EAF",
-                                                                weight=ft.FontWeight.W_600,
-                                                            )
-                                                        ),
-                                                        ft.DataCell(
-                                                            ft.Text(
-                                                                value=transaction.date.strftime(
-                                                                    "%x"
-                                                                ),
-                                                                text_align=ft.TextAlign.CENTER,
-                                                                color="#707EAF",
-                                                                weight=ft.FontWeight.W_600,
-                                                            )
-                                                        ),
-                                                        ft.DataCell(
-                                                            ft.Text(
-                                                                value=locale.currency(
-                                                                    transaction.amount,
-                                                                    grouping=True,
-                                                                ),
-                                                                text_align=ft.TextAlign.CENTER,
-                                                                color="#707EAF",
-                                                                weight=ft.FontWeight.W_600,
-                                                            )
-                                                        ),
-                                                        ft.DataCell(
-                                                            ft.Image(
-                                                                src="images/notes.svg",
-                                                                tooltip=transaction.notes,
-                                                            )
-                                                        ),
-                                                        ft.DataCell(
-                                                            ft.Text(
-                                                                value=transaction.type,
-                                                                text_align=ft.TextAlign.CENTER,
-                                                                color="#F2428A"
-                                                                if transaction.type
-                                                                == "Expense"
-                                                                else "#0ADEA6",
-                                                                weight=ft.FontWeight.W_600,
-                                                            )
-                                                        ),
-                                                        ft.DataCell(
-                                                            ft.Row(
-                                                                spacing=0,
-                                                                controls=[
-                                                                    ft.IconButton(
-                                                                        ft.icons.EDIT,
-                                                                        icon_color="amber",
-                                                                        on_click=self.edit_transaction,
-                                                                        data=(
-                                                                            i,
-                                                                            transaction,
-                                                                        ),
-                                                                    ),
-                                                                    ft.IconButton(
-                                                                        ft.icons.DELETE_ROUNDED,
-                                                                        icon_color="red",
-                                                                        on_click=self.delete_row,
-                                                                        data=i,
-                                                                    ),
-                                                                ],
-                                                            ),
-                                                        ),
-                                                    ],
+                                                TransactionRow(
+                                                    transaction_data=transaction,
+                                                    row_idx=i,
+                                                    on_delete=self.delete_row,
+                                                    on_edit=self.edit_transaction,
                                                 )
                                                 for i, transaction in enumerate(
                                                     self.transactions
@@ -206,8 +239,13 @@ class ManageTransaction(ft.UserControl):
 
     def build(self):
         return ft.Column(
-            spacing=0,
+            spacing=24,
             controls=[
+                TransactionsForms(
+                    ref=self.form_ref,
+                    on_submit=self.add_transaction,
+                    title="Add Transaction",
+                ),
                 RecentTransactions(
                     expand=1,
                     transactions=[
@@ -228,11 +266,6 @@ class ManageTransaction(ft.UserControl):
                         # ),
                     ],
                     form_ref=self.form_ref,
-                ),
-                TransactionsForms(
-                    ref=self.form_ref,
-                    on_submit=self.add_transaction,
-                    expand=1,
                 ),
             ],
         )

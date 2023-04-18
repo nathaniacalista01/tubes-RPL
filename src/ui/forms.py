@@ -3,7 +3,9 @@ from datetime import date
 from typing import Optional, Any
 
 import flet as ft
+
 from src import model
+from src.model import Transaction
 
 
 class TransactionsForms(ft.UserControl):
@@ -11,6 +13,8 @@ class TransactionsForms(ft.UserControl):
 
     def __init__(
         self,
+        title: str,
+        default_values: Optional[Transaction] = None,
         ref: Optional[ft.Ref["TransactionsForms"]] = None,
         on_submit: Any = None,
         **kwargs
@@ -20,12 +24,19 @@ class TransactionsForms(ft.UserControl):
         self.amount_field = ft.Ref[ft.TextField]()
         self.notes_field = ft.Ref[ft.TextField]()
         self.type_dropdown = ft.Ref[ft.Dropdown]()
-        self.ref = ref
         self.on_submit = on_submit
         self.valid = False
+        self.title = title
+        self.default_values = default_values
+        self.ref = ref
+        self.ref.current = self
 
     @staticmethod
-    def dropdown(name: str, ref=Optional[ft.Ref[ft.Dropdown]]):
+    def dropdown(
+        name: str,
+        ref=Optional[ft.Ref[ft.Dropdown]],
+        value: Optional[str] = None,
+    ):
         """Produce dropdown for transaction type"""
         return ft.Container(
             expand=True,
@@ -39,6 +50,7 @@ class TransactionsForms(ft.UserControl):
                 controls=[
                     ft.Dropdown(
                         ref=ref,
+                        value=value,
                         expand=True,
                         border_color="transparent",
                         height=30,
@@ -62,6 +74,7 @@ class TransactionsForms(ft.UserControl):
         ref: Optional[ft.Ref[ft.TextField]] = None,
         kbd_type: ft.KeyboardType = ft.KeyboardType.TEXT,
         on_change: Any = None,
+        value: Optional[str] = None,
     ):
         """Component for new input for a form"""
         return ft.Container(
@@ -76,6 +89,7 @@ class TransactionsForms(ft.UserControl):
                 controls=[
                     ft.TextField(
                         ref=ref,
+                        value=value,
                         border_color="transparent",
                         keyboard_type=kbd_type,
                         on_change=on_change,
@@ -125,12 +139,20 @@ class TransactionsForms(ft.UserControl):
                 expand=True,
                 controls=[
                     ft.Text(
-                        value="Add Transactions",
+                        value=self.title,
                         size=32,
                         weight=ft.FontWeight.W_600,
                     ),
                     ft.Row(
-                        controls=[self.new_forms(name="Notes", ref=self.notes_field)]
+                        controls=[
+                            self.new_forms(
+                                name="Notes",
+                                ref=self.notes_field,
+                                value=None
+                                if self.default_values is None
+                                else self.default_values.notes,
+                            ),
+                        ],
                     ),
                     ft.Row(
                         controls=[
@@ -139,10 +161,25 @@ class TransactionsForms(ft.UserControl):
                                 ref=self.amount_field,
                                 kbd_type=ft.KeyboardType.NUMBER,
                                 on_change=self.validate,
+                                value=None
+                                if self.default_values is None
+                                else str(self.default_values.amount),
                             ),
-                            self.new_forms(name="Category", ref=self.category_field),
-                            self.dropdown(name="Type", ref=self.type_dropdown),
-                        ]
+                            self.new_forms(
+                                name="Category",
+                                ref=self.category_field,
+                                value=None
+                                if self.default_values is None
+                                else str(self.default_values.category),
+                            ),
+                            self.dropdown(
+                                name="Type",
+                                ref=self.type_dropdown,
+                                value=None
+                                if self.default_values is None
+                                else str(self.default_values.type),
+                            ),
+                        ],
                     ),
                     ft.Row(
                         alignment=ft.MainAxisAlignment.END,
@@ -151,9 +188,8 @@ class TransactionsForms(ft.UserControl):
                                 width=100,
                                 bgcolor="#6761B9",
                                 color="white",
-                                text="Add",
+                                text="Submit",
                                 on_click=self.submit,
-                                disabled=self.valid,
                             ),
                         ],
                     ),
