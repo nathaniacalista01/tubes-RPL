@@ -74,7 +74,6 @@ class TransactionsForms(ft.UserControl):
             content=ft.Column(
                 spacing=1,
                 controls=[
-                    # Text(value=name,size=9,color="black",weight="bold"),
                     ft.TextField(
                         ref=ref,
                         border_color="transparent",
@@ -95,6 +94,7 @@ class TransactionsForms(ft.UserControl):
         )
 
     def submit(self, event: ft.ControlEvent):
+        """Methods to submit new transactions"""
         event.control.data = model.Transaction(
             type=self.type_dropdown.current.value,
             category=self.category_field.current.value,
@@ -107,6 +107,7 @@ class TransactionsForms(ft.UserControl):
         self.on_submit(event)
 
     def validate(self, event: ft.ControlEvent):
+        """Function to validate user input for transactions"""
         try:
             float(event.control.value)
         except ValueError:

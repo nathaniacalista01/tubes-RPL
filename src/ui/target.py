@@ -1,11 +1,10 @@
 """Target component module"""
-
 import datetime
-from typing import Optional, List
-
-from src.model import Target
+from typing import Optional, Any, List
 
 import flet as ft
+from src.model import Target
+from src import model
 
 
 class TargetBox(ft.UserControl):
@@ -117,15 +116,11 @@ class TargetBox(ft.UserControl):
                                         spacing=2,
                                         controls=[
                                             ft.Text(
-                                                value=self.start_date.strftime(
-                                                    "%d %B %Y"
-                                                ),
+                                                value=self.start_date,
                                                 size=9,
                                             ),
                                             ft.Text(
-                                                value=self.end_date.strftime(
-                                                    "%d %B %Y"
-                                                ),
+                                                value=self.end_date,
                                                 size=9,
                                             ),
                                         ],
@@ -140,14 +135,12 @@ class TargetBox(ft.UserControl):
 
 
 class Targets(ft.UserControl):
-    def __init__(self, targets: Optional[List[Target]] = None, **kwargs):
+    """List of Target component"""
+
+    def __init__(self, targets: Optional[List[Target]] = None, on_delete : Any = None,**kwargs):
         super().__init__(**kwargs)
         self.targets = [] if targets is None else targets
-
-    def delete_target(self, e: ft.ControlEvent):
-        self.targets.pop(e.control.data)
-        self.controls = [self.build()]
-        self.update()
+        self.on_delete = on_delete
 
     def build(self):
         return ft.Column(
@@ -197,7 +190,7 @@ class Targets(ft.UserControl):
                                                                 color="black",
                                                                 bgcolor="#D9D9D9",
                                                                 width=90,
-                                                                on_click=self.delete_target,
+                                                                on_click=self.on_delete,
                                                                 data=i,
                                                             ),
                                                         ]
@@ -221,20 +214,26 @@ class TargetForms(ft.UserControl):
 
     def __init__(
         self,
-        title: str = "Title",
-        nominal: float = 0.0,
-        target_date: datetime = datetime.date.today(),
-        description: str = "Description",
+        ref: Optional[ft.Ref["TargetForms"]] = None,
+        on_submit: Any = None,
         **kwargs
     ):
         super().__init__(**kwargs)
-        self.title = title
-        self.nominal = nominal
-        self.target_date = target_date
-        self.description = description
+        self.title = ft.Ref[ft.TextField]()
+        self.nominal = ft.Ref[ft.TextField]()
+        self.target_date = ft.Ref[ft.TextField]()
+        self.description = ft.Ref[ft.TextField]()
+        self.ref = ref
+        self.on_submit = on_submit
+        self.temp = ft.Ref[Any]
 
     @staticmethod
-    def new_forms(name: str, keyboard_type: ft.KeyboardType):
+    def new_forms(
+        name: str,
+        keyboard_type: ft.KeyboardType.TEXT,
+        ref: Optional[ft.Ref[ft.TextField]] = None,
+        on_change: Any = None,
+    ):
         """Components for new form's input"""
         return ft.Container(
             expand=True,
@@ -247,6 +246,8 @@ class TargetForms(ft.UserControl):
                 spacing=1,
                 controls=[
                     ft.TextField(
+                        ref=ref,
+                        on_change=on_change,
                         border_color="transparent",
                         height=30,
                         text_size=13,
@@ -264,7 +265,7 @@ class TargetForms(ft.UserControl):
         )
 
     @staticmethod
-    def desc_forms(name: str):
+    def desc_forms(name: str, ref=Optional[ft.Ref[ft.TextField]]):
         """Component for forms' descriptions"""
         return ft.Container(
             expand=True,
@@ -279,6 +280,7 @@ class TargetForms(ft.UserControl):
                     ft.TextField(
                         border_color="transparent",
                         height=65,
+                        ref=ref,
                         text_size=13,
                         label=name,
                         label_style=ft.TextStyle(size=13),
@@ -292,6 +294,25 @@ class TargetForms(ft.UserControl):
                 ],
             ),
         )
+
+    def submit(self, event: ft.ControlEvent):
+        """Handle submit event from targets"""
+        event.control.data = model.Target(
+            id_target=30000,
+            judul=self.title.current.value,
+            nominal_target=self.nominal.current.value,
+            catatan=self.description.current.value,
+            tanggal_dibuat=datetime.date.today(),
+            tanggal_tercapai=datetime.datetime.strptime(
+                self.target_date.current.value, "%d-%m-%Y"
+            ).date(),
+        )
+        self.title.current.value = ""
+        self.nominal.current.value = ""
+        self.description.current.value = ""
+        self.target_date.current.value = ""
+        self.update()
+        self.on_submit(event)
 
     def build(self):
         return ft.Container(
@@ -311,12 +332,24 @@ class TargetForms(ft.UserControl):
                     ),
                     ft.Row(
                         controls=[
-                            self.new_forms("Title", ft.KeyboardType.TEXT),
-                            self.new_forms("Nominal", ft.KeyboardType.NUMBER),
-                            self.new_forms("Target Date", ft.KeyboardType.DATETIME),
+                            self.new_forms(
+                                "Title", ft.KeyboardType.TEXT, ref=self.title
+                            ),
+                            self.new_forms(
+                                "Nominal", ft.KeyboardType.NUMBER, ref=self.nominal
+                            ),
+                            self.new_forms(
+                                "Target Date (DD-MM-YYYY)",
+                                ft.KeyboardType.DATETIME,
+                                ref=self.target_date,
+                            ),
                         ]
                     ),
-                    ft.Row(controls=[self.desc_forms(self.description)]),
+                    ft.Row(
+                        controls=[
+                            self.desc_forms(name="Descriptions", ref=self.description)
+                        ]
+                    ),
                     ft.Row(
                         alignment=ft.MainAxisAlignment.END,
                         controls=[
@@ -325,6 +358,7 @@ class TargetForms(ft.UserControl):
                                 bgcolor="#6761B9",
                                 color="white",
                                 text="Add",
+                                on_click=self.submit,
                             ),
                         ],
                     ),
