@@ -1,5 +1,4 @@
 """Target Page module"""
-import datetime
 import flet as ft
 import src.database as db
 from src.ui.target import TargetForms, Targets
