@@ -253,7 +253,7 @@ class TargetForms(ft.UserControl):
                         text_size=13,
                         label=name,
                         label_style=ft.TextStyle(size=13),
-                        content_padding=ft.padding.only(top=30),
+                        content_padding=ft.padding.only(top=30,left=5),
                         cursor_color="black",
                         cursor_width=1,
                         cursor_height=18,
@@ -305,11 +305,11 @@ class TargetForms(ft.UserControl):
         except ValueError:
             valid_date = False
 
-        if (valid_date):
+        if (valid_date and self.nominal.current.value.isdigit() and self.title.current.value):
             event.control.data = model.Target(
                 id_target=30000,
                 judul=self.title.current.value,
-                nominal_target=self.nominal.current.value,
+                nominal_target=int(self.nominal.current.value),
                 catatan=self.description.current.value,
                 tanggal_dibuat=datetime.date.today(),
                 tanggal_tercapai=datetime.datetime.strptime(
@@ -324,7 +324,12 @@ class TargetForms(ft.UserControl):
             self.update()
             self.on_submit(event)
         else:
-            self.target_date.current.error_text = "Invalid date format"
+            if (not valid_date):
+                self.target_date.current.error_text = "Invalid date format"
+            if (not self.nominal.current.value.isdigit()):
+                self.nominal.current.error_text = "Nominal must be an integer"
+            if (not self.title.current.value):
+                self.title.current.error_text = "Title cannot be empty"
             self.controls = [self.build()]
             self.update()
 
