@@ -249,7 +249,7 @@ class TargetForms(ft.UserControl):
                         ref=ref,
                         on_change=on_change,
                         border_color="transparent",
-                        height=30,
+                        height=55,
                         text_size=13,
                         label=name,
                         label_style=ft.TextStyle(size=13),
@@ -259,6 +259,7 @@ class TargetForms(ft.UserControl):
                         cursor_height=18,
                         color="black",
                         keyboard_type=keyboard_type,
+                        error_text=ref.current.error_text if ref.current is not None else None,
                     )
                 ],
             ),
@@ -297,22 +298,35 @@ class TargetForms(ft.UserControl):
 
     def submit(self, event: ft.ControlEvent):
         """Handle submit event from targets"""
-        event.control.data = model.Target(
-            id_target=30000,
-            judul=self.title.current.value,
-            nominal_target=self.nominal.current.value,
-            catatan=self.description.current.value,
-            tanggal_dibuat=datetime.date.today(),
-            tanggal_tercapai=datetime.datetime.strptime(
+        try:
+            valid_date = bool(datetime.datetime.strptime(
                 self.target_date.current.value, "%d-%m-%Y"
-            ).date(),
-        )
-        self.title.current.value = ""
-        self.nominal.current.value = ""
-        self.description.current.value = ""
-        self.target_date.current.value = ""
-        self.update()
-        self.on_submit(event)
+            ))
+        except ValueError:
+            valid_date = False
+
+        if (valid_date):
+            event.control.data = model.Target(
+                id_target=30000,
+                judul=self.title.current.value,
+                nominal_target=self.nominal.current.value,
+                catatan=self.description.current.value,
+                tanggal_dibuat=datetime.date.today(),
+                tanggal_tercapai=datetime.datetime.strptime(
+                    self.target_date.current.value, "%d-%m-%Y"
+                ).date(),
+            )
+            self.title.current.value = ""
+            self.nominal.current.value = ""
+            self.description.current.value = ""
+            self.target_date.current.value = ""
+            self.target_date.current.error_text = None
+            self.update()
+            self.on_submit(event)
+        else:
+            self.target_date.current.error_text = "Invalid date format"
+            self.controls = [self.build()]
+            self.update()
 
     def build(self):
         return ft.Container(
