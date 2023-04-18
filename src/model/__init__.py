@@ -19,6 +19,7 @@ class Transaction:
 @dataclass
 class Target:
     """Target model"""
+    id_target : int
     judul: str
     nominal_target: int
     catatan: str

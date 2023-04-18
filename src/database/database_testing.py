@@ -1,6 +1,5 @@
 """Driver for database"""
-import database_manager
-
+import src.database.database_manager as database_manager
 
 db = database_manager.DatabaseManager()
 # Contoh insert

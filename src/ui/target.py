@@ -137,15 +137,10 @@ class TargetBox(ft.UserControl):
 class Targets(ft.UserControl):
     """List of Target component"""
 
-    def __init__(self, targets: Optional[List[Target]] = None, **kwargs):
+    def __init__(self, targets: Optional[List[Target]] = None, on_delete : Any = None,**kwargs):
         super().__init__(**kwargs)
         self.targets = [] if targets is None else targets
-
-    def delete_target(self, event: ft.ControlEvent):
-        """Function to delete target"""
-        self.targets.pop(event.control.data)
-        self.controls = [self.build()]
-        self.update()
+        self.on_delete = on_delete
 
     def build(self):
         return ft.Column(
@@ -195,7 +190,7 @@ class Targets(ft.UserControl):
                                                                 color="black",
                                                                 bgcolor="#D9D9D9",
                                                                 width=90,
-                                                                on_click=self.delete_target,
+                                                                on_click=self.on_delete,
                                                                 data=i,
                                                             ),
                                                         ]
@@ -303,6 +298,7 @@ class TargetForms(ft.UserControl):
     def submit(self, event: ft.ControlEvent):
         """Handle submit event from targets"""
         event.control.data = model.Target(
+            id_target=30000,
             judul=self.title.current.value,
             nominal_target=self.nominal.current.value,
             catatan=self.description.current.value,
