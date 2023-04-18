@@ -39,9 +39,9 @@ class TransactionsForms(ft.UserControl):
                 controls=[
                     ft.Dropdown(
                         ref=ref,
-                        expand=True,
+                        # expand=True,
                         border_color="transparent",
-                        height=30,
+                        height=55,
                         text_size=13,
                         label_style=ft.TextStyle(size=13),
                         label=name,
@@ -51,6 +51,7 @@ class TransactionsForms(ft.UserControl):
                             ft.dropdown.Option("Expense"),
                             ft.dropdown.Option("Income"),
                         ],
+                        error_text=ref.current.error_text if ref.current is not None else None,
                     )
                 ],
             ),
@@ -79,7 +80,7 @@ class TransactionsForms(ft.UserControl):
                         border_color="transparent",
                         keyboard_type=kbd_type,
                         on_change=on_change,
-                        height=30,
+                        height=55,
                         text_size=13,
                         label=name,
                         label_style=ft.TextStyle(size=13),
@@ -88,6 +89,7 @@ class TransactionsForms(ft.UserControl):
                         cursor_width=1,
                         cursor_height=18,
                         color="black",
+                        error_text=ref.current.error_text if ref.current is not None else None,
                     )
                 ],
             ),
@@ -95,25 +97,37 @@ class TransactionsForms(ft.UserControl):
 
     def submit(self, event: ft.ControlEvent):
         """Methods to submit new transactions"""
-        event.control.data = model.Transaction(
-            id_transaksi=9000,
-            id_sumber=2000,
-            type=self.type_dropdown.current.value,
-            category=self.category_field.current.value,
-            amount=float(self.amount_field.current.value)
-            if self.amount_field.current.value != ""
-            else 0,
-            notes=self.notes_field.current.value,
-            date=date.today(),
-        )
-        self.on_submit(event)
+        if (self.type_dropdown.current.value and 
+            self.category_field.current.value and 
+            self.amount_field.current.value.isdigit()):
+            event.control.data = model.Transaction(
+                id_transaksi=9000,
+                id_sumber=2000,
+                type=self.type_dropdown.current.value,
+                category=self.category_field.current.value,
+                amount=float(self.amount_field.current.value)
+                if self.amount_field.current.value != ""
+                else 0,
+                notes=self.notes_field.current.value,
+                date=date.today(),
+            )
+            self.type_dropdown.current.value = ""
+            self.category_field.current.value = ""
+            self.amount_field.current.value = ""
+            self.on_submit(event)
+        else:
+            self.type_dropdown.current.error_text="Please select a type" if not self.type_dropdown.current.value else None
+            self.category_field.current.error_text="Category cannot be empty" if not self.category_field.current.value else None
+            self.amount_field.current.error_text="Amount must be a number" if not self.amount_field.current.value.isdigit() else None
+            self.controls = [self.build()]
+            self.update()
 
-    def validate(self, event: ft.ControlEvent):
-        """Function to validate user input for transactions"""
-        try:
-            float(event.control.value)
-        except ValueError:
-            self.valid = True
+    # def validate(self, event: ft.ControlEvent):
+    #     """Function to validate user input for transactions"""
+    #     try:
+    #         float(event.control.value)
+    #     except ValueError:
+    #         self.valid = True
 
     def build(self):
         return ft.Container(
@@ -140,7 +154,7 @@ class TransactionsForms(ft.UserControl):
                                 name="Amount",
                                 ref=self.amount_field,
                                 kbd_type=ft.KeyboardType.NUMBER,
-                                on_change=self.validate,
+                                # on_change=self.validate,
                             ),
                             self.new_forms(name="Category", ref=self.category_field),
                             self.dropdown(name="Type", ref=self.type_dropdown),
@@ -155,7 +169,7 @@ class TransactionsForms(ft.UserControl):
                                 color="white",
                                 text="Add",
                                 on_click=self.submit,
-                                disabled=self.valid,
+                                # disabled=self.valid,
                             ),
                         ],
                     ),

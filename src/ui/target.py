@@ -324,12 +324,9 @@ class TargetForms(ft.UserControl):
             self.update()
             self.on_submit(event)
         else:
-            if (not valid_date):
-                self.target_date.current.error_text = "Invalid date format"
-            if (not self.nominal.current.value.isdigit()):
-                self.nominal.current.error_text = "Nominal must be an integer"
-            if (not self.title.current.value):
-                self.title.current.error_text = "Title cannot be empty"
+            self.target_date.current.error_text = "Invalid date format" if not valid_date else None
+            self.nominal.current.error_text = "Nominal must be an integer" if not self.nominal.current.value.isdigit() else None
+            self.title.current.error_text = "Title cannot be empty" if not self.title.current.value else None
             self.controls = [self.build()]
             self.update()
 
