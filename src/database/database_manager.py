@@ -1,4 +1,5 @@
 """Database Manager"""
+import os.path
 import sqlite3
 
 from src.database import Pemasukan, Pengeluaran, Transaksi, Target
@@ -12,7 +13,8 @@ class DatabaseManager:
         self.pengeluaran = Pengeluaran()
         self.transaksi = Transaksi()
         self.target = Target()
-        self.connection = sqlite3.connect("BudgetWise.db", check_same_thread=False)
+        filepath = os.path.join(os.path.dirname(__file__), "BudgetWise.db")
+        self.connection = sqlite3.connect(filepath, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.initialize_tables()
 
@@ -118,7 +120,7 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
-    
+
     def create_transactions_expense_view(self):
         """Function to create view of 2 tables"""
         query = """
@@ -185,25 +187,32 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
+
     def get_income(self):
         """Get income"""
-        total_pemasukan = self.execute_query("SELECT SUM(nominal) FROM Pemasukan")[0]["SUM(nominal)"]
-        if(total_pemasukan):
+        total_pemasukan = self.execute_query("SELECT SUM(nominal) FROM Pemasukan")[0][
+            "SUM(nominal)"
+        ]
+        if total_pemasukan:
             pass
-        else : 
+        else:
             total_pemasukan = 0
         return total_pemasukan
+
     def get_expense(self):
         """Get expense"""
-        total_pengeluaran = self.execute_query("SELECT SUM(nominal) FROM Pengeluaran")[0]["SUM(nominal)"]
-        if(total_pengeluaran):
+        total_pengeluaran = self.execute_query("SELECT SUM(nominal) FROM Pengeluaran")[
+            0
+        ]["SUM(nominal)"]
+        if total_pengeluaran:
             pass
         else:
             total_pengeluaran = 0
         return total_pengeluaran
+
     def get_saldo(self):
         """Get saldo"""
-        return (self.get_income() - self.get_expense())
+        return self.get_income() - self.get_expense()
 
     def group_expense_by_category(self):
         """Group by category"""
@@ -215,21 +224,32 @@ class DatabaseManager:
                 """
         result = self.connection.execute(query)
         data = []
-        for rows in result : 
-            data.append({'kategori' : rows["kategori"],'total':rows["total"],
-                         'persen' : rows["total"]/self.get_expense()*100})
-        if(len(data) < 3):
+        for rows in result:
+            data.append(
+                {
+                    "kategori": rows["kategori"],
+                    "total": rows["total"],
+                    "persen": rows["total"] / self.get_expense() * 100,
+                }
+            )
+        if len(data) < 3:
             return data
         else:
             total = 0
-            for item in data : 
+            for item in data:
                 total += item["total"]
-            if(total < self.get_expense()):
+            if total < self.get_expense():
                 other_value = self.get_expense() - total
-                data.append({'kategori' : 'other','total' : other_value,'persen' :other_value/self.get_expense()*100 })
+                data.append(
+                    {
+                        "kategori": "other",
+                        "total": other_value,
+                        "persen": other_value / self.get_expense() * 100,
+                    }
+                )
                 return data
             return data
-    
+
     def group_income_by_category(self):
         """Group by category"""
         query = """
@@ -240,17 +260,28 @@ class DatabaseManager:
                 """
         result = self.connection.execute(query)
         data = []
-        for rows in result : 
-            data.append({'kategori' : rows["kategori"],'total':rows["total"],
-                         'persen' : rows["total"]/self.get_expense()*100})
-        if(len(data) < 3):
+        for rows in result:
+            data.append(
+                {
+                    "kategori": rows["kategori"],
+                    "total": rows["total"],
+                    "persen": rows["total"] / self.get_income() * 100,
+                }
+            )
+        if len(data) < 3:
             return data
         else:
             total = 0
-            for item in data : 
+            for item in data:
                 total += item["total"]
-            if(total < self.get_expense()):
-                other_value = self.get_expense() - total
-                data.append({'kategori' : 'other','total' : other_value,'persen' :other_value/self.get_expense()*100 })
+            if total < self.get_income():
+                other_value = self.get_income() - total
+                data.append(
+                    {
+                        "kategori": "other",
+                        "total": other_value,
+                        "persen": other_value / self.get_income() * 100,
+                    }
+                )
                 return data
             return data
