@@ -1,4 +1,5 @@
 """Database Manager"""
+import os.path
 import sqlite3
 
 from src.database import Pemasukan, Pengeluaran, Transaksi, Target
@@ -12,7 +13,8 @@ class DatabaseManager:
         self.pengeluaran = Pengeluaran()
         self.transaksi = Transaksi()
         self.target = Target()
-        self.connection = sqlite3.connect("BudgetWise.db", check_same_thread=False)
+        filepath = os.path.join(os.path.dirname(__file__), "BudgetWise.db")
+        self.connection = sqlite3.connect(filepath, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.initialize_tables()
 
@@ -72,6 +74,8 @@ class DatabaseManager:
         self.create_table(self.pengeluaran)
         self.create_table(self.transaksi)
         self.create_table(self.target)
+        self.create_transactions_expense_view()
+        self.create_transactions_income_view()
 
     def insert_data(self, table_name, columns, values, returning=False):
         """Function to insert data"""
@@ -116,6 +120,28 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
+
+    def create_transactions_expense_view(self):
+        """Function to create view of 2 tables"""
+        query = """
+                    create view if not exists transaksi_pengeluaran  as
+                    select t.id_transaksi,t.tipe_transaksi,p.id_pengeluaran
+                    ,p.nominal,p.tanggal,p.kategori,p.catatan
+                    from Transaksi as t, Pengeluaran as p
+                    where t.id_sumber = p.id_pengeluaran; 
+                """
+        self.connection.execute(query)
+
+    def create_transactions_income_view(self):
+        """Procedure to create view of transactions and income"""
+        query = """
+                    create view if not exists transaksi_pemasukan  as
+                    select t.id_transaksi,t.tipe_transaksi,p.id_pemasukan
+                    ,p.nominal,p.tanggal,p.kategori,p.catatan
+                    from Transaksi as t, Pemasukan as p
+                    where t.id_sumber = p.id_pemasukan;
+                """
+        self.connection.execute(query)
 
     def execute_query(self, query):
         """Function to execute query"""

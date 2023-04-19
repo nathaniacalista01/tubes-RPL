@@ -8,6 +8,7 @@ from src.ui.manage_transaction import ManageTransaction
 from src.ui.navbar import Navbar, NavbarItem
 from src.ui.profile_card import ProfileCard
 from src.ui.target_page import TargetPage
+from src.ui.settings import SettingsPage
 
 
 def main(page: ft.Page):
@@ -37,9 +38,9 @@ def main(page: ft.Page):
     views = [
         Dashboard(expand=True),
         ManageTransaction(db_ref=database, expand=True),
-        TargetPage(db_ref = database,expand=True),
+        TargetPage(db_ref=database, expand=True),
         ft.Text("Article", size=50),
-        ft.Text("Settings", size=50),
+        SettingsPage(expand=True),
     ]
 
     page.add(
