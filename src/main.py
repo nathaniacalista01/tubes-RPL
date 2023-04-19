@@ -11,6 +11,7 @@ from src.ui.target_page import TargetPage
 from src.ui.settings import SettingsPage
 from src.saldo import Saldo
 
+
 def main(page: ft.Page):
     """Main entry point for Flet App"""
     page.fonts = {
@@ -37,9 +38,9 @@ def main(page: ft.Page):
     saldo = Saldo(db_ref=database)
     # Put the pages inside this list
     views = [
-        Dashboard(expand=True, db_ref = database,saldo=saldo),
+        Dashboard(expand=True, db_ref=database, saldo=saldo),
         ManageTransaction(db_ref=database, expand=True),
-        TargetPage(db_ref = database,expand=True,saldo_value = saldo),
+        TargetPage(db_ref=database, expand=True, saldo_value=saldo),
         ft.Text("Article", size=50),
         SettingsPage(expand=True),
     ]

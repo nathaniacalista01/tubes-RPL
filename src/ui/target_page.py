@@ -10,7 +10,9 @@ from src.model import Target
 class TargetPage(ft.UserControl):
     """Budgetwise Target Page"""
 
-    def __init__(self, db_ref: ft.Ref[db.DatabaseManager],saldo_value :Saldo,  **kwargs):
+    def __init__(
+        self, db_ref: ft.Ref[db.DatabaseManager], saldo_value: Saldo, **kwargs
+    ):
         super().__init__(**kwargs)
         self.form_ref = ft.Ref[TargetForms]()
         self.db_ref = db_ref
@@ -86,7 +88,11 @@ class TargetPage(ft.UserControl):
             content=ft.Column(
                 controls=[
                     TargetForms(ref=self.form_ref, on_submit=self.add_target),
-                    Targets(targets=self.list_of_targets,on_delete = self.delete_target, saldo_value = self.saldo_value),
+                    Targets(
+                        targets=self.list_of_targets,
+                        on_delete=self.delete_target,
+                        saldo_value=self.saldo_value,
+                    ),
                 ],
             ),
         )
