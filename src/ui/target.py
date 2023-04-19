@@ -195,7 +195,9 @@ class TargetForms(ft.UserControl):
                                 ref=self.target_date,
                                 value=None
                                 if self.default_values is None
-                                else self.default_values.tanggal_tercapai.strftime("%d-%m-%Y"),
+                                else self.default_values.tanggal_tercapai.strftime(
+                                    "%d-%m-%Y"
+                                ),
                             ),
                         ]
                     ),

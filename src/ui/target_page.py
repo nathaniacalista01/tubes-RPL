@@ -114,7 +114,9 @@ class TargetPage(ft.UserControl):
             ],
             condition=f"id_target = {data.id_target}",
         )
-        idx = list(map(lambda x: x.id_target, self.list_of_targets)).index(event.control.data.id_target)
+        idx = list(map(lambda x: x.id_target, self.list_of_targets)).index(
+            event.control.data.id_target
+        )
         self.list_of_targets[idx] = event.control.data
         self.controls = [self.build()]
         self.update()
