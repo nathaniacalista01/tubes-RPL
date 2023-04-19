@@ -19,7 +19,7 @@ def main(page: ft.Page):
         "Istok Web": "fonts/IstokWeb-Regular.ttf",
     }
 
-    page.title = "Flet counter example"
+    page.title = "BudgetWise Financial Management App"
     page.padding = 0
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.theme = ft.Theme(font_family="Nunito")
