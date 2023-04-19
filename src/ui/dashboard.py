@@ -61,7 +61,8 @@ class SaldoCard(ft.UserControl):
         self.expense_value = saldo_value.get_expense()
         self.total_balance = saldo_value.get_saldo()
 
-    def refresh_data(self, event: ft.ControlEvent):
+    def refresh_data(self, _: ft.ControlEvent):
+        """Function to refresh saldo data"""
         self.income_value = self.saldo.get_income()
         self.expense_value = self.saldo.get_expense()
         self.total_balance = self.saldo.get_saldo()
@@ -361,9 +362,8 @@ class Targets(ft.UserControl):
                 ]
             ),
         )
-
-
 class TransactionFirstRow(ft.UserControl):
+    """First row of transactions"""
     def __init__(
         self,
         title: str,

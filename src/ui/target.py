@@ -397,7 +397,11 @@ class Targets(ft.UserControl):
                             ft.Column(
                                 controls=[
                                     ft.Container(
-                                        content=ft.Text(value="Targets", size=20),
+                                        content=ft.Text(
+                                            value="Targets",
+                                            size=32,
+                                            weight=ft.FontWeight.W_600,
+                                        ),
                                         padding=ft.padding.only(
                                             left=10, top=5, right=10
                                         ),
