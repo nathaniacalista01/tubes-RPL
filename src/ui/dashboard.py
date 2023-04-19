@@ -1,6 +1,7 @@
 """Component for BudgetWise's dashboard"""
 from typing import Optional, List
 
+import datetime as dt
 import matplotlib
 import matplotlib.pyplot as plt
 
@@ -19,6 +20,8 @@ class WelcomeMessage(ft.UserControl):
 
     def __init__(self, welcome_str: str = "Hello, Jane Doe", **kwargs):
         super().__init__(**kwargs)
+        current_date = dt.datetime.now()
+        self.date = current_date.strftime("%d %b %Y")
         self.welcome_message = welcome_str
 
     def build(self):
@@ -31,7 +34,7 @@ class WelcomeMessage(ft.UserControl):
                     weight=ft.FontWeight.W_600,
                 ),
                 ft.Text(
-                    value="4.45 pm 15 April 2023",
+                    value=self.date,
                     weight=ft.FontWeight.W_600,
                     size=13,
                 ),
@@ -61,7 +64,8 @@ class SaldoCard(ft.UserControl):
         self.expense_value = saldo_value.get_expense()
         self.total_balance = saldo_value.get_saldo()
 
-    def refresh_data(self, event: ft.ControlEvent):
+    def refresh_saldo(self, _: ft.ControlEvent):
+        """Function to refresh saldo data"""
         self.income_value = self.saldo.get_income()
         self.expense_value = self.saldo.get_expense()
         self.total_balance = self.saldo.get_saldo()
@@ -72,20 +76,25 @@ class SaldoCard(ft.UserControl):
     def build(self):
         return ft.Container(
             bgcolor="#FFFFFF",
-            padding=ft.Padding(20, 10, 20, 0),
+            padding=ft.Padding(20, 30, 20, 0),
             border_radius=20,
             content=ft.Row(
                 controls=[
                     ft.Column(
                         spacing=0,
                         controls=[
-                            ft.IconButton(
-                                icon=ft.icons.REFRESH, on_click=self.refresh_data
-                            ),
-                            ft.Text(
-                                value=self.title,
-                                size=32,
-                                weight=ft.FontWeight.W_600,
+                            ft.Row(
+                                controls=[
+                                    ft.Text(
+                                        value=self.title,
+                                        size=32,
+                                        weight=ft.FontWeight.W_600,
+                                    ),
+                                    ft.IconButton(
+                                        icon=ft.icons.REFRESH,
+                                        on_click=self.refresh_saldo,
+                                    ),
+                                ]
                             ),
                             ft.Text(
                                 value=self.total_income,
@@ -323,6 +332,22 @@ class Targets(ft.UserControl):
             )
             self.list_of_targets.append(temp)
 
+    def refresh_target(self,_:ft.ControlEvent):
+        self.targets = self.db_ref.current.fetch_data("Target")
+        self.list_of_targets = []
+        for rows in self.targets:
+            temp = Target(
+                id_target=rows["id_target"],
+                judul=rows["judul"],
+                nominal_target=rows["nominal_target"],
+                catatan=rows["catatan"],
+                tanggal_dibuat=rows["tanggal_dibuat"],
+                tanggal_tercapai=rows["tanggal_tercapai"],
+            )
+            self.list_of_targets.append(temp)
+        self.controls = [self.build()]
+        self.update()
+
     def build(self):
         return ft.Container(
             bgcolor="#FFFFFF",
@@ -332,10 +357,18 @@ class Targets(ft.UserControl):
                 controls=[
                     ft.Column(
                         controls=[
-                            ft.Text(
-                                value="Targets",
-                                size=32,
-                                weight=ft.FontWeight.W_600,
+                            ft.Row(
+                                controls=[
+                                    ft.Text(
+                                        value="Targets",
+                                        size=32,
+                                        weight=ft.FontWeight.W_600,
+                                    ),
+                                    ft.IconButton(
+                                        icon=ft.icons.REFRESH,
+                                        on_click=self.refresh_target,
+                                    ),
+                                ]
                             ),
                             ft.Column(
                                 expand=True,
@@ -364,6 +397,8 @@ class Targets(ft.UserControl):
 
 
 class TransactionFirstRow(ft.UserControl):
+    """First row of transactions"""
+
     def __init__(
         self,
         title: str,
@@ -428,14 +463,14 @@ class TransactionFirstRow(ft.UserControl):
 class TransactionsDiagram(ft.UserControl):
     """Transaction Diagram component for BudgetWise"""
 
-    def __init__(self,db_ref : ft.Ref[db.DatabaseManager], **kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], **kwargs):
         super().__init__(**kwargs)
         self.sizes = []
         self.colors = ["#F44336", "#FFEB3B", "#2196F3", "#4CAF50"]
         self.labels = []
         self.db_ref = db_ref
         self.categories = db_ref.current.group_income_by_category()
-        self.selected_index = 0,
+        self.selected_index = (0,)
         for rows in self.categories:
             self.sizes.append(rows["persen"])
             self.labels.append(rows["kategori"])
@@ -461,7 +496,6 @@ class TransactionsDiagram(ft.UserControl):
                 self.labels.append(rows["kategori"])
         self.controls = [self.build()]
         self.update()
-
 
     def build(self):
         fig, axis = plt.subplots()
@@ -504,7 +538,7 @@ class TransactionsDiagram(ft.UserControl):
                         title="Transaction Overview",
                         labels=["Income", "Expense"],
                         selected_index=self.last_choice,
-                        handle_click=self.handle_click
+                        handle_click=self.handle_click,
                     ),
                     ft.Stack(
                         expand=True,
@@ -539,7 +573,7 @@ class RecentTransactionTarget(ft.UserControl):
             alignment=ft.MainAxisAlignment.END,
             spacing=24,
             controls=[
-                TransactionsDiagram(expand=True,db_ref=self.db_ref),
+                TransactionsDiagram(expand=True, db_ref=self.db_ref),
                 Targets(width=260, db_ref=self.db_ref, saldo_value=self.saldo_value),
             ],
         )

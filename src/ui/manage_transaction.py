@@ -13,6 +13,7 @@ locale.setlocale(locale.LC_ALL, "id_ID")
 
 
 class TransactionRow(ft.DataRow):
+    """Row for transaction"""
     def __init__(
         self,
         transaction_data: Transaction,
@@ -33,6 +34,7 @@ class TransactionRow(ft.DataRow):
         )
 
     def create_cells(self):
+        """Function to create cells"""
         return [
             ft.DataCell(
                 ft.Text(
