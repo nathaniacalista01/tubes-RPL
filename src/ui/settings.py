@@ -2,8 +2,10 @@ from typing import Optional
 import flet as ft
 from src.ui.dashboard import WelcomeMessage
 
+
 class ProfileCardForms(ft.UserControl):
     """Component for target's forms"""
+
     def __init__(
         self,
         profile_name: str = "Name",
@@ -82,18 +84,11 @@ class ProfileCardForms(ft.UserControl):
                 ],
             ),
         )
-    
+
+
 class SettingsPage(ft.UserControl):
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def build(self):
-        return ft.Column(
-            controls=[    
-                WelcomeMessage(),
-                ProfileCardForms()
-            ]
-        )
+        return ft.Column(controls=[WelcomeMessage(), ProfileCardForms()])

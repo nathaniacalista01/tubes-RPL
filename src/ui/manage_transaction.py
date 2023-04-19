@@ -1,7 +1,7 @@
 """Manage Transaction Page Module"""
 import locale
 from datetime import date
-from typing import Optional, List,Any
+from typing import Optional, List, Any
 
 import flet as ft
 
@@ -19,7 +19,7 @@ class RecentTransactions(ft.UserControl):
         self,
         transactions: Optional[List[Transaction]] = None,
         form_ref: Optional[ft.Ref[TransactionsForms]] = None,
-        on_delete : Any = None,
+        on_delete: Any = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -35,7 +35,6 @@ class RecentTransactions(ft.UserControl):
         self.table_ref = ft.Ref[ft.DataTable]()
         self.form_ref = form_ref
         self.on_delete = on_delete
-    
 
     def edit_transaction(self, evt: ft.ControlEvent):
         """Event handler on transaction data edit"""
@@ -173,7 +172,7 @@ class ManageTransaction(ft.UserControl):
         self.transactions_expense = db_ref.current.fetch_data("transaksi_pengeluaran")
         self.transactions_income = db_ref.current.fetch_data("transaksi_pemasukan")
         self.transactions = []
-        for rows in self.transactions_expense : 
+        for rows in self.transactions_expense:
             new = Transaction(
                 id_transaksi=rows["id_transaksi"],
                 id_sumber=rows["id_pengeluaran"],
@@ -181,10 +180,10 @@ class ManageTransaction(ft.UserControl):
                 date=rows["tanggal"],
                 amount=rows["nominal"],
                 notes=rows["catatan"],
-                type='Expense'
+                type="Expense",
             )
             self.transactions.append(new)
-        for rows in self.transactions_income : 
+        for rows in self.transactions_income:
             new = Transaction(
                 id_transaksi=rows["id_transaksi"],
                 id_sumber=rows["id_pemasukan"],
@@ -192,20 +191,22 @@ class ManageTransaction(ft.UserControl):
                 date=rows["tanggal"],
                 amount=rows["nominal"],
                 notes=rows["catatan"],
-                type='Income'
+                type="Income",
             )
             self.transactions.append(new)
 
     def fetch_data(self):
         """Procedure to fetch data from database"""
-        self.transactions_expense = self.db_ref.current.fetch_data("transaksi_pengeluaran")
+        self.transactions_expense = self.db_ref.current.fetch_data(
+            "transaksi_pengeluaran"
+        )
         self.transactions_income = self.db_ref.current.fetch_data("transaksi_pemasukan")
         self.update()
-    
+
     def add_transactions_list(self):
         """Add new transactions into transactions list"""
-        if(self.type == "Income"):
-            income_data = self.transactions_income[len(self.transactions_income)-1]
+        if self.type == "Income":
+            income_data = self.transactions_income[len(self.transactions_income) - 1]
             new_income = Transaction(
                 id_transaksi=income_data["id_transaksi"],
                 id_sumber=income_data["id_pemasukan"],
@@ -213,12 +214,12 @@ class ManageTransaction(ft.UserControl):
                 date=income_data["tanggal"],
                 amount=income_data["nominal"],
                 notes=income_data["catatan"],
-                type="Income"
+                type="Income",
             )
             self.transactions.append(new_income)
         else:
-            last_data = self.transactions_expense[len(self.transactions_expense)-1]
-            
+            last_data = self.transactions_expense[len(self.transactions_expense) - 1]
+
             new = Transaction(
                 id_transaksi=last_data["id_transaksi"],
                 id_sumber=last_data["id_pengeluaran"],
@@ -226,10 +227,10 @@ class ManageTransaction(ft.UserControl):
                 date=last_data["tanggal"],
                 amount=last_data["nominal"],
                 notes=last_data["catatan"],
-                type="Expense"
+                type="Expense",
             )
             self.transactions.append(new)
-        self.controls=[self.build()]
+        self.controls = [self.build()]
         self.update()
 
     def add_transaction(self, event: ft.ControlEvent):
@@ -263,18 +264,24 @@ class ManageTransaction(ft.UserControl):
         )
         self.fetch_data()
         self.add_transactions_list()
-    
+
     def delete_row(self, event: ft.ControlEvent):
         """Function to delete row"""
         deleted_item = self.transactions.pop(event.control.data)
-        transactions_query="id_transaksi="
-        self.db_ref.current.delete_data("Transaksi",f'{transactions_query}{deleted_item.id_transaksi}')
-        if(deleted_item.type == "Expense"):
-            expense_query  = "id_pengeluaran="
-            self.db_ref.current.delete_data("Pengeluaran",f'{expense_query}{deleted_item.id_sumber}')
+        transactions_query = "id_transaksi="
+        self.db_ref.current.delete_data(
+            "Transaksi", f"{transactions_query}{deleted_item.id_transaksi}"
+        )
+        if deleted_item.type == "Expense":
+            expense_query = "id_pengeluaran="
+            self.db_ref.current.delete_data(
+                "Pengeluaran", f"{expense_query}{deleted_item.id_sumber}"
+            )
         else:
             income_query = "id_pemasukan="
-            self.db_ref.current.delete_data("Pemasukan",f'{income_query}{deleted_item.id_sumber}')
+            self.db_ref.current.delete_data(
+                "Pemasukan", f"{income_query}{deleted_item.id_sumber}"
+            )
         self.controls = [self.build()]
         self.update()
 
@@ -286,7 +293,7 @@ class ManageTransaction(ft.UserControl):
                     expand=1,
                     transactions=self.transactions,
                     form_ref=self.form_ref,
-                    on_delete = self.delete_row,
+                    on_delete=self.delete_row,
                 ),
                 TransactionsForms(
                     ref=self.form_ref,

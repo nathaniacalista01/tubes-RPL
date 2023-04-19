@@ -4,6 +4,8 @@ import src.database as db
 from src.ui.target import TargetForms, Targets
 
 from src.model import Target
+
+
 class TargetPage(ft.UserControl):
     """Budgetwise Target Page"""
 
@@ -15,7 +17,7 @@ class TargetPage(ft.UserControl):
         self.list_of_targets = []
         for rows in self.targets:
             temp = Target(
-                id_target = rows["id_target"],
+                id_target=rows["id_target"],
                 judul=rows["judul"],
                 nominal_target=rows["nominal_target"],
                 catatan=rows["catatan"],
@@ -30,15 +32,15 @@ class TargetPage(ft.UserControl):
         self.update()
 
     def add_targets_list(self):
-        """"Add new data into targets list"""
-        last_data = self.targets[len(self.targets)-1]
+        """ "Add new data into targets list"""
+        last_data = self.targets[len(self.targets) - 1]
         new = Target(
             id_target=last_data["id_target"],
             judul=last_data["judul"],
             nominal_target=last_data["nominal_target"],
             catatan=last_data["catatan"],
             tanggal_dibuat=last_data["tanggal_dibuat"],
-            tanggal_tercapai=last_data["tanggal_tercapai"]
+            tanggal_tercapai=last_data["tanggal_tercapai"],
         )
         self.list_of_targets.append(new)
         self.controls = [self.build()]
@@ -68,11 +70,11 @@ class TargetPage(ft.UserControl):
         self.fetch_data()
         self.add_targets_list()
 
-    def delete_target(self,event:ft.ControlEvent):
+    def delete_target(self, event: ft.ControlEvent):
         """Delete target with spesific id"""
         query = "id_target="
         deleted_item = self.list_of_targets.pop(event.control.data)
-        self.db_ref.current.delete_data("Target",f'{query}{deleted_item.id_target}')
+        self.db_ref.current.delete_data("Target", f"{query}{deleted_item.id_target}")
         self.controls = [self.build()]
         self.update()
 
@@ -82,7 +84,7 @@ class TargetPage(ft.UserControl):
             content=ft.Column(
                 controls=[
                     TargetForms(ref=self.form_ref, on_submit=self.add_target),
-                    Targets(targets=self.list_of_targets,on_delete = self.delete_target),
+                    Targets(targets=self.list_of_targets, on_delete=self.delete_target),
                 ],
             ),
         )

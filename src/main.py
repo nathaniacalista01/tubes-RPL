@@ -38,7 +38,7 @@ def main(page: ft.Page):
     views = [
         Dashboard(expand=True),
         ManageTransaction(db_ref=database, expand=True),
-        TargetPage(db_ref = database,expand=True),
+        TargetPage(db_ref=database, expand=True),
         ft.Text("Article", size=50),
         SettingsPage(expand=True),
     ]

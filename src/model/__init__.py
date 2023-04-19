@@ -8,8 +8,9 @@ from typing import Literal
 @dataclass
 class Transaction:
     """Transaction model"""
-    id_transaksi : int
-    id_sumber : int
+
+    id_transaksi: int
+    id_sumber: int
     category: str
     date: date
     amount: float
@@ -20,7 +21,8 @@ class Transaction:
 @dataclass
 class Target:
     """Target model"""
-    id_target : int
+
+    id_target: int
     judul: str
     nominal_target: int
     catatan: str

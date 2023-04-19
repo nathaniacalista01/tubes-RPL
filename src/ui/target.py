@@ -137,7 +137,9 @@ class TargetBox(ft.UserControl):
 class Targets(ft.UserControl):
     """List of Target component"""
 
-    def __init__(self, targets: Optional[List[Target]] = None, on_delete : Any = None,**kwargs):
+    def __init__(
+        self, targets: Optional[List[Target]] = None, on_delete: Any = None, **kwargs
+    ):
         super().__init__(**kwargs)
         self.targets = [] if targets is None else targets
         self.on_delete = on_delete
@@ -253,13 +255,15 @@ class TargetForms(ft.UserControl):
                         text_size=13,
                         label=name,
                         label_style=ft.TextStyle(size=13),
-                        content_padding=ft.padding.only(top=30,left=5),
+                        content_padding=ft.padding.only(top=30, left=5),
                         cursor_color="black",
                         cursor_width=1,
                         cursor_height=18,
                         color="black",
                         keyboard_type=keyboard_type,
-                        error_text=ref.current.error_text if ref.current is not None else None,
+                        error_text=ref.current.error_text
+                        if ref.current is not None
+                        else None,
                     )
                 ],
             ),
@@ -299,13 +303,17 @@ class TargetForms(ft.UserControl):
     def submit(self, event: ft.ControlEvent):
         """Handle submit event from targets"""
         try:
-            valid_date = bool(datetime.datetime.strptime(
-                self.target_date.current.value, "%d-%m-%Y"
-            ))
+            valid_date = bool(
+                datetime.datetime.strptime(self.target_date.current.value, "%d-%m-%Y")
+            )
         except ValueError:
             valid_date = False
 
-        if (valid_date and self.nominal.current.value.isdigit() and self.title.current.value):
+        if (
+            valid_date
+            and self.nominal.current.value.isdigit()
+            and self.title.current.value
+        ):
             event.control.data = model.Target(
                 id_target=30000,
                 judul=self.title.current.value,
@@ -324,9 +332,17 @@ class TargetForms(ft.UserControl):
             self.update()
             self.on_submit(event)
         else:
-            self.target_date.current.error_text = "Invalid date format" if not valid_date else None
-            self.nominal.current.error_text = "Nominal must be an integer" if not self.nominal.current.value.isdigit() else None
-            self.title.current.error_text = "Title cannot be empty" if not self.title.current.value else None
+            self.target_date.current.error_text = (
+                "Invalid date format" if not valid_date else None
+            )
+            self.nominal.current.error_text = (
+                "Nominal must be an integer"
+                if not self.nominal.current.value.isdigit()
+                else None
+            )
+            self.title.current.error_text = (
+                "Title cannot be empty" if not self.title.current.value else None
+            )
             self.controls = [self.build()]
             self.update()
 

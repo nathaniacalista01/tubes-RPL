@@ -51,7 +51,9 @@ class TransactionsForms(ft.UserControl):
                             ft.dropdown.Option("Expense"),
                             ft.dropdown.Option("Income"),
                         ],
-                        error_text=ref.current.error_text if ref.current is not None else None,
+                        error_text=ref.current.error_text
+                        if ref.current is not None
+                        else None,
                     )
                 ],
             ),
@@ -89,7 +91,9 @@ class TransactionsForms(ft.UserControl):
                         cursor_width=1,
                         cursor_height=18,
                         color="black",
-                        error_text=ref.current.error_text if ref.current is not None else None,
+                        error_text=ref.current.error_text
+                        if ref.current is not None
+                        else None,
                     )
                 ],
             ),
@@ -97,9 +101,11 @@ class TransactionsForms(ft.UserControl):
 
     def submit(self, event: ft.ControlEvent):
         """Methods to submit new transactions"""
-        if (self.type_dropdown.current.value and 
-            self.category_field.current.value and 
-            self.amount_field.current.value.isdigit()):
+        if (
+            self.type_dropdown.current.value
+            and self.category_field.current.value
+            and self.amount_field.current.value.isdigit()
+        ):
             event.control.data = model.Transaction(
                 id_transaksi=9000,
                 id_sumber=2000,
@@ -116,9 +122,19 @@ class TransactionsForms(ft.UserControl):
             self.amount_field.current.value = ""
             self.on_submit(event)
         else:
-            self.type_dropdown.current.error_text="Please select a type" if not self.type_dropdown.current.value else None
-            self.category_field.current.error_text="Category cannot be empty" if not self.category_field.current.value else None
-            self.amount_field.current.error_text="Amount must be a number" if not self.amount_field.current.value.isdigit() else None
+            self.type_dropdown.current.error_text = (
+                "Please select a type" if not self.type_dropdown.current.value else None
+            )
+            self.category_field.current.error_text = (
+                "Category cannot be empty"
+                if not self.category_field.current.value
+                else None
+            )
+            self.amount_field.current.error_text = (
+                "Amount must be a number"
+                if not self.amount_field.current.value.isdigit()
+                else None
+            )
             self.controls = [self.build()]
             self.update()
 

@@ -118,7 +118,7 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
-    
+
     def create_transactions_expense_view(self):
         """Function to create view of 2 tables"""
         query = """
