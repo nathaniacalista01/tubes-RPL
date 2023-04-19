@@ -187,3 +187,22 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
+    def get_income(self):
+        """Get income"""
+        total_pemasukan = self.execute_query("SELECT SUM(nominal) FROM Pemasukan")[0]["SUM(nominal)"]
+        if(total_pemasukan):
+            pass
+        else : 
+            total_pemasukan = 0
+        return total_pemasukan
+    def get_expense(self):
+        """Get expense"""
+        total_pengeluaran = self.execute_query("SELECT SUM(nominal) FROM Pengeluaran")[0]["SUM(nominal)"]
+        if(total_pengeluaran):
+            pass
+        else:
+            total_pengeluaran = 0
+        return total_pengeluaran
+    def get_saldo(self):
+        """Get saldo"""
+        return (self.get_income() - self.get_expense())
