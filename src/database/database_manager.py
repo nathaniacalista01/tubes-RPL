@@ -1,4 +1,5 @@
 """Database Manager"""
+import os.path
 import sqlite3
 
 from src.database import Pemasukan, Pengeluaran, Transaksi, Target
@@ -12,7 +13,8 @@ class DatabaseManager:
         self.pengeluaran = Pengeluaran()
         self.transaksi = Transaksi()
         self.target = Target()
-        self.connection = sqlite3.connect("BudgetWise.db", check_same_thread=False)
+        filepath = os.path.join(os.path.dirname(__file__), "BudgetWise.db")
+        self.connection = sqlite3.connect(filepath, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.initialize_tables()
 
@@ -118,7 +120,7 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
-    
+
     def create_transactions_expense_view(self):
         """Function to create view of 2 tables"""
         query = """
@@ -185,22 +187,29 @@ class DatabaseManager:
         result = self.connection.execute(query)
         rows = result.fetchall()
         return rows
+
     def get_income(self):
         """Get income"""
-        total_pemasukan = self.execute_query("SELECT SUM(nominal) FROM Pemasukan")[0]["SUM(nominal)"]
-        if(total_pemasukan):
+        total_pemasukan = self.execute_query("SELECT SUM(nominal) FROM Pemasukan")[0][
+            "SUM(nominal)"
+        ]
+        if total_pemasukan:
             pass
-        else : 
+        else:
             total_pemasukan = 0
         return total_pemasukan
+
     def get_expense(self):
         """Get expense"""
-        total_pengeluaran = self.execute_query("SELECT SUM(nominal) FROM Pengeluaran")[0]["SUM(nominal)"]
-        if(total_pengeluaran):
+        total_pengeluaran = self.execute_query("SELECT SUM(nominal) FROM Pengeluaran")[
+            0
+        ]["SUM(nominal)"]
+        if total_pengeluaran:
             pass
         else:
             total_pengeluaran = 0
         return total_pengeluaran
+
     def get_saldo(self):
         """Get saldo"""
-        return (self.get_income() - self.get_expense())
+        return self.get_income() - self.get_expense()

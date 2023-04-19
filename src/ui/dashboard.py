@@ -44,7 +44,7 @@ class SaldoCard(ft.UserControl):
 
     def __init__(
         self,
-        saldo_value : saldo.Saldo,
+        saldo_value: saldo.Saldo,
         title: str = "Balances",
         total_income: str = "Total Income",
         total_expense: str = "Total Expense",
@@ -61,7 +61,7 @@ class SaldoCard(ft.UserControl):
         self.expense_value = saldo_value.get_expense()
         self.total_balance = saldo_value.get_saldo()
 
-    def refresh_data(self,event:ft.ControlEvent):
+    def refresh_data(self, event: ft.ControlEvent):
         self.income_value = self.saldo.get_income()
         self.expense_value = self.saldo.get_expense()
         self.total_balance = self.saldo.get_saldo()
@@ -80,8 +80,7 @@ class SaldoCard(ft.UserControl):
                         spacing=0,
                         controls=[
                             ft.IconButton(
-                                icon=ft.icons.REFRESH,
-                                on_click=self.refresh_data
+                                icon=ft.icons.REFRESH, on_click=self.refresh_data
                             ),
                             ft.Text(
                                 value=self.title,
@@ -106,7 +105,7 @@ class SaldoCard(ft.UserControl):
                             ),
                             # Jumlah pengeluaran
                             ft.Text(
-                                value=self.expense_value ,
+                                value=self.expense_value,
                                 size=18,
                                 weight=ft.FontWeight.W_600,
                             ),
@@ -290,7 +289,7 @@ class SaldoOverview(ft.UserControl):
 class BalanceRow(ft.UserControl):
     """Row for balance that consist of two cards"""
 
-    def __init__(self, saldo_value,**kwargs):
+    def __init__(self, saldo_value, **kwargs):
         super().__init__(**kwargs)
         self.saldo_value = saldo_value
 
@@ -299,7 +298,7 @@ class BalanceRow(ft.UserControl):
             spacing=24,
             controls=[
                 SaldoOverview(expand=True),
-                SaldoCard(width=260,saldo_value = self.saldo_value),
+                SaldoCard(width=260, saldo_value=self.saldo_value),
             ],
         )
 
@@ -307,7 +306,7 @@ class BalanceRow(ft.UserControl):
 class Targets(ft.UserControl):
     """Targets Component in Dashboard"""
 
-    def __init__(self,db_ref : ft.Ref[db.DatabaseManager],saldo_value ,**kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], saldo_value, **kwargs):
         super().__init__(**kwargs)
         self.db_ref = db_ref
         self.saldo_value = saldo_value
@@ -315,7 +314,7 @@ class Targets(ft.UserControl):
         self.list_of_targets = []
         for rows in self.targets:
             temp = Target(
-                id_target = rows["id_target"],
+                id_target=rows["id_target"],
                 judul=rows["judul"],
                 nominal_target=rows["nominal_target"],
                 catatan=rows["catatan"],
@@ -348,9 +347,13 @@ class Targets(ft.UserControl):
                                         target_description=t.catatan,
                                         start_date=t.tanggal_dibuat,
                                         end_date=t.tanggal_tercapai,
-                                        percentage=min(1,self.saldo_value.get_saldo()/t.nominal_target)
+                                        percentage=min(
+                                            1,
+                                            self.saldo_value.get_saldo()
+                                            / t.nominal_target,
+                                        ),
                                     )
-                                    for(i,t) in enumerate (self.list_of_targets)
+                                    for (i, t) in enumerate(self.list_of_targets)
                                 ],
                             ),
                         ]
@@ -433,7 +436,7 @@ class TransactionsDiagram(ft.UserControl):
 class RecentTransactionTarget(ft.UserControl):
     """Row that consist of RecentTransactions and Target"""
 
-    def __init__(self,db_ref : ft.Ref[db.DatabaseManager],saldo_value ,**kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], saldo_value, **kwargs):
         super().__init__(**kwargs)
         self.db_ref = db_ref
         self.saldo_value = saldo_value
@@ -444,7 +447,7 @@ class RecentTransactionTarget(ft.UserControl):
             spacing=24,
             controls=[
                 TransactionsDiagram(expand=True),
-                Targets(width=260, db_ref = self.db_ref, saldo_value = self.saldo_value),
+                Targets(width=260, db_ref=self.db_ref, saldo_value=self.saldo_value),
             ],
         )
 
@@ -452,7 +455,9 @@ class RecentTransactionTarget(ft.UserControl):
 class Dashboard(ft.UserControl):
     """Dashboard Component"""
 
-    def __init__(self,db_ref: ft.Ref[db.DatabaseManager] ,saldo : saldo.Saldo,**kwargs):
+    def __init__(
+        self, db_ref: ft.Ref[db.DatabaseManager], saldo: saldo.Saldo, **kwargs
+    ):
         super().__init__(**kwargs)
         self.saldo_value = saldo
         self.db_ref = db_ref
@@ -461,7 +466,9 @@ class Dashboard(ft.UserControl):
         return ft.Column(
             controls=[
                 WelcomeMessage(),
-                BalanceRow(expand=1, saldo_value = self.saldo_value),
-                RecentTransactionTarget(expand=1,db_ref = self.db_ref,saldo_value = self.saldo_value),
+                BalanceRow(expand=1, saldo_value=self.saldo_value),
+                RecentTransactionTarget(
+                    expand=1, db_ref=self.db_ref, saldo_value=self.saldo_value
+                ),
             ]
         )
