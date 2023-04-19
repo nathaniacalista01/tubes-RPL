@@ -9,7 +9,7 @@ from src.ui.navbar import Navbar, NavbarItem
 from src.ui.profile_card import ProfileCard
 from src.ui.target_page import TargetPage
 from src.ui.settings import SettingsPage
-
+from src.saldo import Saldo
 
 def main(page: ft.Page):
     """Main entry point for Flet App"""
@@ -34,11 +34,12 @@ def main(page: ft.Page):
         page_container.current.controls[index].visible = True
         page.update()
 
+    saldo = Saldo(db_ref=database)
     # Put the pages inside this list
     views = [
-        Dashboard(expand=True, db_ref = database),
+        Dashboard(expand=True, db_ref = database,saldo=saldo),
         ManageTransaction(db_ref=database, expand=True),
-        TargetPage(db_ref = database,expand=True),
+        TargetPage(db_ref = database,expand=True,saldo_value = saldo),
         ft.Text("Article", size=50),
         SettingsPage(expand=True),
     ]
