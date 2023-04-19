@@ -1,11 +1,13 @@
 """Component for BudgetWise's dashboard"""
-from typing import Optional, List
+from typing import Optional, List, Any
 
 import matplotlib
 import matplotlib.pyplot as plt
 
 import flet as ft
 from flet.matplotlib_chart import MatplotlibChart
+
+from src.ui.chart import LineChart
 from src.ui.target import TargetBox
 import src.database as db
 import src.saldo as saldo
@@ -133,12 +135,14 @@ class FirstRow(ft.UserControl):
         self,
         title: str,
         labels: Optional[List[str]] = None,
+        on_label_click: Any = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
         self.title = title
         self.labels = labels
         self.selected_index = 0
+        self.on_label_click = on_label_click
         self.refs = [ft.Ref[ft.OutlinedButton]() for _ in labels]
 
     def select_item(self, evt: ft.ControlEvent):
@@ -147,6 +151,8 @@ class FirstRow(ft.UserControl):
         self.refs[self.selected_index].current.disabled = False
         self.selected_index = evt.control.data
         self.update()
+        evt.data = self.labels[evt.control.data]
+        self.on_label_click(evt)
 
     def build(self):
         buttons = [
@@ -222,51 +228,17 @@ class SaldoOverviewSecondRow(ft.UserControl):
         )
 
 
-class SaldoChart(ft.UserControl):
-    """Components for line chart at dashboard"""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def build(self):
-        data_1 = [
-            ft.LineChartData(
-                data_points=[
-                    ft.LineChartDataPoint(1, 1),
-                    ft.LineChartDataPoint(3, 1.5),
-                    ft.LineChartDataPoint(5, 1.4),
-                    ft.LineChartDataPoint(7, 3.4),
-                    ft.LineChartDataPoint(10, 2),
-                    ft.LineChartDataPoint(12, 2.2),
-                    ft.LineChartDataPoint(13, 1.8),
-                ],
-                stroke_width=4,
-                color="#00DEA3",
-                stroke_cap_round=True,
-            ),
-            ft.LineChartData(
-                data_points=[
-                    ft.LineChartDataPoint(1, 1),
-                    ft.LineChartDataPoint(3, 2.8),
-                    ft.LineChartDataPoint(7, 1.2),
-                    ft.LineChartDataPoint(10, 2.8),
-                    ft.LineChartDataPoint(12, 2.6),
-                    ft.LineChartDataPoint(13, 3.9),
-                ],
-                color=ft.colors.PINK,
-                below_line_bgcolor=ft.colors.with_opacity(0, ft.colors.PINK),
-                stroke_width=4,
-                stroke_cap_round=True,
-            ),
-        ]
-        return ft.LineChart(data_series=data_1)
-
-
 class SaldoOverview(ft.UserControl):
     """Saldo Overview Components that consist of several rows"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], **kwargs):
         super().__init__(**kwargs)
+        self.db_ref = db_ref
+        self.line_chart_ref = ft.Ref[LineChart]()
+
+    def handle_grouping(self, event: ft.ControlEvent):
+        self.line_chart_ref.current.group_by = event.data
+        self.line_chart_ref.current.update()
 
     def build(self):
         return ft.Container(
@@ -278,9 +250,15 @@ class SaldoOverview(ft.UserControl):
                     FirstRow(
                         title="Balance Overview",
                         labels=["All", "1M", "3M", "6M", "1Y"],
+                        on_label_click=self.handle_grouping,
                     ),
                     SaldoOverviewSecondRow(),
-                    SaldoChart(expand=True),
+                    LineChart(
+                        ref=self.line_chart_ref,
+                        expand=True,
+                        group_by="All",
+                        db_ref=self.db_ref,
+                    ),
                 ]
             ),
         )
@@ -289,15 +267,16 @@ class SaldoOverview(ft.UserControl):
 class BalanceRow(ft.UserControl):
     """Row for balance that consist of two cards"""
 
-    def __init__(self, saldo_value, **kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], saldo_value, **kwargs):
         super().__init__(**kwargs)
         self.saldo_value = saldo_value
+        self.db_ref = db_ref
 
     def build(self):
         return ft.Row(
             spacing=24,
             controls=[
-                SaldoOverview(expand=True),
+                SaldoOverview(expand=True, db_ref=self.db_ref),
                 SaldoCard(width=260, saldo_value=self.saldo_value),
             ],
         )
@@ -466,7 +445,7 @@ class Dashboard(ft.UserControl):
         return ft.Column(
             controls=[
                 WelcomeMessage(),
-                BalanceRow(expand=1, saldo_value=self.saldo_value),
+                BalanceRow(expand=1, saldo_value=self.saldo_value, db_ref=self.db_ref),
                 RecentTransactionTarget(
                     expand=1, db_ref=self.db_ref, saldo_value=self.saldo_value
                 ),
