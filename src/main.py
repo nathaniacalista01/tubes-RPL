@@ -10,7 +10,7 @@ from src.ui.profile_card import ProfileCard
 from src.ui.target_page import TargetPage
 from src.ui.settings import SettingsPage
 from src.saldo import Saldo
-
+from src.ui.artikel_page import ArticlePage
 
 def main(page: ft.Page):
     """Main entry point for Flet App"""
@@ -41,7 +41,7 @@ def main(page: ft.Page):
         Dashboard(expand=True, db_ref=database, saldo_value=saldo),
         ManageTransaction(db_ref=database, expand=True),
         TargetPage(db_ref=database, expand=True, saldo_value=saldo),
-        ft.Text("Article", size=50),
+        ArticlePage(expand=True),
         SettingsPage(expand=True),
     ]
 
