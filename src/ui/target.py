@@ -438,8 +438,7 @@ class Targets(ft.UserControl):
                                                                         color="black",
                                                                         bgcolor="#D9D9D9",
                                                                         width=90,
-                                                                        on_click=
-                                                                            self.create_edit_form,
+                                                                        on_click=self.create_edit_form,
                                                                         data=i,
                                                                     ),
                                                                     ft.ElevatedButton(
