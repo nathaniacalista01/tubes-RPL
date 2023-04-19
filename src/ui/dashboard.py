@@ -9,6 +9,7 @@ from flet.matplotlib_chart import MatplotlibChart
 from src.ui.target import TargetBox
 import src.database as db
 import src.saldo as saldo
+from src.model import Target
 
 matplotlib.use("svg")
 
@@ -306,8 +307,22 @@ class BalanceRow(ft.UserControl):
 class Targets(ft.UserControl):
     """Targets Component in Dashboard"""
 
-    def __init__(self, **kwargs):
+    def __init__(self,db_ref : ft.Ref[db.DatabaseManager],saldo_value ,**kwargs):
         super().__init__(**kwargs)
+        self.db_ref = db_ref
+        self.saldo_value = saldo_value
+        self.targets = db_ref.current.fetch_data("Target")
+        self.list_of_targets = []
+        for rows in self.targets:
+            temp = Target(
+                id_target = rows["id_target"],
+                judul=rows["judul"],
+                nominal_target=rows["nominal_target"],
+                catatan=rows["catatan"],
+                tanggal_dibuat=rows["tanggal_dibuat"],
+                tanggal_tercapai=rows["tanggal_tercapai"],
+            )
+            self.list_of_targets.append(temp)
 
     def build(self):
         return ft.Container(
@@ -328,11 +343,14 @@ class Targets(ft.UserControl):
                                 scroll=ft.ScrollMode.AUTO,
                                 spacing=5,
                                 controls=[
-                                    TargetBox(percentage=0.3),
-                                    TargetBox(percentage=0.4),
-                                    TargetBox(percentage=0.5),
-                                    TargetBox(percentage=0.6),
-                                    TargetBox(percentage=0.8),
+                                    TargetBox(
+                                        target_title=t.judul,
+                                        target_description=t.catatan,
+                                        start_date=t.tanggal_dibuat,
+                                        end_date=t.tanggal_tercapai,
+                                        percentage=min(1,self.saldo_value.get_saldo()/t.nominal_target)
+                                    )
+                                    for(i,t) in enumerate (self.list_of_targets)
                                 ],
                             ),
                         ]
@@ -415,8 +433,10 @@ class TransactionsDiagram(ft.UserControl):
 class RecentTransactionTarget(ft.UserControl):
     """Row that consist of RecentTransactions and Target"""
 
-    def __init__(self, **kwargs):
+    def __init__(self,db_ref : ft.Ref[db.DatabaseManager],saldo_value ,**kwargs):
         super().__init__(**kwargs)
+        self.db_ref = db_ref
+        self.saldo_value = saldo_value
 
     def build(self):
         return ft.Row(
@@ -424,7 +444,7 @@ class RecentTransactionTarget(ft.UserControl):
             spacing=24,
             controls=[
                 TransactionsDiagram(expand=True),
-                Targets(width=260),
+                Targets(width=260, db_ref = self.db_ref, saldo_value = self.saldo_value),
             ],
         )
 
@@ -435,12 +455,13 @@ class Dashboard(ft.UserControl):
     def __init__(self,db_ref: ft.Ref[db.DatabaseManager] ,saldo : saldo.Saldo,**kwargs):
         super().__init__(**kwargs)
         self.saldo_value = saldo
+        self.db_ref = db_ref
 
     def build(self):
         return ft.Column(
             controls=[
                 WelcomeMessage(),
                 BalanceRow(expand=1, saldo_value = self.saldo_value),
-                RecentTransactionTarget(expand=1),
+                RecentTransactionTarget(expand=1,db_ref = self.db_ref,saldo_value = self.saldo_value),
             ]
         )
