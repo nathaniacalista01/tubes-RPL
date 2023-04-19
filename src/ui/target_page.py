@@ -2,15 +2,17 @@
 import flet as ft
 import src.database as db
 from src.ui.target import TargetForms, Targets
+from src.saldo import Saldo
 
 from src.model import Target
 class TargetPage(ft.UserControl):
     """Budgetwise Target Page"""
 
-    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], **kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager],saldo_value :Saldo,  **kwargs):
         super().__init__(**kwargs)
         self.form_ref = ft.Ref[TargetForms]()
         self.db_ref = db_ref
+        self.saldo_value = saldo_value
         self.targets = db_ref.current.fetch_data("Target")
         self.list_of_targets = []
         for rows in self.targets:
@@ -82,7 +84,7 @@ class TargetPage(ft.UserControl):
             content=ft.Column(
                 controls=[
                     TargetForms(ref=self.form_ref, on_submit=self.add_target),
-                    Targets(targets=self.list_of_targets,on_delete = self.delete_target),
+                    Targets(targets=self.list_of_targets,on_delete = self.delete_target, saldo_value = self.saldo_value),
                 ],
             ),
         )

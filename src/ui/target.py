@@ -5,16 +5,16 @@ from typing import Optional, Any, List
 import flet as ft
 from src.model import Target
 from src import model
-
+from src.saldo import Saldo
 
 class TargetBox(ft.UserControl):
     """Budgetwise Target Component"""
 
     def __init__(
         self,
+        percentage: float,
         target_title: str = "Target Title",
         target_description: str = "Target Description",
-        percentage: float = 0.3,
         start_date: datetime = datetime.date.today(),
         end_date: datetime = datetime.date(
             datetime.datetime.now().year + 1,
@@ -88,7 +88,7 @@ class TargetBox(ft.UserControl):
                             ft.Container(
                                 alignment=ft.alignment.center_right,
                                 content=ft.Text(
-                                    value=str(self.percentage * 100) + "% completed",
+                                    value=str(round(self.percentage * 100,2)) + "% completed",
                                     color="#6182B2",
                                     size=8,
                                     text_align=ft.TextAlign.RIGHT,
@@ -137,10 +137,11 @@ class TargetBox(ft.UserControl):
 class Targets(ft.UserControl):
     """List of Target component"""
 
-    def __init__(self, targets: Optional[List[Target]] = None, on_delete : Any = None,**kwargs):
+    def __init__(self, saldo_value : Saldo,targets: Optional[List[Target]] = None, on_delete : Any = None,**kwargs):
         super().__init__(**kwargs)
         self.targets = [] if targets is None else targets
         self.on_delete = on_delete
+        self.saldo_value = saldo_value
 
     def build(self):
         return ft.Column(
@@ -172,6 +173,7 @@ class Targets(ft.UserControl):
                                                     target_description=t.catatan,
                                                     start_date=t.tanggal_dibuat,
                                                     end_date=t.tanggal_tercapai,
+                                                    percentage=min(1,self.saldo_value.get_saldo()/t.nominal_target)
                                                 ),
                                                 ft.Container(
                                                     height=20,
