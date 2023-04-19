@@ -397,7 +397,11 @@ class Targets(ft.UserControl):
                             ft.Column(
                                 controls=[
                                     ft.Container(
-                                        content=ft.Text(value="Targets", size=20),
+                                        content=ft.Text(
+                                            value="Targets",
+                                            size=32,
+                                            weight=ft.FontWeight.W_600,
+                                        ),
                                         padding=ft.padding.only(
                                             left=10, top=5, right=10
                                         ),
@@ -434,7 +438,8 @@ class Targets(ft.UserControl):
                                                                         color="black",
                                                                         bgcolor="#D9D9D9",
                                                                         width=90,
-                                                                        on_click=self.create_edit_form,
+                                                                        on_click=
+                                                                            self.create_edit_form,
                                                                         data=i,
                                                                     ),
                                                                     ft.ElevatedButton(

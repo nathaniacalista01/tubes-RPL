@@ -11,7 +11,7 @@ from src.ui.profile_card import ProfileCard
 from src.ui.target_page import TargetPage
 from src.ui.settings import SettingsPage
 from src.saldo import Saldo
-
+from src.ui.artikel_page import ArticlePage
 
 def main(page: ft.Page):
     """Main entry point for Flet App"""
@@ -20,7 +20,7 @@ def main(page: ft.Page):
         "Istok Web": "fonts/IstokWeb-Regular.ttf",
     }
 
-    page.title = "Flet counter example"
+    page.title = "BudgetWise Financial Management App"
     page.padding = 0
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.theme = ft.Theme(font_family="Nunito")
@@ -43,8 +43,8 @@ def main(page: ft.Page):
         Dashboard(expand=True, db_ref=database, saldo_value=saldo),
         ManageTransaction(db_ref=database, expand=True),
         TargetPage(db_ref=database, expand=True, saldo_value=saldo),
-        ft.Text("Article", size=50),
-        SettingsPage(profile_card_ref=profile_card, expand=True),
+        ArticlePage(expand=True),
+        SettingsPage(expand=True),
     ]
 
     profile = load_profile()
