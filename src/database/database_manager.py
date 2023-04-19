@@ -1,4 +1,5 @@
 """Database Manager"""
+import os.path
 import sqlite3
 
 from src.database import Pemasukan, Pengeluaran, Transaksi, Target
@@ -12,7 +13,8 @@ class DatabaseManager:
         self.pengeluaran = Pengeluaran()
         self.transaksi = Transaksi()
         self.target = Target()
-        self.connection = sqlite3.connect("BudgetWise.db", check_same_thread=False)
+        filepath = os.path.join(os.path.dirname(__file__), "BudgetWise.db")
+        self.connection = sqlite3.connect(filepath, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.initialize_tables()
 
