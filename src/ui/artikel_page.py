@@ -10,9 +10,8 @@ class ArticlePage(ft.UserControl):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        for a in artikel : 
+        for a in artikel:
             print(a["judul"])
-
 
     def build(self):
         return ft.Container(
@@ -20,7 +19,9 @@ class ArticlePage(ft.UserControl):
             content=ft.Column(
                 scroll=ft.ScrollMode.HIDDEN,
                 controls=[
-                    Article(article_title =  a["judul"],article_body=a["konten"])  # artikel 1
+                    Article(
+                        article_title=a["judul"], article_body=a["konten"]
+                    )  # artikel 1
                     for a in artikel
                 ],
             ),

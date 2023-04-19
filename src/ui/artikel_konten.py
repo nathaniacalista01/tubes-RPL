@@ -1,7 +1,10 @@
 import os
+
 os.system("")
 artikel = [
-    {"judul" : "Pengelolaan Aset","konten" : """
+    {
+        "judul": "Pengelolaan Aset",
+        "konten": """
         Salah satu kemampuan yang harus dimiliki oleh orang-orang saat ini adalah kemampuan dalam mengelola aset pribadinya, terutama dalam mengelola aset keuangan pribadi atau dikenal dengan personal finance. Hal ini dilakukan agar di masa tua nanti, kondisi finansial telah terjamin karena sudah mengatur keuangan pribadinya sejak dini.
 
         Mulailah mengatur keuangan pribadi secepat mungkin, yaitu dengan mengetahui mana yang jadi kebutuhan dan mana yang hanya sekedar keinginan saja. Lalu, apa itu personal finance? Personal finance adalah proses perencanaan dan pengelolaan keuangan serta tabungan dan investasi pribadi seseorang.
@@ -84,8 +87,11 @@ artikel = [
         Manfaat dari mengatur keuangan pribadi pun dapat kamu rasakan hingga masa mendatang nanti, dimana kamu akan terbebas dari hutang karena kamu telah membatasi hutang, dan juga kamu telah mempersiapkan dana untuk masa tua nanti dari menabung.
 
         Oiya, cara lainnya dari mengatur keuangan pribadi yang dapat kamu lakukan dan akan memberikan manfaat jangka panjang adalah dengan melakukan investasi. Dari investasi, nantinya kamu berpotensi mendapatkan keuntungan yang dapat kamu simpan untuk masa pensiun nanti
-    """},
-    {"judul": "Baru Mulai Atur Keuangan? Coba Tips Ini", "konten":"""
+    """,
+    },
+    {
+        "judul": "Baru Mulai Atur Keuangan? Coba Tips Ini",
+        "konten": """
     
     Melansir dari laman the balance, Senin (25/4/2021), panduan empat langkah ini akan membantu Anda menentukan kekayaan bersih, menetapkan tujuan keuangan, melacak pengeluaran, dan membuat anggaran.
 
@@ -131,8 +137,11 @@ artikel = [
 
     Dengan segala pencatatan yang baik dan rapi maka, arus keuangan baik pendapatan dan pengeluaran akan terlacak dengan jelas dan itu artinya akan memudahkan Anda.
     
-    """},
-    {"judul": "7 Langkah Merdeka Finansial", "konten":"""
+    """,
+    },
+    {
+        "judul": "7 Langkah Merdeka Finansial",
+        "konten": """
     Untuk meningkatkan peluang sukses menuju merdeka finansial, Anda perlu mengikuti 7 pendekatan strategis, dilansir dari laman Citibank.ae, Jumat (14/5/2021), berikut rinciannya:
 
     1. Tentukan apa arti sukses bagi Anda
@@ -192,6 +201,6 @@ artikel = [
     Mungkin bagian terpenting dari latihan penetapan tujuan adalah evaluasi berkala tentang bagaimana keadaannya. Jadwalkan beberapa jam sekali setiap bulan dan lingkari tanggal di kalender Anda.
 
     Periksa kinerja Anda, apakah Anda dapat memenuhi tujuan bulan ini, dan perilaku apa yang perlu Anda sesuaikan ke depannya. Tinjauan rutin membuat Anda tetap up to date dan pada jalurnya, memungkinkan Anda memperbarui dan mengubahnya dengan eksposur keuangan minimal.
-    """}
-    
+    """,
+    },
 ]

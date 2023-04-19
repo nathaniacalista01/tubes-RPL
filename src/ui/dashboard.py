@@ -311,7 +311,7 @@ class Targets(ft.UserControl):
             )
             self.list_of_targets.append(temp)
 
-    def refresh_target(self,_:ft.ControlEvent):
+    def refresh_target(self, _: ft.ControlEvent):
         """Function to refresh target"""
         self.targets = self.db_ref.current.fetch_data("Target")
         self.list_of_targets = []

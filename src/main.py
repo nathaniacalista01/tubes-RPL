@@ -13,6 +13,7 @@ from src.ui.settings import SettingsPage
 from src.saldo import Saldo
 from src.ui.artikel_page import ArticlePage
 
+
 def main(page: ft.Page):
     """Main entry point for Flet App"""
     page.fonts = {
