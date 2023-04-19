@@ -8,6 +8,227 @@ from src import model
 from src.saldo import Saldo
 
 
+class TargetForms(ft.UserControl):
+    """Component for target's forms"""
+
+    def __init__(
+        self,
+        form_title: str,
+        default_values: Optional[Target] = None,
+        ref: Optional[ft.Ref["TargetForms"]] = None,
+        on_submit: Any = None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.title = ft.Ref[ft.TextField]()
+        self.nominal = ft.Ref[ft.TextField]()
+        self.target_date = ft.Ref[ft.TextField]()
+        self.description = ft.Ref[ft.TextField]()
+        self.ref = ref
+        self.ref.current = self
+        self.on_submit = on_submit
+        self.default_values = default_values
+        self.form_title = form_title
+
+    @staticmethod
+    def new_forms(
+        name: str,
+        keyboard_type: ft.KeyboardType.TEXT,
+        ref: Optional[ft.Ref[ft.TextField]] = None,
+        value: Optional[str] = None,
+        on_change: Any = None,
+    ):
+        """Components for new form's input"""
+        return ft.Container(
+            expand=True,
+            height=45,
+            bgcolor="#ebebeb",
+            border_radius=ft.border_radius.all(6),
+            margin=ft.margin.only(top=10),
+            padding=ft.padding.all(8),
+            content=ft.Column(
+                spacing=1,
+                controls=[
+                    ft.TextField(
+                        ref=ref,
+                        on_change=on_change,
+                        border_color="transparent",
+                        height=55,
+                        text_size=13,
+                        label=name,
+                        label_style=ft.TextStyle(size=13),
+                        content_padding=ft.padding.only(top=30, left=5),
+                        cursor_color="black",
+                        cursor_width=1,
+                        cursor_height=18,
+                        color="black",
+                        keyboard_type=keyboard_type,
+                        error_text=ref.current.error_text
+                        if ref.current is not None
+                        else None,
+                        value=value,
+                    )
+                ],
+            ),
+        )
+
+    @staticmethod
+    def desc_forms(
+        name: str,
+        ref=Optional[ft.Ref[ft.TextField]],
+        value: Optional[str] = None,
+    ):
+        """Component for forms' descriptions"""
+        return ft.Container(
+            expand=True,
+            height=65,
+            bgcolor="#ebebeb",
+            border_radius=ft.border_radius.all(6),
+            margin=ft.margin.only(top=10),
+            padding=ft.padding.all(8),
+            content=ft.Column(
+                spacing=1,
+                controls=[
+                    ft.TextField(
+                        border_color="transparent",
+                        height=65,
+                        ref=ref,
+                        text_size=13,
+                        label=name,
+                        label_style=ft.TextStyle(size=13),
+                        content_padding=ft.padding.only(top=30),
+                        cursor_color="black",
+                        cursor_width=1,
+                        cursor_height=18,
+                        color="black",
+                        multiline=True,
+                        value=value,
+                    )
+                ],
+            ),
+        )
+
+    def submit(self, event: ft.ControlEvent):
+        """Handle submit event from targets"""
+        try:
+            valid_date = bool(
+                datetime.datetime.strptime(self.target_date.current.value, "%d-%m-%Y")
+            )
+        except ValueError:
+            valid_date = False
+
+        if (
+            valid_date
+            and self.title.current.value
+            and self.nominal.current.value.isdigit()
+        ):
+            event.control.data = model.Target(
+                id_target=-1
+                if self.default_values is None
+                else self.default_values.id_target,
+                judul=self.title.current.value,
+                nominal_target=int(self.nominal.current.value),
+                catatan=self.description.current.value,
+                tanggal_dibuat=datetime.date.today(),
+                tanggal_tercapai=datetime.datetime.strptime(
+                    self.target_date.current.value, "%d-%m-%Y"
+                ).date(),
+            )
+            self.title.current.value = ""
+            self.nominal.current.value = ""
+            self.description.current.value = ""
+            self.target_date.current.value = ""
+            self.target_date.current.error_text = None
+            self.update()
+            self.on_submit(event)
+        else:
+            self.target_date.current.error_text = (
+                "Invalid date format" if not valid_date else None
+            )
+            self.nominal.current.error_text = (
+                "Nominal must be an integer"
+                if not self.nominal.current.value.isdigit()
+                else None
+            )
+            self.title.current.error_text = (
+                "Title cannot be empty" if not self.title.current.value else None
+            )
+            self.controls = [self.build()]
+            self.update()
+
+    def build(self):
+        return ft.Container(
+            expand=True,
+            bgcolor="#FFFFFF",
+            border=ft.border.all(1, "#ebebeb"),
+            border_radius=20,
+            padding=15,
+            content=ft.Column(
+                expand=True,
+                controls=[
+                    ft.Text(
+                        value=self.form_title,
+                        size=32,
+                        weight=ft.FontWeight.W_600,
+                    ),
+                    ft.Row(
+                        controls=[
+                            self.new_forms(
+                                "Title",
+                                ft.KeyboardType.TEXT,
+                                ref=self.title,
+                                value=None
+                                if self.default_values is None
+                                else self.default_values.judul,
+                            ),
+                            self.new_forms(
+                                "Nominal",
+                                ft.KeyboardType.NUMBER,
+                                ref=self.nominal,
+                                value=None
+                                if self.default_values is None
+                                else str(self.default_values.nominal_target),
+                            ),
+                            self.new_forms(
+                                "Target Date (DD-MM-YYYY)",
+                                ft.KeyboardType.DATETIME,
+                                ref=self.target_date,
+                                value=None
+                                if self.default_values is None
+                                else self.default_values.tanggal_tercapai.strftime(
+                                    "%d-%m-%Y"
+                                ),
+                            ),
+                        ]
+                    ),
+                    ft.Row(
+                        controls=[
+                            self.desc_forms(
+                                name="Descriptions",
+                                ref=self.description,
+                                value=None
+                                if self.default_values is None
+                                else self.default_values.catatan,
+                            ),
+                        ]
+                    ),
+                    ft.Row(
+                        alignment=ft.MainAxisAlignment.END,
+                        controls=[
+                            ft.ElevatedButton(
+                                width=100,
+                                bgcolor="#6761B9",
+                                color="white",
+                                text="Submit",
+                                on_click=self.submit,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        )
+
+
 class TargetBox(ft.UserControl):
     """Budgetwise Target Component"""
 
@@ -142,14 +363,26 @@ class Targets(ft.UserControl):
     def __init__(
         self,
         saldo_value: Saldo,
+        form_ref: ft.Ref[TargetForms],
         targets: Optional[List[Target]] = None,
         on_delete: Any = None,
+        on_edit: Any = None,
         **kwargs
     ):
         super().__init__(**kwargs)
         self.targets = [] if targets is None else targets
         self.on_delete = on_delete
+        self.on_edit = on_edit
         self.saldo_value = saldo_value
+        self.form_ref = form_ref
+
+    def create_edit_form(self, event: ft.ControlEvent):
+        """Create edit form"""
+        self.form_ref.current.default_values = self.targets[event.control.data]
+        self.form_ref.current.form_title = "Edit Transaction"
+        self.form_ref.current.on_submit = self.on_edit
+        self.form_ref.current.controls = [self.form_ref.current.build()]
+        self.form_ref.current.update()
 
     def build(self):
         return ft.Column(
@@ -157,255 +390,74 @@ class Targets(ft.UserControl):
                 ft.Container(
                     bgcolor="white",
                     height=280,
-                    width=1100,
                     padding=ft.padding.all(10),
-                    margin=ft.margin.only(top=10, right=20),
                     border_radius=20,
-                    content=ft.Column(
+                    content=ft.Row(
                         controls=[
-                            ft.Container(
-                                content=ft.Text(value="Targets", size=20),
-                                padding=ft.padding.only(left=10, top=5, right=10),
-                            ),
-                            ft.Container(
-                                padding=ft.padding.only(bottom=10),
-                                content=ft.Row(
-                                    scroll=ft.ScrollMode.HIDDEN,
-                                    width=890,
-                                    controls=[
-                                        ft.Column(
-                                            height=250,
+                            ft.Column(
+                                controls=[
+                                    ft.Container(
+                                        content=ft.Text(value="Targets", size=20),
+                                        padding=ft.padding.only(
+                                            left=10, top=5, right=10
+                                        ),
+                                    ),
+                                    ft.Container(
+                                        padding=ft.padding.only(bottom=10),
+                                        content=ft.Row(
+                                            scroll=ft.ScrollMode.HIDDEN,
                                             controls=[
-                                                TargetBox(
-                                                    target_title=t.judul,
-                                                    target_description=t.catatan,
-                                                    start_date=t.tanggal_dibuat,
-                                                    end_date=t.tanggal_tercapai,
-                                                    percentage=min(
-                                                        1,
-                                                        self.saldo_value.get_saldo()
-                                                        / t.nominal_target,
-                                                    ),
-                                                ),
-                                                ft.Container(
-                                                    height=20,
-                                                    width=230,
-                                                    padding=ft.Padding(20, 0, 20, 0),
-                                                    content=ft.Row(
-                                                        controls=[
-                                                            ft.ElevatedButton(
-                                                                text="Edit",
-                                                                color="black",
-                                                                bgcolor="#D9D9D9",
-                                                                width=90,
+                                                ft.Column(
+                                                    height=250,
+                                                    controls=[
+                                                        TargetBox(
+                                                            target_title=t.judul,
+                                                            target_description=t.catatan,
+                                                            start_date=t.tanggal_dibuat,
+                                                            end_date=t.tanggal_tercapai,
+                                                            percentage=min(
+                                                                1,
+                                                                self.saldo_value.get_saldo()
+                                                                / t.nominal_target,
                                                             ),
-                                                            ft.ElevatedButton(
-                                                                text="Delete",
-                                                                color="black",
-                                                                bgcolor="#D9D9D9",
-                                                                width=90,
-                                                                on_click=self.on_delete,
-                                                                data=i,
+                                                        ),
+                                                        ft.Container(
+                                                            height=20,
+                                                            width=230,
+                                                            padding=ft.Padding(
+                                                                20, 0, 20, 0
                                                             ),
-                                                        ]
-                                                    ),
-                                                ),
+                                                            content=ft.Row(
+                                                                controls=[
+                                                                    ft.ElevatedButton(
+                                                                        text="Edit",
+                                                                        color="black",
+                                                                        bgcolor="#D9D9D9",
+                                                                        width=90,
+                                                                        on_click=self.create_edit_form,
+                                                                        data=i,
+                                                                    ),
+                                                                    ft.ElevatedButton(
+                                                                        text="Delete",
+                                                                        color="black",
+                                                                        bgcolor="#D9D9D9",
+                                                                        width=90,
+                                                                        on_click=self.on_delete,
+                                                                        data=i,
+                                                                    ),
+                                                                ]
+                                                            ),
+                                                        ),
+                                                    ],
+                                                )
+                                                for i, t in enumerate(self.targets)
                                             ],
-                                        )
-                                        for i, t in enumerate(self.targets)
-                                    ],
-                                ),
+                                        ),
+                                    ),
+                                ],
                             ),
                         ],
                     ),
                 )
             ]
-        )
-
-
-class TargetForms(ft.UserControl):
-    """Component for target's forms"""
-
-    def __init__(
-        self,
-        ref: Optional[ft.Ref["TargetForms"]] = None,
-        on_submit: Any = None,
-        **kwargs
-    ):
-        super().__init__(**kwargs)
-        self.title = ft.Ref[ft.TextField]()
-        self.nominal = ft.Ref[ft.TextField]()
-        self.target_date = ft.Ref[ft.TextField]()
-        self.description = ft.Ref[ft.TextField]()
-        self.ref = ref
-        self.on_submit = on_submit
-        self.temp = ft.Ref[Any]
-
-    @staticmethod
-    def new_forms(
-        name: str,
-        keyboard_type: ft.KeyboardType.TEXT,
-        ref: Optional[ft.Ref[ft.TextField]] = None,
-        on_change: Any = None,
-    ):
-        """Components for new form's input"""
-        return ft.Container(
-            expand=True,
-            height=45,
-            bgcolor="#ebebeb",
-            border_radius=ft.border_radius.all(6),
-            margin=ft.margin.only(top=10),
-            padding=ft.padding.all(8),
-            content=ft.Column(
-                spacing=1,
-                controls=[
-                    ft.TextField(
-                        ref=ref,
-                        on_change=on_change,
-                        border_color="transparent",
-                        height=55,
-                        text_size=13,
-                        label=name,
-                        label_style=ft.TextStyle(size=13),
-                        content_padding=ft.padding.only(top=30, left=5),
-                        cursor_color="black",
-                        cursor_width=1,
-                        cursor_height=18,
-                        color="black",
-                        keyboard_type=keyboard_type,
-                        error_text=ref.current.error_text
-                        if ref.current is not None
-                        else None,
-                    )
-                ],
-            ),
-        )
-
-    @staticmethod
-    def desc_forms(name: str, ref=Optional[ft.Ref[ft.TextField]]):
-        """Component for forms' descriptions"""
-        return ft.Container(
-            expand=True,
-            height=65,
-            bgcolor="#ebebeb",
-            border_radius=ft.border_radius.all(6),
-            margin=ft.margin.only(top=10),
-            padding=ft.padding.all(8),
-            content=ft.Column(
-                spacing=1,
-                controls=[
-                    ft.TextField(
-                        border_color="transparent",
-                        height=65,
-                        ref=ref,
-                        text_size=13,
-                        label=name,
-                        label_style=ft.TextStyle(size=13),
-                        content_padding=ft.padding.only(top=30),
-                        cursor_color="black",
-                        cursor_width=1,
-                        cursor_height=18,
-                        color="black",
-                        multiline=True,
-                    )
-                ],
-            ),
-        )
-
-    def submit(self, event: ft.ControlEvent):
-        """Handle submit event from targets"""
-        try:
-            valid_date = bool(
-                datetime.datetime.strptime(self.target_date.current.value, "%d-%m-%Y")
-            )
-        except ValueError:
-            valid_date = False
-
-        if (
-            valid_date
-            and self.nominal.current.value.isdigit()
-            and self.title.current.value
-        ):
-            event.control.data = model.Target(
-                id_target=30000,
-                judul=self.title.current.value,
-                nominal_target=int(self.nominal.current.value),
-                catatan=self.description.current.value,
-                tanggal_dibuat=datetime.date.today(),
-                tanggal_tercapai=datetime.datetime.strptime(
-                    self.target_date.current.value, "%d-%m-%Y"
-                ).date(),
-            )
-            self.title.current.value = ""
-            self.nominal.current.value = ""
-            self.description.current.value = ""
-            self.target_date.current.value = ""
-            self.target_date.current.error_text = None
-            self.update()
-            self.on_submit(event)
-        else:
-            self.target_date.current.error_text = (
-                "Invalid date format" if not valid_date else None
-            )
-            self.nominal.current.error_text = (
-                "Nominal must be an integer"
-                if not self.nominal.current.value.isdigit()
-                else None
-            )
-            self.title.current.error_text = (
-                "Title cannot be empty" if not self.title.current.value else None
-            )
-            self.controls = [self.build()]
-            self.update()
-
-    def build(self):
-        return ft.Container(
-            expand=True,
-            bgcolor="#FFFFFF",
-            border=ft.border.all(1, "#ebebeb"),
-            border_radius=20,
-            padding=15,
-            margin=ft.margin.only(top=10),
-            content=ft.Column(
-                expand=True,
-                controls=[
-                    ft.Text(
-                        value="Add Target",
-                        size=32,
-                        weight=ft.FontWeight.W_600,
-                    ),
-                    ft.Row(
-                        controls=[
-                            self.new_forms(
-                                "Title", ft.KeyboardType.TEXT, ref=self.title
-                            ),
-                            self.new_forms(
-                                "Nominal", ft.KeyboardType.NUMBER, ref=self.nominal
-                            ),
-                            self.new_forms(
-                                "Target Date (DD-MM-YYYY)",
-                                ft.KeyboardType.DATETIME,
-                                ref=self.target_date,
-                            ),
-                        ]
-                    ),
-                    ft.Row(
-                        controls=[
-                            self.desc_forms(name="Descriptions", ref=self.description)
-                        ]
-                    ),
-                    ft.Row(
-                        alignment=ft.MainAxisAlignment.END,
-                        controls=[
-                            ft.ElevatedButton(
-                                width=100,
-                                bgcolor="#6761B9",
-                                color="white",
-                                text="Add",
-                                on_click=self.submit,
-                            ),
-                        ],
-                    ),
-                ],
-            ),
         )
