@@ -45,7 +45,7 @@ def main(page: ft.Page):
         ManageTransaction(db_ref=database, expand=True),
         TargetPage(db_ref=database, expand=True, saldo_value=saldo),
         ArticlePage(expand=True),
-        SettingsPage(expand=True),
+        SettingsPage(expand=True, profile_card_ref=profile_card),
     ]
 
     profile = load_profile()
