@@ -64,7 +64,7 @@ class SaldoCard(ft.UserControl):
         self.expense_value = saldo_value.get_expense()
         self.total_balance = saldo_value.get_saldo()
 
-    def refresh_data(self, _: ft.ControlEvent):
+    def refresh_saldo(self, _: ft.ControlEvent):
         """Function to refresh saldo data"""
         self.income_value = self.saldo.get_income()
         self.expense_value = self.saldo.get_expense()
@@ -76,20 +76,25 @@ class SaldoCard(ft.UserControl):
     def build(self):
         return ft.Container(
             bgcolor="#FFFFFF",
-            padding=ft.Padding(20, 10, 20, 0),
+            padding=ft.Padding(20, 30, 20, 0),
             border_radius=20,
             content=ft.Row(
                 controls=[
                     ft.Column(
                         spacing=0,
                         controls=[
-                            ft.IconButton(
-                                icon=ft.icons.REFRESH, on_click=self.refresh_data
-                            ),
-                            ft.Text(
-                                value=self.title,
-                                size=32,
-                                weight=ft.FontWeight.W_600,
+                            ft.Row(
+                                controls=[
+                                    ft.Text(
+                                        value=self.title,
+                                        size=32,
+                                        weight=ft.FontWeight.W_600,
+                                    ),
+                                    ft.IconButton(
+                                        icon=ft.icons.REFRESH,
+                                        on_click=self.refresh_saldo,
+                                    ),
+                                ]
                             ),
                             ft.Text(
                                 value=self.total_income,
@@ -327,6 +332,22 @@ class Targets(ft.UserControl):
             )
             self.list_of_targets.append(temp)
 
+    def refresh_target(self,_:ft.ControlEvent):
+        self.targets = self.db_ref.current.fetch_data("Target")
+        self.list_of_targets = []
+        for rows in self.targets:
+            temp = Target(
+                id_target=rows["id_target"],
+                judul=rows["judul"],
+                nominal_target=rows["nominal_target"],
+                catatan=rows["catatan"],
+                tanggal_dibuat=rows["tanggal_dibuat"],
+                tanggal_tercapai=rows["tanggal_tercapai"],
+            )
+            self.list_of_targets.append(temp)
+        self.controls = [self.build()]
+        self.update()
+
     def build(self):
         return ft.Container(
             bgcolor="#FFFFFF",
@@ -336,10 +357,18 @@ class Targets(ft.UserControl):
                 controls=[
                     ft.Column(
                         controls=[
-                            ft.Text(
-                                value="Targets",
-                                size=32,
-                                weight=ft.FontWeight.W_600,
+                            ft.Row(
+                                controls=[
+                                    ft.Text(
+                                        value="Targets",
+                                        size=32,
+                                        weight=ft.FontWeight.W_600,
+                                    ),
+                                    ft.IconButton(
+                                        icon=ft.icons.REFRESH,
+                                        on_click=self.refresh_target,
+                                    ),
+                                ]
                             ),
                             ft.Column(
                                 expand=True,
