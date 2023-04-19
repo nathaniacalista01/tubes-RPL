@@ -204,3 +204,53 @@ class DatabaseManager:
     def get_saldo(self):
         """Get saldo"""
         return (self.get_income() - self.get_expense())
+
+    def group_expense_by_category(self):
+        """Group by category"""
+        query = """
+                    SELECT SUM(nominal) as total, kategori from Pengeluaran
+                    GROUP BY kategori 
+                    ORDER BY SUM(nominal) DESC
+                    LIMIT 3
+                """
+        result = self.connection.execute(query)
+        data = []
+        for rows in result : 
+            data.append({'kategori' : rows["kategori"],'total':rows["total"],
+                         'persen' : rows["total"]/self.get_expense()*100})
+        if(len(data) < 3):
+            return data
+        else:
+            total = 0
+            for item in data : 
+                total += item["total"]
+            if(total < self.get_expense()):
+                other_value = self.get_expense() - total
+                data.append({'kategori' : 'other','total' : other_value,'persen' :other_value/self.get_expense()*100 })
+                return data
+            return data
+    
+    def group_income_by_category(self):
+        """Group by category"""
+        query = """
+                    SELECT SUM(nominal) as total, kategori from Pemasukan
+                    GROUP BY kategori 
+                    ORDER BY SUM(nominal) DESC
+                    LIMIT 3
+                """
+        result = self.connection.execute(query)
+        data = []
+        for rows in result : 
+            data.append({'kategori' : rows["kategori"],'total':rows["total"],
+                         'persen' : rows["total"]/self.get_expense()*100})
+        if(len(data) < 3):
+            return data
+        else:
+            total = 0
+            for item in data : 
+                total += item["total"]
+            if(total < self.get_expense()):
+                other_value = self.get_expense() - total
+                data.append({'kategori' : 'other','total' : other_value,'persen' :other_value/self.get_expense()*100 })
+                return data
+            return data
