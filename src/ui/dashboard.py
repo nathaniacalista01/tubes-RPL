@@ -428,14 +428,14 @@ class TransactionFirstRow(ft.UserControl):
 class TransactionsDiagram(ft.UserControl):
     """Transaction Diagram component for BudgetWise"""
 
-    def __init__(self,db_ref : ft.Ref[db.DatabaseManager], **kwargs):
+    def __init__(self, db_ref: ft.Ref[db.DatabaseManager], **kwargs):
         super().__init__(**kwargs)
         self.sizes = []
         self.colors = ["#F44336", "#FFEB3B", "#2196F3", "#4CAF50"]
         self.labels = []
         self.db_ref = db_ref
         self.categories = db_ref.current.group_income_by_category()
-        self.selected_index = 0,
+        self.selected_index = (0,)
         for rows in self.categories:
             self.sizes.append(rows["persen"])
             self.labels.append(rows["kategori"])
@@ -461,7 +461,6 @@ class TransactionsDiagram(ft.UserControl):
                 self.labels.append(rows["kategori"])
         self.controls = [self.build()]
         self.update()
-
 
     def build(self):
         fig, axis = plt.subplots()
@@ -504,7 +503,7 @@ class TransactionsDiagram(ft.UserControl):
                         title="Transaction Overview",
                         labels=["Income", "Expense"],
                         selected_index=self.last_choice,
-                        handle_click=self.handle_click
+                        handle_click=self.handle_click,
                     ),
                     ft.Stack(
                         expand=True,
@@ -539,7 +538,7 @@ class RecentTransactionTarget(ft.UserControl):
             alignment=ft.MainAxisAlignment.END,
             spacing=24,
             controls=[
-                TransactionsDiagram(expand=True,db_ref=self.db_ref),
+                TransactionsDiagram(expand=True, db_ref=self.db_ref),
                 Targets(width=260, db_ref=self.db_ref, saldo_value=self.saldo_value),
             ],
         )

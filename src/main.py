@@ -3,6 +3,7 @@
 import flet as ft
 
 import src.database as db
+from src import load_profile
 from src.ui.dashboard import Dashboard
 from src.ui.manage_transaction import ManageTransaction
 from src.ui.navbar import Navbar, NavbarItem
@@ -28,6 +29,7 @@ def main(page: ft.Page):
     page_container = ft.Ref[ft.Stack]()
     database = ft.Ref[db.DatabaseManager]()
     database.current = db.DatabaseManager()
+    profile_card = ft.Ref[ProfileCard]()
 
     def change_page(index: int):
         for view in page_container.current.controls:
@@ -42,8 +44,10 @@ def main(page: ft.Page):
         ManageTransaction(db_ref=database, expand=True),
         TargetPage(db_ref=database, expand=True, saldo_value=saldo),
         ft.Text("Article", size=50),
-        SettingsPage(expand=True),
+        SettingsPage(profile_card_ref=profile_card, expand=True),
     ]
+
+    profile = load_profile()
 
     page.add(
         ft.Row(
@@ -55,7 +59,13 @@ def main(page: ft.Page):
                     padding=35,
                     content=ft.Column(
                         controls=[
-                            ProfileCard(),
+                            ProfileCard(
+                                ref=profile_card,
+                                profile_name=profile["profile_name"],
+                                profile_job=profile["profile_job"],
+                                profile_email=profile["profile_email"],
+                                profile_img_url=profile["profile_img_url"],
+                            ),
                             ft.Container(
                                 margin=ft.margin.only(top=70),
                                 content=Navbar(
